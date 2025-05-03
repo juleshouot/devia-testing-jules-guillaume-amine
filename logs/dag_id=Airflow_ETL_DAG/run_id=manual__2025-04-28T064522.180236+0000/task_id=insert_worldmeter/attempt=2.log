@@ -1,0 +1,33 @@
+[2025-04-28T06:53:36.093+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: Airflow_ETL_DAG.insert_worldmeter manual__2025-04-28T06:45:22.180236+00:00 [queued]>
+[2025-04-28T06:53:36.103+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: Airflow_ETL_DAG.insert_worldmeter manual__2025-04-28T06:45:22.180236+00:00 [queued]>
+[2025-04-28T06:53:36.103+0000] {taskinstance.py:1361} INFO - Starting attempt 2 of 3
+[2025-04-28T06:53:36.158+0000] {taskinstance.py:1382} INFO - Executing <Task(PythonOperator): insert_worldmeter> on 2025-04-28 06:45:22.180236+00:00
+[2025-04-28T06:53:36.165+0000] {standard_task_runner.py:57} INFO - Started process 560 to run task
+[2025-04-28T06:53:36.169+0000] {standard_task_runner.py:84} INFO - Running: ['airflow', 'tasks', 'run', 'Airflow_ETL_DAG', 'insert_worldmeter', 'manual__2025-04-28T06:45:22.180236+00:00', '--job-id', '12', '--raw', '--subdir', 'DAGS_FOLDER/airflow_etl.py', '--cfg-path', '/tmp/tmptwr5zxdt']
+[2025-04-28T06:53:36.171+0000] {standard_task_runner.py:85} INFO - Job 12: Subtask insert_worldmeter
+[2025-04-28T06:53:36.218+0000] {task_command.py:416} INFO - Running <TaskInstance: Airflow_ETL_DAG.insert_worldmeter manual__2025-04-28T06:45:22.180236+00:00 [running]> on host 77b690a9fde8
+[2025-04-28T06:53:36.305+0000] {taskinstance.py:1662} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='Airflow_ETL_DAG' AIRFLOW_CTX_TASK_ID='insert_worldmeter' AIRFLOW_CTX_EXECUTION_DATE='2025-04-28T06:45:22.180236+00:00' AIRFLOW_CTX_TRY_NUMBER='2' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-04-28T06:45:22.180236+00:00'
+[2025-04-28T06:53:46.297+0000] {local_task_job_runner.py:294} WARNING - State of this instance has been externally set to restarting. Terminating instance.
+[2025-04-28T06:53:46.302+0000] {process_utils.py:131} INFO - Sending 15 to group 560. PIDs of all processes in the group: [560]
+[2025-04-28T06:53:46.302+0000] {process_utils.py:86} INFO - Sending the signal 15 to group 560
+[2025-04-28T06:53:46.303+0000] {taskinstance.py:1632} ERROR - Received SIGTERM. Terminating subprocesses.
+[2025-04-28T06:53:46.314+0000] {taskinstance.py:1937} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/operators/python.py", line 192, in execute
+    return_value = self.execute_callable()
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/operators/python.py", line 209, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+  File "/opt/airflow/dags/airflow_etl.py", line 137, in task_insert_worldmeter
+    for _, row in df_covid.iterrows():
+  File "/home/airflow/.local/lib/python3.8/site-packages/pandas/core/frame.py", line 1400, in iterrows
+    s = klass(v, index=columns, name=k).__finalize__(self)
+  File "/home/airflow/.local/lib/python3.8/site-packages/pandas/core/series.py", line 509, in __init__
+    data = sanitize_array(data, index, dtype, copy)
+  File "/home/airflow/.local/lib/python3.8/site-packages/pandas/core/construction.py", line 529, in sanitize_array
+    if isinstance(data, np.ndarray) and data.ndim == 0:
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/models/taskinstance.py", line 1634, in signal_handler
+    raise AirflowException("Task received SIGTERM signal")
+airflow.exceptions.AirflowException: Task received SIGTERM signal
+[2025-04-28T06:53:46.331+0000] {taskinstance.py:1400} INFO - Marking task as UP_FOR_RETRY. dag_id=Airflow_ETL_DAG, task_id=insert_worldmeter, execution_date=20250428T064522, start_date=20250428T065336, end_date=20250428T065346
+[2025-04-28T06:53:46.346+0000] {standard_task_runner.py:104} ERROR - Failed to execute job 12 for task insert_worldmeter (Task received SIGTERM signal; 560)
+[2025-04-28T06:53:46.396+0000] {process_utils.py:79} INFO - Process psutil.Process(pid=560, status='terminated', exitcode=1, started='06:53:36') (560) terminated with exit code 1

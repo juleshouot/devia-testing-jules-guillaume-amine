@@ -1,0 +1,14 @@
+[2025-04-28T06:54:31.459+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: Airflow_ETL_DAG.insert_viruses manual__2025-04-28T06:45:22.180236+00:00 [queued]>
+[2025-04-28T06:54:31.470+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: Airflow_ETL_DAG.insert_viruses manual__2025-04-28T06:45:22.180236+00:00 [queued]>
+[2025-04-28T06:54:31.470+0000] {taskinstance.py:1361} INFO - Starting attempt 5 of 6
+[2025-04-28T06:54:31.486+0000] {taskinstance.py:1382} INFO - Executing <Task(PythonOperator): insert_viruses> on 2025-04-28 06:45:22.180236+00:00
+[2025-04-28T06:54:31.496+0000] {standard_task_runner.py:57} INFO - Started process 615 to run task
+[2025-04-28T06:54:31.500+0000] {standard_task_runner.py:84} INFO - Running: ['airflow', 'tasks', 'run', 'Airflow_ETL_DAG', 'insert_viruses', 'manual__2025-04-28T06:45:22.180236+00:00', '--job-id', '23', '--raw', '--subdir', 'DAGS_FOLDER/airflow_etl.py', '--cfg-path', '/tmp/tmp82svh_97']
+[2025-04-28T06:54:31.502+0000] {standard_task_runner.py:85} INFO - Job 23: Subtask insert_viruses
+[2025-04-28T06:54:31.560+0000] {task_command.py:416} INFO - Running <TaskInstance: Airflow_ETL_DAG.insert_viruses manual__2025-04-28T06:45:22.180236+00:00 [running]> on host 77b690a9fde8
+[2025-04-28T06:54:31.649+0000] {taskinstance.py:1662} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='Airflow_ETL_DAG' AIRFLOW_CTX_TASK_ID='insert_viruses' AIRFLOW_CTX_EXECUTION_DATE='2025-04-28T06:45:22.180236+00:00' AIRFLOW_CTX_TRY_NUMBER='5' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-04-28T06:45:22.180236+00:00'
+[2025-04-28T06:54:31.699+0000] {logging_mixin.py:151} INFO - Insertion des virus terminée.
+[2025-04-28T06:54:31.700+0000] {python.py:194} INFO - Done. Returned value was: None
+[2025-04-28T06:54:31.711+0000] {taskinstance.py:1400} INFO - Marking task as SUCCESS. dag_id=Airflow_ETL_DAG, task_id=insert_viruses, execution_date=20250428T064522, start_date=20250428T065431, end_date=20250428T065431
+[2025-04-28T06:54:31.753+0000] {local_task_job_runner.py:228} INFO - Task exited with return code 0
+[2025-04-28T06:54:31.777+0000] {taskinstance.py:2778} INFO - 1 downstream tasks scheduled from follow-on schedule check

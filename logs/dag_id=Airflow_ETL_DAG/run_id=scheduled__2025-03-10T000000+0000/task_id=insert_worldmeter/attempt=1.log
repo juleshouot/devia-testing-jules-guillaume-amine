@@ -1,0 +1,34 @@
+[2025-04-28T06:45:29.510+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: Airflow_ETL_DAG.insert_worldmeter scheduled__2025-03-10T00:00:00+00:00 [queued]>
+[2025-04-28T06:45:29.521+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: Airflow_ETL_DAG.insert_worldmeter scheduled__2025-03-10T00:00:00+00:00 [queued]>
+[2025-04-28T06:45:29.522+0000] {taskinstance.py:1361} INFO - Starting attempt 1 of 2
+[2025-04-28T06:45:29.578+0000] {taskinstance.py:1382} INFO - Executing <Task(PythonOperator): insert_worldmeter> on 2025-03-10 00:00:00+00:00
+[2025-04-28T06:45:29.587+0000] {standard_task_runner.py:57} INFO - Started process 372 to run task
+[2025-04-28T06:45:29.591+0000] {standard_task_runner.py:84} INFO - Running: ['airflow', 'tasks', 'run', 'Airflow_ETL_DAG', 'insert_worldmeter', 'scheduled__2025-03-10T00:00:00+00:00', '--job-id', '6', '--raw', '--subdir', 'DAGS_FOLDER/airflow_etl.py', '--cfg-path', '/tmp/tmp0evdlpcw']
+[2025-04-28T06:45:29.594+0000] {standard_task_runner.py:85} INFO - Job 6: Subtask insert_worldmeter
+[2025-04-28T06:45:29.651+0000] {task_command.py:416} INFO - Running <TaskInstance: Airflow_ETL_DAG.insert_worldmeter scheduled__2025-03-10T00:00:00+00:00 [running]> on host 77b690a9fde8
+[2025-04-28T06:45:29.817+0000] {taskinstance.py:1662} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='Airflow_ETL_DAG' AIRFLOW_CTX_TASK_ID='insert_worldmeter' AIRFLOW_CTX_EXECUTION_DATE='2025-03-10T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2025-03-10T00:00:00+00:00'
+[2025-04-28T06:47:28.403+0000] {logging_mixin.py:151} INFO - Insertion des données dans worldmeter terminée.
+[2025-04-28T06:47:32.384+0000] {python.py:194} INFO - Done. Returned value was: None
+[2025-04-28T06:47:32.842+0000] {taskinstance.py:1400} INFO - Marking task as SUCCESS. dag_id=Airflow_ETL_DAG, task_id=insert_worldmeter, execution_date=20250310T000000, start_date=20250428T064529, end_date=20250428T064732
+[2025-04-28T06:47:33.306+0000] {local_task_job_runner.py:228} INFO - Task exited with return code 0
+[2025-04-28T06:47:33.533+0000] {taskinstance.py:2778} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2025-05-03T07:22:10.900+0000] {logging_mixin.py:151} INFO - Changing /opt/airflow/logs/dag_id=Airflow_ETL_DAG/run_id=scheduled__2025-03-10T00:00:00+00:00/task_id=insert_worldmeter permission to 509
+[2025-05-03T07:22:10.901+0000] {logging_mixin.py:151} INFO - Failed to change /opt/airflow/logs/dag_id=Airflow_ETL_DAG/run_id=scheduled__2025-03-10T00:00:00+00:00/task_id=insert_worldmeter permission to 509: [Errno 1] Operation not permitted: '/opt/airflow/logs/dag_id=Airflow_ETL_DAG/run_id=scheduled__2025-03-10T00:00:00+00:00/task_id=insert_worldmeter'
+[2025-05-03T07:22:10.934+0000] {logging_mixin.py:151} INFO - Changing /opt/airflow/logs/dag_id=Airflow_ETL_DAG/run_id=scheduled__2025-03-10T00:00:00+00:00/task_id=insert_worldmeter permission to 509
+[2025-05-03T07:22:10.934+0000] {logging_mixin.py:151} INFO - Failed to change /opt/airflow/logs/dag_id=Airflow_ETL_DAG/run_id=scheduled__2025-03-10T00:00:00+00:00/task_id=insert_worldmeter permission to 509: [Errno 1] Operation not permitted: '/opt/airflow/logs/dag_id=Airflow_ETL_DAG/run_id=scheduled__2025-03-10T00:00:00+00:00/task_id=insert_worldmeter'
+[2025-05-03T07:22:10.974+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: Airflow_ETL_DAG.insert_worldmeter scheduled__2025-03-10T00:00:00+00:00 [queued]>
+[2025-05-03T07:22:10.984+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: Airflow_ETL_DAG.insert_worldmeter scheduled__2025-03-10T00:00:00+00:00 [queued]>
+[2025-05-03T07:22:10.984+0000] {taskinstance.py:1361} INFO - Starting attempt 1 of 2
+[2025-05-03T07:22:10.998+0000] {taskinstance.py:1382} INFO - Executing <Task(PythonOperator): insert_worldmeter> on 2025-03-10 00:00:00+00:00
+[2025-05-03T07:22:11.005+0000] {standard_task_runner.py:57} INFO - Started process 256 to run task
+[2025-05-03T07:22:11.007+0000] {standard_task_runner.py:84} INFO - Running: ['airflow', 'tasks', 'run', 'Airflow_ETL_DAG', 'insert_worldmeter', 'scheduled__2025-03-10T00:00:00+00:00', '--job-id', '4', '--raw', '--subdir', 'DAGS_FOLDER/airflow_etl.py', '--cfg-path', '/tmp/tmpulj5mek8']
+[2025-05-03T07:22:11.010+0000] {standard_task_runner.py:85} INFO - Job 4: Subtask insert_worldmeter
+[2025-05-03T07:22:11.071+0000] {logging_mixin.py:151} INFO - Changing /opt/airflow/logs/dag_id=Airflow_ETL_DAG/run_id=scheduled__2025-03-10T00:00:00+00:00/task_id=insert_worldmeter permission to 509
+[2025-05-03T07:22:11.072+0000] {logging_mixin.py:151} INFO - Failed to change /opt/airflow/logs/dag_id=Airflow_ETL_DAG/run_id=scheduled__2025-03-10T00:00:00+00:00/task_id=insert_worldmeter permission to 509: [Errno 1] Operation not permitted: '/opt/airflow/logs/dag_id=Airflow_ETL_DAG/run_id=scheduled__2025-03-10T00:00:00+00:00/task_id=insert_worldmeter'
+[2025-05-03T07:22:11.074+0000] {task_command.py:416} INFO - Running <TaskInstance: Airflow_ETL_DAG.insert_worldmeter scheduled__2025-03-10T00:00:00+00:00 [running]> on host f2b491f5d506
+[2025-05-03T07:22:11.157+0000] {taskinstance.py:1662} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='Airflow_ETL_DAG' AIRFLOW_CTX_TASK_ID='insert_worldmeter' AIRFLOW_CTX_EXECUTION_DATE='2025-03-10T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2025-03-10T00:00:00+00:00'
+[2025-05-03T07:24:40.356+0000] {logging_mixin.py:151} INFO - Insertion des données dans worldmeter terminée.
+[2025-05-03T07:24:43.989+0000] {python.py:194} INFO - Done. Returned value was: None
+[2025-05-03T07:24:44.544+0000] {taskinstance.py:1400} INFO - Marking task as SUCCESS. dag_id=Airflow_ETL_DAG, task_id=insert_worldmeter, execution_date=20250310T000000, start_date=20250503T072210, end_date=20250503T072444
+[2025-05-03T07:24:45.020+0000] {local_task_job_runner.py:228} INFO - Task exited with return code 0
+[2025-05-03T07:24:45.266+0000] {taskinstance.py:2778} INFO - 0 downstream tasks scheduled from follow-on schedule check

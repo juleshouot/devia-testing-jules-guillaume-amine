@@ -1,0 +1,14 @@
+[2025-04-28T07:34:49.260+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: Airflow_ETL_DAG.insert_worldmeter manual__2025-04-28T07:00:41.849689+00:00 [queued]>
+[2025-04-28T07:34:49.269+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: Airflow_ETL_DAG.insert_worldmeter manual__2025-04-28T07:00:41.849689+00:00 [queued]>
+[2025-04-28T07:34:49.270+0000] {taskinstance.py:1361} INFO - Starting attempt 2 of 2
+[2025-04-28T07:34:49.287+0000] {taskinstance.py:1382} INFO - Executing <Task(PythonOperator): insert_worldmeter> on 2025-04-28 07:00:41.849689+00:00
+[2025-04-28T07:34:49.299+0000] {standard_task_runner.py:57} INFO - Started process 894 to run task
+[2025-04-28T07:34:49.303+0000] {standard_task_runner.py:84} INFO - Running: ['airflow', 'tasks', 'run', 'Airflow_ETL_DAG', 'insert_worldmeter', 'manual__2025-04-28T07:00:41.849689+00:00', '--job-id', '32', '--raw', '--subdir', 'DAGS_FOLDER/airflow_etl.py', '--cfg-path', '/tmp/tmpxgc4u7iw']
+[2025-04-28T07:34:49.306+0000] {standard_task_runner.py:85} INFO - Job 32: Subtask insert_worldmeter
+[2025-04-28T07:34:49.356+0000] {task_command.py:416} INFO - Running <TaskInstance: Airflow_ETL_DAG.insert_worldmeter manual__2025-04-28T07:00:41.849689+00:00 [running]> on host 77b690a9fde8
+[2025-04-28T07:34:49.458+0000] {taskinstance.py:1662} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='Airflow_ETL_DAG' AIRFLOW_CTX_TASK_ID='insert_worldmeter' AIRFLOW_CTX_EXECUTION_DATE='2025-04-28T07:00:41.849689+00:00' AIRFLOW_CTX_TRY_NUMBER='2' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-04-28T07:00:41.849689+00:00'
+[2025-04-28T07:36:19.778+0000] {logging_mixin.py:151} INFO - Insertion des données dans worldmeter terminée.
+[2025-04-28T07:36:19.913+0000] {python.py:194} INFO - Done. Returned value was: None
+[2025-04-28T07:36:19.938+0000] {taskinstance.py:1400} INFO - Marking task as SUCCESS. dag_id=Airflow_ETL_DAG, task_id=insert_worldmeter, execution_date=20250428T070041, start_date=20250428T073449, end_date=20250428T073619
+[2025-04-28T07:36:20.175+0000] {local_task_job_runner.py:228} INFO - Task exited with return code 0
+[2025-04-28T07:36:20.340+0000] {taskinstance.py:2778} INFO - 0 downstream tasks scheduled from follow-on schedule check

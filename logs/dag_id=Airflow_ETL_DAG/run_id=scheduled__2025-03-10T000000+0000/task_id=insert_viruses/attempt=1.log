@@ -1,0 +1,34 @@
+[2025-04-28T06:45:27.647+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: Airflow_ETL_DAG.insert_viruses scheduled__2025-03-10T00:00:00+00:00 [queued]>
+[2025-04-28T06:45:27.658+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: Airflow_ETL_DAG.insert_viruses scheduled__2025-03-10T00:00:00+00:00 [queued]>
+[2025-04-28T06:45:27.659+0000] {taskinstance.py:1361} INFO - Starting attempt 1 of 2
+[2025-04-28T06:45:27.674+0000] {taskinstance.py:1382} INFO - Executing <Task(PythonOperator): insert_viruses> on 2025-03-10 00:00:00+00:00
+[2025-04-28T06:45:27.685+0000] {standard_task_runner.py:57} INFO - Started process 368 to run task
+[2025-04-28T06:45:27.692+0000] {standard_task_runner.py:84} INFO - Running: ['airflow', 'tasks', 'run', 'Airflow_ETL_DAG', 'insert_viruses', 'scheduled__2025-03-10T00:00:00+00:00', '--job-id', '5', '--raw', '--subdir', 'DAGS_FOLDER/airflow_etl.py', '--cfg-path', '/tmp/tmplgdno2tj']
+[2025-04-28T06:45:27.703+0000] {standard_task_runner.py:85} INFO - Job 5: Subtask insert_viruses
+[2025-04-28T06:45:27.824+0000] {task_command.py:416} INFO - Running <TaskInstance: Airflow_ETL_DAG.insert_viruses scheduled__2025-03-10T00:00:00+00:00 [running]> on host 77b690a9fde8
+[2025-04-28T06:45:27.998+0000] {taskinstance.py:1662} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='Airflow_ETL_DAG' AIRFLOW_CTX_TASK_ID='insert_viruses' AIRFLOW_CTX_EXECUTION_DATE='2025-03-10T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2025-03-10T00:00:00+00:00'
+[2025-04-28T06:45:28.095+0000] {logging_mixin.py:151} INFO - Insertion des virus terminée.
+[2025-04-28T06:45:28.096+0000] {python.py:194} INFO - Done. Returned value was: None
+[2025-04-28T06:45:28.109+0000] {taskinstance.py:1400} INFO - Marking task as SUCCESS. dag_id=Airflow_ETL_DAG, task_id=insert_viruses, execution_date=20250310T000000, start_date=20250428T064527, end_date=20250428T064528
+[2025-04-28T06:45:28.153+0000] {local_task_job_runner.py:228} INFO - Task exited with return code 0
+[2025-04-28T06:45:28.179+0000] {taskinstance.py:2778} INFO - 1 downstream tasks scheduled from follow-on schedule check
+[2025-05-03T07:22:09.828+0000] {logging_mixin.py:151} INFO - Changing /opt/airflow/logs/dag_id=Airflow_ETL_DAG/run_id=scheduled__2025-03-10T00:00:00+00:00/task_id=insert_viruses permission to 509
+[2025-05-03T07:22:09.829+0000] {logging_mixin.py:151} INFO - Failed to change /opt/airflow/logs/dag_id=Airflow_ETL_DAG/run_id=scheduled__2025-03-10T00:00:00+00:00/task_id=insert_viruses permission to 509: [Errno 1] Operation not permitted: '/opt/airflow/logs/dag_id=Airflow_ETL_DAG/run_id=scheduled__2025-03-10T00:00:00+00:00/task_id=insert_viruses'
+[2025-05-03T07:22:09.868+0000] {logging_mixin.py:151} INFO - Changing /opt/airflow/logs/dag_id=Airflow_ETL_DAG/run_id=scheduled__2025-03-10T00:00:00+00:00/task_id=insert_viruses permission to 509
+[2025-05-03T07:22:09.868+0000] {logging_mixin.py:151} INFO - Failed to change /opt/airflow/logs/dag_id=Airflow_ETL_DAG/run_id=scheduled__2025-03-10T00:00:00+00:00/task_id=insert_viruses permission to 509: [Errno 1] Operation not permitted: '/opt/airflow/logs/dag_id=Airflow_ETL_DAG/run_id=scheduled__2025-03-10T00:00:00+00:00/task_id=insert_viruses'
+[2025-05-03T07:22:09.912+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: Airflow_ETL_DAG.insert_viruses scheduled__2025-03-10T00:00:00+00:00 [queued]>
+[2025-05-03T07:22:09.922+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: Airflow_ETL_DAG.insert_viruses scheduled__2025-03-10T00:00:00+00:00 [queued]>
+[2025-05-03T07:22:09.922+0000] {taskinstance.py:1361} INFO - Starting attempt 1 of 2
+[2025-05-03T07:22:09.936+0000] {taskinstance.py:1382} INFO - Executing <Task(PythonOperator): insert_viruses> on 2025-03-10 00:00:00+00:00
+[2025-05-03T07:22:09.942+0000] {standard_task_runner.py:57} INFO - Started process 253 to run task
+[2025-05-03T07:22:09.946+0000] {standard_task_runner.py:84} INFO - Running: ['airflow', 'tasks', 'run', 'Airflow_ETL_DAG', 'insert_viruses', 'scheduled__2025-03-10T00:00:00+00:00', '--job-id', '3', '--raw', '--subdir', 'DAGS_FOLDER/airflow_etl.py', '--cfg-path', '/tmp/tmp4h2yed10']
+[2025-05-03T07:22:09.949+0000] {standard_task_runner.py:85} INFO - Job 3: Subtask insert_viruses
+[2025-05-03T07:22:09.998+0000] {logging_mixin.py:151} INFO - Changing /opt/airflow/logs/dag_id=Airflow_ETL_DAG/run_id=scheduled__2025-03-10T00:00:00+00:00/task_id=insert_viruses permission to 509
+[2025-05-03T07:22:09.999+0000] {logging_mixin.py:151} INFO - Failed to change /opt/airflow/logs/dag_id=Airflow_ETL_DAG/run_id=scheduled__2025-03-10T00:00:00+00:00/task_id=insert_viruses permission to 509: [Errno 1] Operation not permitted: '/opt/airflow/logs/dag_id=Airflow_ETL_DAG/run_id=scheduled__2025-03-10T00:00:00+00:00/task_id=insert_viruses'
+[2025-05-03T07:22:10.000+0000] {task_command.py:416} INFO - Running <TaskInstance: Airflow_ETL_DAG.insert_viruses scheduled__2025-03-10T00:00:00+00:00 [running]> on host f2b491f5d506
+[2025-05-03T07:22:10.076+0000] {taskinstance.py:1662} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='Airflow_ETL_DAG' AIRFLOW_CTX_TASK_ID='insert_viruses' AIRFLOW_CTX_EXECUTION_DATE='2025-03-10T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2025-03-10T00:00:00+00:00'
+[2025-05-03T07:22:10.131+0000] {logging_mixin.py:151} INFO - Insertion des virus terminée.
+[2025-05-03T07:22:10.132+0000] {python.py:194} INFO - Done. Returned value was: None
+[2025-05-03T07:22:10.141+0000] {taskinstance.py:1400} INFO - Marking task as SUCCESS. dag_id=Airflow_ETL_DAG, task_id=insert_viruses, execution_date=20250310T000000, start_date=20250503T072209, end_date=20250503T072210
+[2025-05-03T07:22:10.199+0000] {local_task_job_runner.py:228} INFO - Task exited with return code 0
+[2025-05-03T07:22:10.225+0000] {taskinstance.py:2778} INFO - 1 downstream tasks scheduled from follow-on schedule check

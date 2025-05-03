@@ -1,0 +1,102 @@
+services:
+  django:
+    build: ./backend
+    container_name: django_app
+    networks:
+      - airflow-net
+    depends_on:
+      - postgres
+    ports:
+      - "8000:8000"
+    environment:
+      - DJANGO_SETTINGS_MODULE=pandemics_project.settings
+      - DJANGO_SECRET_KEY=your-secret-key
+      - DJANGO_DEBUG=True
+      - DJANGO_ALLOWED_HOSTS=127.0.0.1,localhost
+    volumes:
+      - .:/app
+      - ml_models:/django_api/pandemics_app/ml/models
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+
+  postgres:
+    hostname: postgres
+    image: postgres:13
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: guigui
+      POSTGRES_DB: pandemies
+    networks:
+      - airflow-net
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  airflow-webserver:
+    build: .
+    image: apache/airflow:2.7.2
+    container_name: airflow_webserver
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://user:guigui@postgres/pandemies
+      AIRFLOW__CORE__FERNET_KEY: tym5nXoBS3cJ9UAerkjX6Ffebr5AqU3YjQWf31JGKfA=
+      AIRFLOW__WEBSERVER__WORKER_REFRESH_BATCH_SIZE: 10
+      AIRFLOW__WEBSERVER__SECRET_KEY: 113QWMWwTtueNy-ca6BUFeOF5mRTBoQ6Rb7elifprXY
+    networks:
+      - airflow-net
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./data:/opt/airflow/data
+      - ./logs:/opt/airflow/logs
+    command: >
+      bash -c "airflow db upgrade &&
+               airflow users create --username admin --firstname Admin --lastname User --role Admin --email admin@example.com --password admin || true &&
+               airflow webserver"
+
+  airflow-scheduler:
+    build: .
+    image: apache/airflow:2.7.2
+    container_name: airflow_scheduler
+    depends_on:
+      - postgres
+      - airflow-webserver
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://user:guigui@postgres/pandemies
+      AIRFLOW__CORE__FERNET_KEY: tym5nXoBS3cJ9UAerkjX6Ffebr5AqU3YjQWf31JGKfA=
+      AIRFLOW__WEBSERVER__SECRET_KEY: 113QWMWwTtueNy-ca6BUFeOF5mRTBoQ6Rb7elifprXY
+    networks:
+      - airflow-net
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./data:/opt/airflow/data
+      - ./logs:/opt/airflow/logs
+    command: "airflow scheduler"
+
+  metabase:
+    image: metabase/metabase:latest
+    container_name: metabase
+    environment:
+      - MB_DB_FILE=/metabase-data/metabase.db
+    networks:
+      - airflow-net
+    ports:
+      - "3000:3000"
+    volumes:
+      - metabase_data:/metabase-data
+
+networks:
+  airflow-net:
+
+volumes:
+  postgres_data:
+  metabase_data:
+  ml_models:

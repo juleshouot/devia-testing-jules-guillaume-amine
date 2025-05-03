@@ -1,0 +1,11 @@
+[2025-04-28T07:00:46.858+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: Airflow_ETL_DAG.insert_worldmeter manual__2025-04-28T07:00:41.849689+00:00 [queued]>
+[2025-04-28T07:00:46.865+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: Airflow_ETL_DAG.insert_worldmeter manual__2025-04-28T07:00:41.849689+00:00 [queued]>
+[2025-04-28T07:00:46.865+0000] {taskinstance.py:1361} INFO - Starting attempt 1 of 2
+[2025-04-28T07:00:46.878+0000] {taskinstance.py:1382} INFO - Executing <Task(PythonOperator): insert_worldmeter> on 2025-04-28 07:00:41.849689+00:00
+[2025-04-28T07:00:46.883+0000] {standard_task_runner.py:57} INFO - Started process 765 to run task
+[2025-04-28T07:00:46.887+0000] {standard_task_runner.py:84} INFO - Running: ['airflow', 'tasks', 'run', 'Airflow_ETL_DAG', 'insert_worldmeter', 'manual__2025-04-28T07:00:41.849689+00:00', '--job-id', '30', '--raw', '--subdir', 'DAGS_FOLDER/airflow_etl.py', '--cfg-path', '/tmp/tmpo2v_mhvb']
+[2025-04-28T07:00:46.889+0000] {standard_task_runner.py:85} INFO - Job 30: Subtask insert_worldmeter
+[2025-04-28T07:00:46.940+0000] {task_command.py:416} INFO - Running <TaskInstance: Airflow_ETL_DAG.insert_worldmeter manual__2025-04-28T07:00:41.849689+00:00 [running]> on host 77b690a9fde8
+[2025-04-28T07:00:47.032+0000] {taskinstance.py:1662} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='Airflow_ETL_DAG' AIRFLOW_CTX_TASK_ID='insert_worldmeter' AIRFLOW_CTX_EXECUTION_DATE='2025-04-28T07:00:41.849689+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-04-28T07:00:41.849689+00:00'
+[2025-04-28T07:02:10.135+0000] {local_task_job_runner.py:228} INFO - Task exited with return code -9
+[2025-04-28T07:02:10.488+0000] {taskinstance.py:2778} INFO - 0 downstream tasks scheduled from follow-on schedule check

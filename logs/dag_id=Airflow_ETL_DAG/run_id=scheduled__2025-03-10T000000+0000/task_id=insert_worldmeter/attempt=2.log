@@ -1,0 +1,37 @@
+[2025-04-28T06:53:39.404+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: Airflow_ETL_DAG.insert_worldmeter scheduled__2025-03-10T00:00:00+00:00 [queued]>
+[2025-04-28T06:53:39.416+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: Airflow_ETL_DAG.insert_worldmeter scheduled__2025-03-10T00:00:00+00:00 [queued]>
+[2025-04-28T06:53:39.417+0000] {taskinstance.py:1361} INFO - Starting attempt 2 of 3
+[2025-04-28T06:53:39.433+0000] {taskinstance.py:1382} INFO - Executing <Task(PythonOperator): insert_worldmeter> on 2025-03-10 00:00:00+00:00
+[2025-04-28T06:53:39.440+0000] {standard_task_runner.py:57} INFO - Started process 569 to run task
+[2025-04-28T06:53:39.444+0000] {standard_task_runner.py:84} INFO - Running: ['airflow', 'tasks', 'run', 'Airflow_ETL_DAG', 'insert_worldmeter', 'scheduled__2025-03-10T00:00:00+00:00', '--job-id', '14', '--raw', '--subdir', 'DAGS_FOLDER/airflow_etl.py', '--cfg-path', '/tmp/tmpy9amb075']
+[2025-04-28T06:53:39.447+0000] {standard_task_runner.py:85} INFO - Job 14: Subtask insert_worldmeter
+[2025-04-28T06:53:39.530+0000] {task_command.py:416} INFO - Running <TaskInstance: Airflow_ETL_DAG.insert_worldmeter scheduled__2025-03-10T00:00:00+00:00 [running]> on host 77b690a9fde8
+[2025-04-28T06:53:39.630+0000] {taskinstance.py:1662} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='Airflow_ETL_DAG' AIRFLOW_CTX_TASK_ID='insert_worldmeter' AIRFLOW_CTX_EXECUTION_DATE='2025-03-10T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='2' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2025-03-10T00:00:00+00:00'
+[2025-04-28T06:53:49.547+0000] {local_task_job_runner.py:294} WARNING - State of this instance has been externally set to restarting. Terminating instance.
+[2025-04-28T06:53:49.550+0000] {process_utils.py:131} INFO - Sending 15 to group 569. PIDs of all processes in the group: [569]
+[2025-04-28T06:53:49.550+0000] {process_utils.py:86} INFO - Sending the signal 15 to group 569
+[2025-04-28T06:53:49.551+0000] {taskinstance.py:1632} ERROR - Received SIGTERM. Terminating subprocesses.
+[2025-04-28T06:53:49.562+0000] {taskinstance.py:1937} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/operators/python.py", line 192, in execute
+    return_value = self.execute_callable()
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/operators/python.py", line 209, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+  File "/opt/airflow/dags/airflow_etl.py", line 137, in task_insert_worldmeter
+    for _, row in df_covid.iterrows():
+  File "/home/airflow/.local/lib/python3.8/site-packages/pandas/core/frame.py", line 1400, in iterrows
+    s = klass(v, index=columns, name=k).__finalize__(self)
+  File "/home/airflow/.local/lib/python3.8/site-packages/pandas/core/series.py", line 518, in __init__
+    self.name = name
+  File "/home/airflow/.local/lib/python3.8/site-packages/pandas/core/generic.py", line 6011, in __setattr__
+    object.__setattr__(self, name, value)
+  File "/home/airflow/.local/lib/python3.8/site-packages/pandas/core/series.py", line 673, in name
+    validate_all_hashable(value, error_name=f"{type(self).__name__}.name")
+  File "/home/airflow/.local/lib/python3.8/site-packages/pandas/core/dtypes/common.py", line 1650, in validate_all_hashable
+    if not all(is_hashable(arg) for arg in args):
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/models/taskinstance.py", line 1634, in signal_handler
+    raise AirflowException("Task received SIGTERM signal")
+airflow.exceptions.AirflowException: Task received SIGTERM signal
+[2025-04-28T06:53:49.587+0000] {taskinstance.py:1400} INFO - Marking task as UP_FOR_RETRY. dag_id=Airflow_ETL_DAG, task_id=insert_worldmeter, execution_date=20250310T000000, start_date=20250428T065339, end_date=20250428T065349
+[2025-04-28T06:53:49.603+0000] {standard_task_runner.py:104} ERROR - Failed to execute job 14 for task insert_worldmeter (Task received SIGTERM signal; 569)
+[2025-04-28T06:53:49.643+0000] {process_utils.py:79} INFO - Process psutil.Process(pid=569, status='terminated', exitcode=1, started='06:53:39') (569) terminated with exit code 1

@@ -1,0 +1,46 @@
+[2025-03-14T14:52:47.076+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: Airflow_ETL_DAG.insert_worldmeter scheduled__2025-03-10T00:00:00+00:00 [queued]>
+[2025-03-14T14:52:47.086+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: Airflow_ETL_DAG.insert_worldmeter scheduled__2025-03-10T00:00:00+00:00 [queued]>
+[2025-03-14T14:52:47.087+0000] {taskinstance.py:1361} INFO - Starting attempt 2 of 3
+[2025-03-14T14:52:47.110+0000] {taskinstance.py:1382} INFO - Executing <Task(PythonOperator): insert_worldmeter> on 2025-03-10 00:00:00+00:00
+[2025-03-14T14:52:47.124+0000] {standard_task_runner.py:57} INFO - Started process 324 to run task
+[2025-03-14T14:52:47.127+0000] {standard_task_runner.py:84} INFO - Running: ['airflow', 'tasks', 'run', 'Airflow_ETL_DAG', 'insert_worldmeter', 'scheduled__2025-03-10T00:00:00+00:00', '--job-id', '18', '--raw', '--subdir', 'DAGS_FOLDER/airflow_etl.py', '--cfg-path', '/tmp/tmp79nd_f0d']
+[2025-03-14T14:52:47.133+0000] {standard_task_runner.py:85} INFO - Job 18: Subtask insert_worldmeter
+[2025-03-14T14:52:47.201+0000] {task_command.py:416} INFO - Running <TaskInstance: Airflow_ETL_DAG.insert_worldmeter scheduled__2025-03-10T00:00:00+00:00 [running]> on host 587afbd7d2b9
+[2025-03-14T14:52:47.317+0000] {taskinstance.py:1662} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='Airflow_ETL_DAG' AIRFLOW_CTX_TASK_ID='insert_worldmeter' AIRFLOW_CTX_EXECUTION_DATE='2025-03-10T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='2' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2025-03-10T00:00:00+00:00'
+[2025-03-14T14:53:01.977+0000] {taskinstance.py:1937} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/operators/python.py", line 192, in execute
+    return_value = self.execute_callable()
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/operators/python.py", line 209, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+  File "/opt/airflow/dags/airflow_etl.py", line 162, in task_insert_worldmeter
+    session.execute(stmt)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/orm/session.py", line 1717, in execute
+    result = conn._execute_20(statement, params or {}, execution_options)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1710, in _execute_20
+    return meth(self, args_10style, kwargs_10style, execution_options)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 334, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1569, in _execute_clauseelement
+    compiled_sql, extracted_params, cache_hit = elem._compile_w_cache(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 545, in _compile_w_cache
+    compiled_sql = self._compiler(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 567, in _compiler
+    return dialect.statement_compiler(dialect, self, **kw)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/compiler.py", line 809, in __init__
+    Compiled.__init__(self, dialect, statement, **kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/compiler.py", line 464, in __init__
+    self.string = self.process(self.statement, **compile_kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/compiler.py", line 499, in process
+    return obj._compiler_dispatch(self, **kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/visitors.py", line 82, in _compiler_dispatch
+    return meth(self, **kw)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/compiler.py", line 4017, in visit_insert
+    crud_params = crud._get_crud_params(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/crud.py", line 172, in _get_crud_params
+    raise exc.CompileError(
+sqlalchemy.exc.CompileError: Unconsumed column names: total_cases, new_deaths, new_cases
+[2025-03-14T14:53:02.000+0000] {taskinstance.py:1400} INFO - Marking task as UP_FOR_RETRY. dag_id=Airflow_ETL_DAG, task_id=insert_worldmeter, execution_date=20250310T000000, start_date=20250314T145247, end_date=20250314T145302
+[2025-03-14T14:53:02.020+0000] {standard_task_runner.py:104} ERROR - Failed to execute job 18 for task insert_worldmeter (Unconsumed column names: total_cases, new_deaths, new_cases; 324)
+[2025-03-14T14:53:02.049+0000] {local_task_job_runner.py:228} INFO - Task exited with return code 1
+[2025-03-14T14:53:02.066+0000] {taskinstance.py:2778} INFO - 0 downstream tasks scheduled from follow-on schedule check
