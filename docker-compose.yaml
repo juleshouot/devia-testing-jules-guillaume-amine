@@ -1,3 +1,5 @@
+
+
 services:
   django:
     build: ./backend
@@ -10,18 +12,22 @@ services:
       - "8000:8000"
     environment:
       - DJANGO_SETTINGS_MODULE=pandemics_project.settings
-      - DJANGO_SECRET_KEY=your-secret-key
-      - DJANGO_DEBUG=True
-      - DJANGO_ALLOWED_HOSTS=127.0.0.1,localhost
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY:-your-secret-key}
+      - DJANGO_DEBUG=${DJANGO_DEBUG:-True}
+      - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS:-127.0.0.1,localhost}
+      - POSTGRES_DB=${POSTGRES_DB:-pandemies}
+      - POSTGRES_USER=${POSTGRES_USER:-user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-guigui}
+      - POSTGRES_HOST=${POSTGRES_HOST:-postgres}
+      - POSTGRES_PORT=${POSTGRES_PORT:-5432}
     volumes:
-      - .:/app
+      - ./backend:/django_api
       - ml_models:/django_api/pandemics_app/ml/models
     command: >
       sh -c "python manage.py migrate &&
              python manage.py runserver 0.0.0.0:8000"
 
   postgres:
-    hostname: postgres
     image: postgres:13
     container_name: postgres_db
     environment:
@@ -37,7 +43,6 @@ services:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
   airflow-webserver:
-    build: .
     image: apache/airflow:2.7.2
     container_name: airflow_webserver
     environment:
@@ -62,7 +67,6 @@ services:
                airflow webserver"
 
   airflow-scheduler:
-    build: .
     image: apache/airflow:2.7.2
     container_name: airflow_scheduler
     depends_on:

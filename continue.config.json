@@ -1,0 +1,11 @@
+{
+  "models": [
+    {
+      "title": "Codestral (Docker)",
+      "provider": "openai",  // on utilise "openai" car Continue attend une API OpenAI-compatible
+      "apiBase": "http://localhost:8000/v1",  // ou l’URL publique si c’est à distance
+      "apiKey": "",  // vide si pas de clé, ou "sk-..." si tu en as une
+      "model": "codestral"  // le nom exact exposé par ton API
+    }
+  ]
+}

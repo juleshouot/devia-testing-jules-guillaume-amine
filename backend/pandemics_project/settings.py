@@ -66,6 +66,9 @@ DATABASES = {
         'PASSWORD': os.getenv("POSTGRES_PASSWORD", "guigui"),
         'HOST': os.getenv("POSTGRES_HOST", "postgres"),
         'PORT': os.getenv("POSTGRES_PORT", "5432"),
+        'OPTIONS': {
+            'options': '-c search_path=pandemics,public'
+        }
     }
 }
 
