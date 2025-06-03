@@ -23,4 +23,9 @@ urlpatterns = [
     # Endpoints pour les données de l'interface utilisateur
     path('latest-data/', views.get_latest_data, name='latest-data'),
     path('model-metrics-summary/', views.get_model_metrics, name='model-metrics-summary'),
+    # Nouvel endpoint pour les données agrégées
+    path('aggregated-data/', views.aggregated_data, name='aggregated-data'),
+    path('visualizations/generate/', views.generate_visualizations, name='generate_visualizations'),
+    path('visualizations/', views.list_visualizations, name='list_visualizations'),
+    path('visualizations/<str:viz_name>/', views.interactive_visualization, name='interactive_visualization'),
 ]

@@ -1,0 +1,70 @@
+[2025-05-18T13:44:05.542+0000] {processor.py:157} INFO - Started process (PID=171) to work on /opt/airflow/dags/clean_tables.py
+[2025-05-18T13:44:05.544+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/clean_tables.py for tasks to queue
+[2025-05-18T13:44:05.545+0000] {logging_mixin.py:151} INFO - [2025-05-18T13:44:05.545+0000] {dagbag.py:536} INFO - Filling up the DagBag from /opt/airflow/dags/clean_tables.py
+[2025-05-18T13:44:05.583+0000] {processor.py:839} INFO - DAG(s) dict_keys(['clean_tables_dag']) retrieved from /opt/airflow/dags/clean_tables.py
+[2025-05-18T13:44:05.624+0000] {logging_mixin.py:151} INFO - [2025-05-18T13:44:05.623+0000] {dag.py:2941} INFO - Sync 1 DAGs
+[2025-05-18T13:44:05.657+0000] {logging_mixin.py:151} INFO - [2025-05-18T13:44:05.657+0000] {dag.py:3722} INFO - Setting next_dagrun for clean_tables_dag to 2025-03-10T00:00:00+00:00, run_after=2025-03-10T00:00:00+00:00
+[2025-05-18T13:44:05.687+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/clean_tables.py took 0.149 seconds
+[2025-05-18T13:44:35.798+0000] {processor.py:157} INFO - Started process (PID=182) to work on /opt/airflow/dags/clean_tables.py
+[2025-05-18T13:44:35.800+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/clean_tables.py for tasks to queue
+[2025-05-18T13:44:35.801+0000] {logging_mixin.py:151} INFO - [2025-05-18T13:44:35.801+0000] {dagbag.py:536} INFO - Filling up the DagBag from /opt/airflow/dags/clean_tables.py
+[2025-05-18T13:44:35.825+0000] {processor.py:839} INFO - DAG(s) dict_keys(['clean_tables_dag']) retrieved from /opt/airflow/dags/clean_tables.py
+[2025-05-18T13:44:35.884+0000] {logging_mixin.py:151} INFO - [2025-05-18T13:44:35.884+0000] {dag.py:2941} INFO - Sync 1 DAGs
+[2025-05-18T13:44:35.910+0000] {logging_mixin.py:151} INFO - [2025-05-18T13:44:35.909+0000] {dag.py:3722} INFO - Setting next_dagrun for clean_tables_dag to 2025-03-10T00:00:00+00:00, run_after=2025-03-10T00:00:00+00:00
+[2025-05-18T13:44:35.931+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/clean_tables.py took 0.137 seconds
+[2025-05-18T13:45:06.144+0000] {processor.py:157} INFO - Started process (PID=193) to work on /opt/airflow/dags/clean_tables.py
+[2025-05-18T13:45:06.144+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/clean_tables.py for tasks to queue
+[2025-05-18T13:45:06.145+0000] {logging_mixin.py:151} INFO - [2025-05-18T13:45:06.145+0000] {dagbag.py:536} INFO - Filling up the DagBag from /opt/airflow/dags/clean_tables.py
+[2025-05-18T13:45:06.171+0000] {processor.py:839} INFO - DAG(s) dict_keys(['clean_tables_dag']) retrieved from /opt/airflow/dags/clean_tables.py
+[2025-05-18T13:45:06.217+0000] {logging_mixin.py:151} INFO - [2025-05-18T13:45:06.216+0000] {dag.py:2941} INFO - Sync 1 DAGs
+[2025-05-18T13:45:06.247+0000] {logging_mixin.py:151} INFO - [2025-05-18T13:45:06.247+0000] {dag.py:3722} INFO - Setting next_dagrun for clean_tables_dag to 2025-03-10T00:00:00+00:00, run_after=2025-03-10T00:00:00+00:00
+[2025-05-18T13:45:06.276+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/clean_tables.py took 0.136 seconds
+[2025-05-18T13:45:36.518+0000] {processor.py:157} INFO - Started process (PID=204) to work on /opt/airflow/dags/clean_tables.py
+[2025-05-18T13:45:36.519+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/clean_tables.py for tasks to queue
+[2025-05-18T13:45:36.521+0000] {logging_mixin.py:151} INFO - [2025-05-18T13:45:36.521+0000] {dagbag.py:536} INFO - Filling up the DagBag from /opt/airflow/dags/clean_tables.py
+[2025-05-18T13:45:36.542+0000] {processor.py:839} INFO - DAG(s) dict_keys(['clean_tables_dag']) retrieved from /opt/airflow/dags/clean_tables.py
+[2025-05-18T13:45:36.570+0000] {logging_mixin.py:151} INFO - [2025-05-18T13:45:36.569+0000] {dag.py:2941} INFO - Sync 1 DAGs
+[2025-05-18T13:45:36.591+0000] {logging_mixin.py:151} INFO - [2025-05-18T13:45:36.590+0000] {dag.py:3722} INFO - Setting next_dagrun for clean_tables_dag to 2025-03-10T00:00:00+00:00, run_after=2025-03-10T00:00:00+00:00
+[2025-05-18T13:45:36.612+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/clean_tables.py took 0.098 seconds
+[2025-05-18T13:46:06.907+0000] {processor.py:157} INFO - Started process (PID=215) to work on /opt/airflow/dags/clean_tables.py
+[2025-05-18T13:46:06.908+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/clean_tables.py for tasks to queue
+[2025-05-18T13:46:06.910+0000] {logging_mixin.py:151} INFO - [2025-05-18T13:46:06.910+0000] {dagbag.py:536} INFO - Filling up the DagBag from /opt/airflow/dags/clean_tables.py
+[2025-05-18T13:46:06.946+0000] {processor.py:839} INFO - DAG(s) dict_keys(['clean_tables_dag']) retrieved from /opt/airflow/dags/clean_tables.py
+[2025-05-18T13:46:06.987+0000] {logging_mixin.py:151} INFO - [2025-05-18T13:46:06.987+0000] {dag.py:2941} INFO - Sync 1 DAGs
+[2025-05-18T13:46:07.015+0000] {logging_mixin.py:151} INFO - [2025-05-18T13:46:07.015+0000] {dag.py:3722} INFO - Setting next_dagrun for clean_tables_dag to 2025-03-10T00:00:00+00:00, run_after=2025-03-10T00:00:00+00:00
+[2025-05-18T13:46:07.042+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/clean_tables.py took 0.141 seconds
+[2025-05-18T13:46:37.290+0000] {processor.py:157} INFO - Started process (PID=226) to work on /opt/airflow/dags/clean_tables.py
+[2025-05-18T13:46:37.291+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/clean_tables.py for tasks to queue
+[2025-05-18T13:46:37.292+0000] {logging_mixin.py:151} INFO - [2025-05-18T13:46:37.292+0000] {dagbag.py:536} INFO - Filling up the DagBag from /opt/airflow/dags/clean_tables.py
+[2025-05-18T13:46:37.317+0000] {processor.py:839} INFO - DAG(s) dict_keys(['clean_tables_dag']) retrieved from /opt/airflow/dags/clean_tables.py
+[2025-05-18T13:46:37.352+0000] {logging_mixin.py:151} INFO - [2025-05-18T13:46:37.352+0000] {dag.py:2941} INFO - Sync 1 DAGs
+[2025-05-18T13:46:37.383+0000] {logging_mixin.py:151} INFO - [2025-05-18T13:46:37.383+0000] {dag.py:3722} INFO - Setting next_dagrun for clean_tables_dag to 2025-03-10T00:00:00+00:00, run_after=2025-03-10T00:00:00+00:00
+[2025-05-18T13:46:37.415+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/clean_tables.py took 0.128 seconds
+[2025-05-18T13:47:07.670+0000] {processor.py:157} INFO - Started process (PID=237) to work on /opt/airflow/dags/clean_tables.py
+[2025-05-18T13:47:07.670+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/clean_tables.py for tasks to queue
+[2025-05-18T13:47:07.671+0000] {logging_mixin.py:151} INFO - [2025-05-18T13:47:07.671+0000] {dagbag.py:536} INFO - Filling up the DagBag from /opt/airflow/dags/clean_tables.py
+[2025-05-18T13:47:07.695+0000] {processor.py:839} INFO - DAG(s) dict_keys(['clean_tables_dag']) retrieved from /opt/airflow/dags/clean_tables.py
+[2025-05-18T13:47:07.720+0000] {logging_mixin.py:151} INFO - [2025-05-18T13:47:07.719+0000] {dag.py:2941} INFO - Sync 1 DAGs
+[2025-05-18T13:47:07.746+0000] {logging_mixin.py:151} INFO - [2025-05-18T13:47:07.746+0000] {dag.py:3722} INFO - Setting next_dagrun for clean_tables_dag to 2025-03-10T00:00:00+00:00, run_after=2025-03-10T00:00:00+00:00
+[2025-05-18T13:47:07.767+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/clean_tables.py took 0.100 seconds
+[2025-05-18T13:47:38.003+0000] {processor.py:157} INFO - Started process (PID=248) to work on /opt/airflow/dags/clean_tables.py
+[2025-05-18T13:47:38.004+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/clean_tables.py for tasks to queue
+[2025-05-18T13:47:38.005+0000] {logging_mixin.py:151} INFO - [2025-05-18T13:47:38.005+0000] {dagbag.py:536} INFO - Filling up the DagBag from /opt/airflow/dags/clean_tables.py
+[2025-05-18T13:47:38.027+0000] {processor.py:839} INFO - DAG(s) dict_keys(['clean_tables_dag']) retrieved from /opt/airflow/dags/clean_tables.py
+[2025-05-18T13:47:38.056+0000] {logging_mixin.py:151} INFO - [2025-05-18T13:47:38.056+0000] {dag.py:2941} INFO - Sync 1 DAGs
+[2025-05-18T13:47:38.084+0000] {logging_mixin.py:151} INFO - [2025-05-18T13:47:38.084+0000] {dag.py:3722} INFO - Setting next_dagrun for clean_tables_dag to 2025-03-10T00:00:00+00:00, run_after=2025-03-10T00:00:00+00:00
+[2025-05-18T13:47:38.109+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/clean_tables.py took 0.110 seconds
+[2025-05-18T13:48:08.332+0000] {processor.py:157} INFO - Started process (PID=259) to work on /opt/airflow/dags/clean_tables.py
+[2025-05-18T13:48:08.333+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/clean_tables.py for tasks to queue
+[2025-05-18T13:48:08.334+0000] {logging_mixin.py:151} INFO - [2025-05-18T13:48:08.334+0000] {dagbag.py:536} INFO - Filling up the DagBag from /opt/airflow/dags/clean_tables.py
+[2025-05-18T13:48:08.353+0000] {processor.py:839} INFO - DAG(s) dict_keys(['clean_tables_dag']) retrieved from /opt/airflow/dags/clean_tables.py
+[2025-05-18T13:48:08.392+0000] {logging_mixin.py:151} INFO - [2025-05-18T13:48:08.392+0000] {dag.py:2941} INFO - Sync 1 DAGs
+[2025-05-18T13:48:08.415+0000] {logging_mixin.py:151} INFO - [2025-05-18T13:48:08.415+0000] {dag.py:3722} INFO - Setting next_dagrun for clean_tables_dag to 2025-03-10T00:00:00+00:00, run_after=2025-03-10T00:00:00+00:00
+[2025-05-18T13:48:08.436+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/clean_tables.py took 0.108 seconds
+[2025-05-18T13:48:38.650+0000] {processor.py:157} INFO - Started process (PID=270) to work on /opt/airflow/dags/clean_tables.py
+[2025-05-18T13:48:38.651+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/clean_tables.py for tasks to queue
+[2025-05-18T13:48:38.652+0000] {logging_mixin.py:151} INFO - [2025-05-18T13:48:38.651+0000] {dagbag.py:536} INFO - Filling up the DagBag from /opt/airflow/dags/clean_tables.py
+[2025-05-18T13:48:38.669+0000] {processor.py:839} INFO - DAG(s) dict_keys(['clean_tables_dag']) retrieved from /opt/airflow/dags/clean_tables.py
+[2025-05-18T13:48:38.690+0000] {logging_mixin.py:151} INFO - [2025-05-18T13:48:38.690+0000] {dag.py:2941} INFO - Sync 1 DAGs
+[2025-05-18T13:48:38.709+0000] {logging_mixin.py:151} INFO - [2025-05-18T13:48:38.709+0000] {dag.py:3722} INFO - Setting next_dagrun for clean_tables_dag to 2025-03-10T00:00:00+00:00, run_after=2025-03-10T00:00:00+00:00
+[2025-05-18T13:48:38.727+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/clean_tables.py took 0.080 seconds

@@ -25,4 +25,8 @@ seaborn
 scikit-learn
 django-cors-headers
 Pillow
-
+django-cors-headers
+xgboost
+statsmodels
+plotly
+plotly-geo

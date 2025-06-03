@@ -6,218 +6,11 @@
     <title>Prédictions de Pandémies - OMS</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <style>
-        :root {
-            --primary-color: #0077b6;
-            --secondary-color: #48cae4;
-            --background-color: #f8f9fa;
-            --text-color: #333;
-            --accent-color: #023e8a;
-            --success-color: #38b000;
-            --warning-color: #ffb703;
-            --danger-color: #d00000;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            line-height: 1.6;
-        }
-        
-        .navbar {
-            background-color: var(--primary-color);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        
-        .navbar-brand {
-            font-weight: bold;
-            color: white !important;
-        }
-        
-        .nav-link {
-            color: rgba(255, 255, 255, 0.85) !important;
-            transition: color 0.3s;
-        }
-        
-        .nav-link:hover, .nav-link:focus {
-            color: white !important;
-        }
-        
-        .card {
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-            margin-bottom: 20px;
-            border: none;
-        }
-        
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
-        
-        .card-header {
-            background-color: var(--primary-color);
-            color: white;
-            border-radius: 10px 10px 0 0 !important;
-            padding: 15px 20px;
-            font-weight: 600;
-        }
-        
-        .card-body {
-            padding: 20px;
-        }
-        
-        .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-        
-        .btn-primary:hover {
-            background-color: var(--accent-color);
-            border-color: var(--accent-color);
-        }
-        
-        .stat-card {
-            text-align: center;
-            padding: 15px;
-        }
-        
-        .stat-card .value {
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin: 10px 0;
-            color: var(--primary-color);
-        }
-        
-        .stat-card .label {
-            font-size: 1rem;
-            color: #666;
-        }
-        
-        .chart-container {
-            position: relative;
-            height: 300px;
-            width: 100%;
-        }
-        
-        .filter-section {
-            background-color: white;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-        
-        .prediction-badge {
-            font-size: 0.9rem;
-            padding: 5px 10px;
-            border-radius: 20px;
-            margin-right: 5px;
-        }
-        
-        .prediction-badge.transmission {
-            background-color: var(--warning-color);
-            color: #333;
-        }
-        
-        .prediction-badge.mortality {
-            background-color: var(--danger-color);
-            color: white;
-        }
-        
-        .prediction-badge.spread {
-            background-color: var(--primary-color);
-            color: white;
-        }
-        
-        .prediction-badge.cases {
-            background-color: var(--secondary-color);
-            color: #333;
-        }
-        
-        .prediction-badge.deaths {
-            background-color: #6c757d;
-            color: white;
-        }
-        
-        footer {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 20px 0;
-            margin-top: 40px;
-        }
-        
-        /* Accessibilité */
-        .high-contrast {
-            --primary-color: #000;
-            --secondary-color: #333;
-            --background-color: #fff;
-            --text-color: #000;
-            --accent-color: #000;
-        }
-        
-        .large-text {
-            font-size: 1.2em;
-        }
-        
-        .accessibility-controls {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: white;
-            border-radius: 50px;
-            padding: 10px 15px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-        }
-        
-        .accessibility-controls button {
-            margin: 0 5px;
-            border: none;
-            background: none;
-            font-size: 1.2rem;
-            cursor: pointer;
-            color: var(--primary-color);
-        }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .stat-card .value {
-                font-size: 2rem;
-            }
-            
-            .chart-container {
-                height: 250px;
-            }
-        }
-        
-        /* Focus visible pour l'accessibilité */
-        a:focus, button:focus, input:focus, select:focus {
-            outline: 3px solid var(--secondary-color) !important;
-            outline-offset: 2px;
-        }
-        
-        /* Skip to content link for screen readers */
-        .skip-link {
-            position: absolute;
-            top: -40px;
-            left: 0;
-            background: var(--primary-color);
-            color: white;
-            padding: 8px;
-            z-index: 100;
-        }
-        
-        .skip-link:focus {
-            top: 0;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <a href="#main-content" class="skip-link">Aller au contenu principal</a>
-    
+
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="#">
@@ -244,26 +37,23 @@
             </div>
         </div>
     </nav>
-    
+
     <main id="main-content" class="container py-4">
         <section id="dashboard" class="mb-5">
             <h1 class="mb-4">Tableau de bord des pandémies</h1>
-            
+
             <div class="filter-section">
                 <div class="row">
                     <div class="col-md-4 mb-3">
                         <label for="virus-select" class="form-label">Virus</label>
                         <select id="virus-select" class="form-select" aria-label="Sélectionner un virus">
                             <option value="all" selected>Tous les virus</option>
-                            <option value="covid">COVID-19</option>
-                            <option value="monkeypox">Monkeypox</option>
                         </select>
                     </div>
                     <div class="col-md-4 mb-3">
                         <label for="location-select" class="form-label">Localisation</label>
                         <select id="location-select" class="form-select" aria-label="Sélectionner une localisation">
                             <option value="all" selected>Toutes les localisations</option>
-                            <!-- Options will be populated dynamically -->
                         </select>
                     </div>
                     <div class="col-md-4 mb-3">
@@ -273,11 +63,12 @@
                             <option value="30">30 derniers jours</option>
                             <option value="90">90 derniers jours</option>
                             <option value="365">Dernière année</option>
+                            <option value="all_time">Depuis le début</option>
                         </select>
                     </div>
                 </div>
             </div>
-            
+
             <div class="row">
                 <div class="col-md-3 mb-4">
                     <div class="card stat-card">
@@ -298,7 +89,7 @@
                 <div class="col-md-3 mb-4">
                     <div class="card stat-card">
                         <div class="card-body">
-                            <div class="label">Nouveaux cas (7j)</div>
+                            <div class="label">Nouveaux cas (période)</div>
                             <div class="value" id="new-cases">-</div>
                         </div>
                     </div>
@@ -306,13 +97,13 @@
                 <div class="col-md-3 mb-4">
                     <div class="card stat-card">
                         <div class="card-body">
-                            <div class="label">Nouveaux décès (7j)</div>
+                            <div class="label">Nouveaux décès (période)</div>
                             <div class="value" id="new-deaths">-</div>
                         </div>
                     </div>
                 </div>
             </div>
-            
+
             <div class="row">
                 <div class="col-lg-8 mb-4">
                     <div class="card">
@@ -329,7 +120,7 @@
                 <div class="col-lg-4 mb-4">
                     <div class="card">
                         <div class="card-header">
-                            Répartition par localisation
+                            Répartition par localisation (Top 5)
                         </div>
                         <div class="card-body">
                             <div class="chart-container">
@@ -340,10 +131,10 @@
                 </div>
             </div>
         </section>
-        
+
         <section id="predictions" class="mb-5">
             <h2 class="mb-4">Prédictions IA</h2>
-            
+
             <div class="row">
                 <div class="col-md-6 mb-4">
                     <div class="card">
@@ -356,49 +147,31 @@
                                     <div class="col-md-6 mb-2">
                                         <label for="pred-virus-select" class="form-label">Virus</label>
                                         <select id="pred-virus-select" class="form-select" aria-label="Sélectionner un virus pour les prédictions">
-                                            <option value="covid" selected>COVID-19</option>
-                                            <option value="monkeypox">Monkeypox</option>
+                                            <!-- Options will be populated by API -->
                                         </select>
                                     </div>
                                     <div class="col-md-6 mb-2">
                                         <label for="pred-location-select" class="form-label">Localisation</label>
                                         <select id="pred-location-select" class="form-select" aria-label="Sélectionner une localisation pour les prédictions">
-                                            <!-- Options will be populated dynamically -->
                                         </select>
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="prediction-results mb-3">
                                 <h5>Prédictions pour les 4 prochaines semaines</h5>
                                 <div id="prediction-list" class="list-group">
-                                    <!-- Predictions will be populated dynamically -->
-                                    <div class="list-group-item d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <strong>Semaine 1 (14/04/2025)</strong>
-                                            <div>
-                                                <span class="prediction-badge transmission">Transmission: +15%</span>
-                                                <span class="prediction-badge mortality">Mortalité: 2.1%</span>
-                                            </div>
-                                            <div class="mt-1">
-                                                <span class="prediction-badge cases">Cas prévus: 1,250</span>
-                                                <span class="prediction-badge deaths">Décès prévus: 26</span>
-                                            </div>
-                                        </div>
-                                        <button class="btn btn-sm btn-outline-primary" aria-label="Voir détails semaine 1">
-                                            <i class="bi bi-info-circle"></i>
-                                        </button>
-                                    </div>
+                                    <p id="no-prediction-data">Aucune prédiction disponible pour la sélection actuelle.</p>
                                 </div>
                             </div>
-                            
+
                             <div class="chart-container">
                                 <canvas id="prediction-chart"></canvas>
                             </div>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="col-md-6 mb-4">
                     <div class="card">
                         <div class="card-header">
@@ -407,31 +180,16 @@
                         <div class="card-body">
                             <div class="filter-section mb-3">
                                 <div class="row">
-                                    <div class="col-md-6 mb-2">
-                                        <label for="geo-virus-select" class="form-label">Virus</label>
-                                        <select id="geo-virus-select" class="form-select" aria-label="Sélectionner un virus pour la propagation">
-                                            <option value="covid" selected>COVID-19</option>
-                                            <option value="monkeypox">Monkeypox</option>
+                                    <div class="col-md-12 mb-2">
+                                        <label for="geo-pred-virus-select" class="form-label">Virus</label>
+                                        <select id="geo-pred-virus-select" class="form-select" aria-label="Sélectionner un virus pour la prédiction de propagation">
                                         </select>
                                     </div>
                                 </div>
                             </div>
-                            
-                            <div class="geo-prediction-results mb-3">
-                                <h5>Nouvelles localisations prévues</h5>
-                                <div id="geo-prediction-list" class="list-group">
-                                    <!-- Geo predictions will be populated dynamically -->
-                                    <div class="list-group-item d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <strong>Semaine 1 (14/04/2025)</strong>
-                                            <div>
-                                                <span class="prediction-badge spread">Nouvelles localisations: 3</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div id="geo-prediction-list" class="list-group mb-3">
+                                <p id="no-geo-prediction-data">Aucune prédiction de propagation disponible pour la sélection actuelle.</p>
                             </div>
-                            
                             <div class="chart-container">
                                 <canvas id="geo-prediction-chart"></canvas>
                             </div>
@@ -439,777 +197,94 @@
                     </div>
                 </div>
             </div>
-            
-            <div class="row">
-                <div class="col-12 mb-4">
-                    <div class="card">
-                        <div class="card-header">
-                            Performance des modèles d'IA
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">Modèle</th>
-                                            <th scope="col">Type</th>
-                                            <th scope="col">Précision (R²)</th>
-                                            <th scope="col">RMSE</th>
-                                            <th scope="col">MAE</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="model-metrics-table">
-                                        <!-- Model metrics will be populated dynamically -->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </section>
-        
-        <section id="data-explorer" class="mb-5">
-            <h2 class="mb-4">Explorateur de données</h2>
-            
+
+        <section id="model-metrics-section" class="mb-5">
+            <h2 class="mb-4">Métriques des Modèles IA</h2>
             <div class="card">
                 <div class="card-header">
-                    Visualisation personnalisée
+                    Performance des modèles de prédiction
                 </div>
                 <div class="card-body">
-                    <div class="filter-section mb-4">
-                        <div class="row">
-                            <div class="col-md-3 mb-3">
-                                <label for="explorer-virus-select" class="form-label">Virus</label>
-                                <select id="explorer-virus-select" class="form-select" aria-label="Sélectionner un virus pour l'explorateur">
-                                    <option value="covid" selected>COVID-19</option>
-                                    <option value="monkeypox">Monkeypox</option>
-                                    <option value="both">Les deux</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label for="explorer-location-select" class="form-label">Localisation</label>
-                                <select id="explorer-location-select" class="form-select" aria-label="Sélectionner une localisation pour l'explorateur">
-                                    <option value="all" selected>Toutes les localisations</option>
-                                    <!-- Options will be populated dynamically -->
-                                </select>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label for="explorer-metric-select" class="form-label">Métrique</label>
-                                <select id="explorer-metric-select" class="form-select" aria-label="Sélectionner une métrique pour l'explorateur">
-                                    <option value="total_cases" selected>Cas totaux</option>
-                                    <option value="total_deaths">Décès totaux</option>
-                                    <option value="new_cases">Nouveaux cas</option>
-                                    <option value="new_deaths">Nouveaux décès</option>
-                                    <option value="mortality_rate">Taux de mortalité</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label for="explorer-chart-type" class="form-label">Type de graphique</label>
-                                <select id="explorer-chart-type" class="form-select" aria-label="Sélectionner un type de graphique">
-                                    <option value="line" selected>Ligne</option>
-                                    <option value="bar">Barre</option>
-                                    <option value="pie">Camembert</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12 text-end">
-                                <button id="update-explorer-chart" class="btn btn-primary">
-                                    Mettre à jour le graphique
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="chart-container" style="height: 400px;">
-                        <canvas id="explorer-chart"></canvas>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Nom du Modèle</th>
+                                    <th>Type</th>
+                                    <th>Virus</th>
+                                    <th>Localisation</th>
+                                    <th>MSE</th>
+                                    <th>RMSE</th>
+                                    <th>R² Score</th>
+                                </tr>
+                            </thead>
+                            <tbody id="model-metrics-table-body">
+                                <!-- Metrics will be populated by API -->
+                                <tr><td colspan="7">Chargement des métriques...</td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </section>
-        
+
+        <section id="data-explorer" class="mb-5">
+            <h2 class="mb-4">Explorateur de données brutes (WorldMeter)</h2>
+            <div class="card">
+                <div class="card-header">
+                    Données WorldMeter
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Utilisez les filtres en haut de la page (Tableau de bord) pour affiner les données affichées ici.</p>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Localisation</th>
+                                    <th>Virus</th>
+                                    <th>Total Cas</th>
+                                    <th>Total Décès</th>
+                                    <th>Nvx Cas</th>
+                                    <th>Nvx Décès</th>
+                                </tr>
+                            </thead>
+                            <tbody id="worldmeter-table-body">
+                                <!-- Data will be populated by API based on dashboard filters -->
+                                <tr><td colspan="7">Sélectionnez des filtres pour afficher les données.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section id="about" class="mb-5">
             <h2 class="mb-4">À propos</h2>
-            
             <div class="card">
-                <div class="card-header">
-                    Informations sur le projet
-                </div>
                 <div class="card-body">
-                    <h3>Prédictions de pandémies basées sur l'IA</h3>
-                    <p>
-                        Ce projet a été développé pour l'Organisation Mondiale de la Santé (OMS) afin de fournir des prédictions précises sur l'évolution des pandémies, en utilisant des techniques avancées d'intelligence artificielle et d'apprentissage automatique.
-                    </p>
-                    
-                    <h4>Modèles d'IA utilisés</h4>
-                    <p>
-                        Nos modèles prédictifs sont basés sur des algorithmes d'apprentissage automatique avancés, notamment :
-                    </p>
-                    <ul>
-                        <li>Random Forest pour la prédiction du taux de transmission</li>
-                        <li>Gradient Boosting pour la prédiction du taux de mortalité</li>
-                        <li>Modèles de séries temporelles pour la prédiction de la propagation géographique</li>
-                    </ul>
-                    
-                    <h4>Sources de données</h4>
-                    <p>
-                        Les données utilisées pour l'entraînement et la validation des modèles proviennent de sources fiables, notamment :
-                    </p>
-                    <ul>
-                        <li>Données COVID-19 de Worldometer</li>
-                        <li>Données Monkeypox de Our World in Data</li>
-                    </ul>
-                    
-                    <h4>Accessibilité</h4>
-                    <p>
-                        Cette application a été conçue en suivant les directives WCAG (Web Content Accessibility Guidelines) pour garantir son accessibilité à tous les utilisateurs, y compris ceux ayant des handicaps visuels ou moteurs. Les fonctionnalités d'accessibilité comprennent :
-                    </p>
-                    <ul>
-                        <li>Navigation au clavier</li>
-                        <li>Compatibilité avec les lecteurs d'écran</li>
-                        <li>Mode contraste élevé</li>
-                        <li>Option de texte agrandi</li>
-                    </ul>
+                    <p>Cette application a été développée pour visualiser les données de pandémies et fournir des prédictions basées sur des modèles d'intelligence artificielle. Elle utilise les données de WorldMeter et d'autres sources pour alimenter les visualisations et les modèles.</p>
+                    <p>Les prédictions fournies sont à titre indicatif et ne doivent pas être utilisées pour prendre des décisions médicales ou de santé publique sans consultation d'experts.</p>
+                    <p><strong>Technologies utilisées :</strong> Django, Django REST framework, Python, Pandas, Scikit-learn, Chart.js, Bootstrap.</p>
                 </div>
             </div>
         </section>
     </main>
-    
-    <footer>
+
+    <footer class="text-center">
         <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h5>Prédictions de Pandémies - OMS</h5>
-                    <p>Un outil d'analyse et de prédiction basé sur l'IA pour anticiper l'évolution des pandémies mondiales.</p>
-                </div>
-                <div class="col-md-3">
-                    <h5>Liens rapides</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#dashboard" class="text-white">Tableau de bord</a></li>
-                        <li><a href="#predictions" class="text-white">Prédictions</a></li>
-                        <li><a href="#data-explorer" class="text-white">Explorateur de données</a></li>
-                        <li><a href="#about" class="text-white">À propos</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-3">
-                    <h5>Ressources</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#" class="text-white">Documentation API</a></li>
-                        <li><a href="#" class="text-white">Méthodologie IA</a></li>
-                        <li><a href="#" class="text-white">Sources de données</a></li>
-                    </ul>
-                </div>
-            </div>
-            <hr class="mt-4 mb-4" style="border-color: rgba(255,255,255,0.2);">
-            <div class="row">
-                <div class="col-12 text-center">
-                    <p class="mb-0">© 2025 Organisation Mondiale de la Santé. Tous droits réservés.</p>
-                </div>
-            </div>
+            <p>&copy; 2024 Projet de Prédictions de Pandémies. Tous droits réservés.</p>
         </div>
     </footer>
-    
-    <div class="accessibility-controls" role="group" aria-label="Contrôles d'accessibilité">
-        <button id="toggle-contrast" aria-label="Activer/désactiver le contraste élevé">
-            <i class="bi bi-circle-half"></i>
-        </button>
-        <button id="toggle-font-size" aria-label="Activer/désactiver la taille de police agrandie">
-            <i class="bi bi-fonts"></i>
-        </button>
+
+    <div class="accessibility-controls">
+        <button id="increase-font" aria-label="Augmenter la taille de la police"><i class="bi bi-zoom-in"></i></button>
+        <button id="decrease-font" aria-label="Diminuer la taille de la police"><i class="bi bi-zoom-out"></i></button>
     </div>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <script>
-        // Initialisation des graphiques et des données
-        document.addEventListener('DOMContentLoaded', function() {
-            // Fonctions d'accessibilité
-            const toggleContrastBtn = document.getElementById('toggle-contrast');
-            const toggleFontSizeBtn = document.getElementById('toggle-font-size');
-            
-            toggleContrastBtn.addEventListener('click', function() {
-                document.body.classList.toggle('high-contrast');
-                const isHighContrast = document.body.classList.contains('high-contrast');
-                localStorage.setItem('high-contrast', isHighContrast);
-                updateCharts(); // Mettre à jour les graphiques avec les nouvelles couleurs
-            });
-            
-            toggleFontSizeBtn.addEventListener('click', function() {
-                document.body.classList.toggle('large-text');
-                const isLargeText = document.body.classList.contains('large-text');
-                localStorage.setItem('large-text', isLargeText);
-            });
-            
-            // Charger les préférences d'accessibilité
-            if (localStorage.getItem('high-contrast') === 'true') {
-                document.body.classList.add('high-contrast');
-            }
-            
-            if (localStorage.getItem('large-text') === 'true') {
-                document.body.classList.add('large-text');
-            }
-            
-            // Initialisation des graphiques
-            initCharts();
-            
-            // Charger les données initiales
-            loadDashboardData();
-            loadPredictionData();
-            loadModelMetrics();
-            
-            // Gestionnaires d'événements pour les filtres
-            document.getElementById('virus-select').addEventListener('change', loadDashboardData);
-            document.getElementById('location-select').addEventListener('change', loadDashboardData);
-            document.getElementById('date-range').addEventListener('change', loadDashboardData);
-            
-            document.getElementById('pred-virus-select').addEventListener('change', loadPredictionData);
-            document.getElementById('pred-location-select').addEventListener('change', loadPredictionData);
-            
-            document.getElementById('geo-virus-select').addEventListener('change', loadGeoPredictionData);
-            
-            document.getElementById('update-explorer-chart').addEventListener('click', updateExplorerChart);
-        });
-        
-        // Initialisation des graphiques
-        function initCharts() {
-            // Graphique des cas
-            const casesCtx = document.getElementById('cases-chart').getContext('2d');
-            window.casesChart = new Chart(casesCtx, {
-                type: 'line',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        label: 'Nouveaux cas',
-                        data: [],
-                        borderColor: '#0077b6',
-                        backgroundColor: 'rgba(0, 119, 182, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        },
-                        tooltip: {
-                            mode: 'index',
-                            intersect: false
-                        }
-                    },
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Date'
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'Nombre de cas'
-                            },
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-            
-            // Graphique par localisation
-            const locationCtx = document.getElementById('location-chart').getContext('2d');
-            window.locationChart = new Chart(locationCtx, {
-                type: 'pie',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        data: [],
-                        backgroundColor: [
-                            '#0077b6',
-                            '#00b4d8',
-                            '#48cae4',
-                            '#90e0ef',
-                            '#ade8f4',
-                            '#caf0f8'
-                        ]
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'right'
-                        }
-                    }
-                }
-            });
-            
-            // Graphique de prédiction
-            const predictionCtx = document.getElementById('prediction-chart').getContext('2d');
-            window.predictionChart = new Chart(predictionCtx, {
-                type: 'line',
-                data: {
-                    labels: [],
-                    datasets: [
-                        {
-                            label: 'Cas prévus',
-                            data: [],
-                            borderColor: '#0077b6',
-                            backgroundColor: 'rgba(0, 119, 182, 0.1)',
-                            tension: 0.4,
-                            fill: true
-                        },
-                        {
-                            label: 'Décès prévus',
-                            data: [],
-                            borderColor: '#d00000',
-                            backgroundColor: 'rgba(208, 0, 0, 0.1)',
-                            tension: 0.4,
-                            fill: true
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        },
-                        tooltip: {
-                            mode: 'index',
-                            intersect: false
-                        }
-                    },
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Semaine'
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'Nombre'
-                            },
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-            
-            // Graphique de propagation géographique
-            const geoCtx = document.getElementById('geo-prediction-chart').getContext('2d');
-            window.geoPredictionChart = new Chart(geoCtx, {
-                type: 'bar',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        label: 'Nouvelles localisations',
-                        data: [],
-                        backgroundColor: '#0077b6'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        }
-                    },
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Semaine'
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'Nombre de nouvelles localisations'
-                            },
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-            
-            // Graphique de l'explorateur
-            const explorerCtx = document.getElementById('explorer-chart').getContext('2d');
-            window.explorerChart = new Chart(explorerCtx, {
-                type: 'line',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        label: 'Données',
-                        data: [],
-                        borderColor: '#0077b6',
-                        backgroundColor: 'rgba(0, 119, 182, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        },
-                        tooltip: {
-                            mode: 'index',
-                            intersect: false
-                        }
-                    },
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Date'
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'Valeur'
-                            },
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-        }
-        
-        // Charger les données du tableau de bord
-        function loadDashboardData() {
-            // Simuler le chargement des données depuis l'API
-            // Dans une implémentation réelle, cela serait remplacé par des appels fetch à l'API
-            
-            // Mise à jour des statistiques
-            document.getElementById('total-cases').textContent = '12,345,678';
-            document.getElementById('total-deaths').textContent = '234,567';
-            document.getElementById('new-cases').textContent = '45,678';
-            document.getElementById('new-deaths').textContent = '1,234';
-            
-            // Mise à jour du graphique des cas
-            const dates = ['01/04', '02/04', '03/04', '04/04', '05/04', '06/04', '07/04'];
-            const newCases = [42000, 43500, 41200, 44800, 46500, 45000, 45678];
-            
-            window.casesChart.data.labels = dates;
-            window.casesChart.data.datasets[0].data = newCases;
-            window.casesChart.update();
-            
-            // Mise à jour du graphique par localisation
-            const locations = ['États-Unis', 'Inde', 'Brésil', 'Royaume-Uni', 'France', 'Autres'];
-            const casesByLocation = [3245678, 2789456, 1456789, 987654, 876543, 2989558];
-            
-            window.locationChart.data.labels = locations;
-            window.locationChart.data.datasets[0].data = casesByLocation;
-            window.locationChart.update();
-            
-            // Peupler le sélecteur de localisation s'il est vide
-            const locationSelect = document.getElementById('location-select');
-            if (locationSelect.options.length <= 1) {
-                locations.forEach(location => {
-                    const option = document.createElement('option');
-                    option.value = location.toLowerCase().replace(/\s+/g, '-');
-                    option.textContent = location;
-                    locationSelect.appendChild(option);
-                });
-            }
-            
-            // Peupler les autres sélecteurs de localisation
-            populateLocationSelectors(locations);
-        }
-        
-        // Peupler tous les sélecteurs de localisation
-        function populateLocationSelectors(locations) {
-            const selectors = [
-                'pred-location-select',
-                'explorer-location-select'
-            ];
-            
-            selectors.forEach(selectorId => {
-                const selector = document.getElementById(selectorId);
-                // Vider le sélecteur sauf l'option par défaut
-                while (selector.options.length > 1) {
-                    selector.remove(1);
-                }
-                
-                // Ajouter les nouvelles options
-                locations.forEach(location => {
-                    const option = document.createElement('option');
-                    option.value = location.toLowerCase().replace(/\s+/g, '-');
-                    option.textContent = location;
-                    selector.appendChild(option);
-                });
-            });
-        }
-        
-        // Charger les données de prédiction
-        function loadPredictionData() {
-            // Simuler le chargement des données depuis l'API
-            const weeks = ['Semaine 1', 'Semaine 2', 'Semaine 3', 'Semaine 4'];
-            const predictedCases = [1250, 1450, 1680, 1950];
-            const predictedDeaths = [26, 30, 35, 41];
-            
-            // Mise à jour du graphique de prédiction
-            window.predictionChart.data.labels = weeks;
-            window.predictionChart.data.datasets[0].data = predictedCases;
-            window.predictionChart.data.datasets[1].data = predictedDeaths;
-            window.predictionChart.update();
-            
-            // Mise à jour de la liste des prédictions
-            const predictionList = document.getElementById('prediction-list');
-            predictionList.innerHTML = '';
-            
-            const dates = [
-                new Date(2025, 3, 14),
-                new Date(2025, 3, 21),
-                new Date(2025, 3, 28),
-                new Date(2025, 4, 5)
-            ];
-            
-            const transmissionRates = [0.15, 0.17, 0.16, 0.15];
-            const mortalityRates = [0.021, 0.020, 0.021, 0.022];
-            
-            for (let i = 0; i < weeks.length; i++) {
-                const dateStr = dates[i].toLocaleDateString('fr-FR');
-                const listItem = document.createElement('div');
-                listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
-                listItem.innerHTML = `
-                    <div>
-                        <strong>Semaine ${i+1} (${dateStr})</strong>
-                        <div>
-                            <span class="prediction-badge transmission">Transmission: +${(transmissionRates[i] * 100).toFixed(1)}%</span>
-                            <span class="prediction-badge mortality">Mortalité: ${(mortalityRates[i] * 100).toFixed(1)}%</span>
-                        </div>
-                        <div class="mt-1">
-                            <span class="prediction-badge cases">Cas prévus: ${predictedCases[i].toLocaleString('fr-FR')}</span>
-                            <span class="prediction-badge deaths">Décès prévus: ${predictedDeaths[i].toLocaleString('fr-FR')}</span>
-                        </div>
-                    </div>
-                    <button class="btn btn-sm btn-outline-primary" aria-label="Voir détails semaine ${i+1}">
-                        <i class="bi bi-info-circle"></i>
-                    </button>
-                `;
-                predictionList.appendChild(listItem);
-            }
-            
-            // Charger également les données de propagation géographique
-            loadGeoPredictionData();
-        }
-        
-        // Charger les données de propagation géographique
-        function loadGeoPredictionData() {
-            // Simuler le chargement des données depuis l'API
-            const weeks = ['Semaine 1', 'Semaine 2', 'Semaine 3', 'Semaine 4'];
-            const newLocations = [3, 2, 1, 1];
-            
-            // Mise à jour du graphique de propagation géographique
-            window.geoPredictionChart.data.labels = weeks;
-            window.geoPredictionChart.data.datasets[0].data = newLocations;
-            window.geoPredictionChart.update();
-            
-            // Mise à jour de la liste des prédictions géographiques
-            const geoPredictionList = document.getElementById('geo-prediction-list');
-            geoPredictionList.innerHTML = '';
-            
-            const dates = [
-                new Date(2025, 3, 14),
-                new Date(2025, 3, 21),
-                new Date(2025, 3, 28),
-                new Date(2025, 4, 5)
-            ];
-            
-            for (let i = 0; i < weeks.length; i++) {
-                const dateStr = dates[i].toLocaleDateString('fr-FR');
-                const listItem = document.createElement('div');
-                listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
-                listItem.innerHTML = `
-                    <div>
-                        <strong>Semaine ${i+1} (${dateStr})</strong>
-                        <div>
-                            <span class="prediction-badge spread">Nouvelles localisations: ${newLocations[i]}</span>
-                        </div>
-                    </div>
-                `;
-                geoPredictionList.appendChild(listItem);
-            }
-        }
-        
-        // Charger les métriques des modèles
-        function loadModelMetrics() {
-            // Simuler le chargement des données depuis l'API
-            const metrics = [
-                {
-                    model: 'Random Forest',
-                    type: 'Taux de transmission',
-                    r2: 0.87,
-                    rmse: 0.042,
-                    mae: 0.035
-                },
-                {
-                    model: 'Gradient Boosting',
-                    type: 'Taux de mortalité',
-                    r2: 0.91,
-                    rmse: 0.008,
-                    mae: 0.006
-                },
-                {
-                    model: 'Random Forest',
-                    type: 'Propagation géographique',
-                    r2: 0.83,
-                    rmse: 0.75,
-                    mae: 0.62
-                }
-            ];
-            
-            // Mise à jour du tableau des métriques
-            const metricsTable = document.getElementById('model-metrics-table');
-            metricsTable.innerHTML = '';
-            
-            metrics.forEach(metric => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${metric.model}</td>
-                    <td>${metric.type}</td>
-                    <td>${metric.r2.toFixed(2)}</td>
-                    <td>${metric.rmse.toFixed(3)}</td>
-                    <td>${metric.mae.toFixed(3)}</td>
-                `;
-                metricsTable.appendChild(row);
-            });
-        }
-        
-        // Mettre à jour le graphique de l'explorateur
-        function updateExplorerChart() {
-            const virusSelect = document.getElementById('explorer-virus-select');
-            const locationSelect = document.getElementById('explorer-location-select');
-            const metricSelect = document.getElementById('explorer-metric-select');
-            const chartTypeSelect = document.getElementById('explorer-chart-type');
-            
-            const virus = virusSelect.value;
-            const location = locationSelect.value;
-            const metric = metricSelect.value;
-            const chartType = chartTypeSelect.value;
-            
-            // Simuler le chargement des données depuis l'API
-            const dates = [];
-            const values = [];
-            
-            // Générer des dates pour les 30 derniers jours
-            const today = new Date();
-            for (let i = 29; i >= 0; i--) {
-                const date = new Date(today);
-                date.setDate(date.getDate() - i);
-                dates.push(date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' }));
-            }
-            
-            // Générer des valeurs aléatoires selon la métrique
-            if (metric === 'total_cases') {
-                let base = 10000;
-                for (let i = 0; i < 30; i++) {
-                    base += Math.floor(Math.random() * 500);
-                    values.push(base);
-                }
-            } else if (metric === 'total_deaths') {
-                let base = 200;
-                for (let i = 0; i < 30; i++) {
-                    base += Math.floor(Math.random() * 10);
-                    values.push(base);
-                }
-            } else if (metric === 'new_cases') {
-                for (let i = 0; i < 30; i++) {
-                    values.push(Math.floor(Math.random() * 500) + 100);
-                }
-            } else if (metric === 'new_deaths') {
-                for (let i = 0; i < 30; i++) {
-                    values.push(Math.floor(Math.random() * 10) + 1);
-                }
-            } else if (metric === 'mortality_rate') {
-                for (let i = 0; i < 30; i++) {
-                    values.push((Math.random() * 0.01) + 0.01);
-                }
-            }
-            
-            // Mettre à jour le type de graphique
-            window.explorerChart.config.type = chartType;
-            
-            // Mettre à jour les données du graphique
-            window.explorerChart.data.labels = dates;
-            window.explorerChart.data.datasets[0].data = values;
-            
-            // Mettre à jour le titre du graphique
-            const metricName = metricSelect.options[metricSelect.selectedIndex].text;
-            const virusName = virusSelect.options[virusSelect.selectedIndex].text;
-            const locationName = locationSelect.options[locationSelect.selectedIndex].text;
-            
-            window.explorerChart.data.datasets[0].label = `${metricName} - ${virusName} - ${locationName}`;
-            
-            // Mettre à jour les axes
-            window.explorerChart.options.scales.y.title.text = metricName;
-            
-            // Mettre à jour le graphique
-            window.explorerChart.update();
-        }
-        
-        // Mettre à jour les graphiques en fonction du mode de contraste
-        function updateCharts() {
-            const isHighContrast = document.body.classList.contains('high-contrast');
-            
-            // Définir les couleurs en fonction du mode de contraste
-            const primaryColor = isHighContrast ? '#000' : '#0077b6';
-            const secondaryColor = isHighContrast ? '#333' : '#d00000';
-            const backgroundColor1 = isHighContrast ? 'rgba(0, 0, 0, 0.1)' : 'rgba(0, 119, 182, 0.1)';
-            const backgroundColor2 = isHighContrast ? 'rgba(51, 51, 51, 0.1)' : 'rgba(208, 0, 0, 0.1)';
-            
-            // Mettre à jour les couleurs des graphiques
-            if (window.casesChart) {
-                window.casesChart.data.datasets[0].borderColor = primaryColor;
-                window.casesChart.data.datasets[0].backgroundColor = backgroundColor1;
-                window.casesChart.update();
-            }
-            
-            if (window.predictionChart) {
-                window.predictionChart.data.datasets[0].borderColor = primaryColor;
-                window.predictionChart.data.datasets[0].backgroundColor = backgroundColor1;
-                window.predictionChart.data.datasets[1].borderColor = secondaryColor;
-                window.predictionChart.data.datasets[1].backgroundColor = backgroundColor2;
-                window.predictionChart.update();
-            }
-            
-            if (window.geoPredictionChart) {
-                window.geoPredictionChart.data.datasets[0].backgroundColor = primaryColor;
-                window.geoPredictionChart.update();
-            }
-            
-            if (window.explorerChart) {
-                window.explorerChart.data.datasets[0].borderColor = primaryColor;
-                window.explorerChart.data.datasets[0].backgroundColor = backgroundColor1;
-                window.explorerChart.update();
-            }
-            
-            if (window.locationChart) {
-                if (isHighContrast) {
-                    window.locationChart.data.datasets[0].backgroundColor = [
-                        '#000', '#333', '#555', '#777', '#999', '#bbb'
-                    ];
-                } else {
-                    window.locationChart.data.datasets[0].backgroundColor = [
-                        '#0077b6', '#00b4d8', '#48cae4', '#90e0ef', '#ade8f4', '#caf0f8'
-                    ];
-                }
-                window.locationChart.update();
-            }
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>

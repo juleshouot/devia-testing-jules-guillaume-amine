@@ -21,18 +21,29 @@ INSTALLED_APPS = [
     'django_filters',
     'pandemics_app',
     'drf_yasg',
+    'corsheaders',  # Ajout de corsheaders
 ]
 
 # Middleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  # Ajout du middleware CORS
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# Configuration CORS
+CORS_ALLOW_ALL_ORIGINS = True  # Pour le développement, autoriser toutes les origines
+# Pour la production, vous devriez spécifier les origines autorisées :
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:8001",
+#     "http://127.0.0.1:8001",
+#     # Ajoutez ici l'URL de votre frontend en production
+# ]
 
 # Root URL configuration
 ROOT_URLCONF = 'pandemics_project.urls'
@@ -97,3 +108,4 @@ STATIC_URL = '/static/'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+

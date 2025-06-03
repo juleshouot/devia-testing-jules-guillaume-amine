@@ -40,7 +40,8 @@ class Location(models.Model):
     iso_code = models.CharField(max_length=45, null=True, blank=True)
 
     class Meta:
-        db_table = 'pandemics.location'  # Ajoutez cette classe Meta
+        db_table = 'pandemics.location'
+        managed = False
 
     def __str__(self):
         return self.name
@@ -49,6 +50,9 @@ class Location(models.Model):
 class Virus(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=45)
+
+    db_table = 'pandemics.virus'
+    managed = False
 
     def __str__(self):
         return self.name
@@ -71,6 +75,9 @@ class Worldmeter(models.Model):
     new_deaths_smoothed_per_million = models.IntegerField(null=True, blank=True)
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
     virus = models.ForeignKey(Virus, on_delete=models.CASCADE)
+
+    db_table = 'pandemics.Worldmeter'
+    managed = False
 
     def __str__(self):
         return f"{self.location.name} - {self.virus.name} - {self.date}"
