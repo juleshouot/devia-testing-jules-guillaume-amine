@@ -8,6 +8,8 @@ import pandas as pd
 from django.db.models import Max, Sum, Avg
 from django.db.models.functions import TruncDate
 from django.utils import timezone
+import os
+import joblib
 
 from .models import (
     CovidData, MonkeyPoxData, Location, Virus, Worldmeter,
@@ -23,11 +25,9 @@ from .serializers import (
 )
 
 # Import du prédicteur
-
 from .ml.predictor import PandemicPredictor
 
 # Création d'une instance globale du prédicteur
-
 try:
     predictor = PandemicPredictor()
 except Exception as e:
@@ -190,7 +190,7 @@ class TransmissionPredictionView(APIView):
                 prediction_date=datetime.now().date() + timedelta(days=7),
                 transmission_rate=rt_pred
             )
-            prediction.save()
+            # prediction.save()  # DÉSACTIVÉ TEMPORAIREMENT
 
             return Response({
                 'location': location.name,
@@ -261,7 +261,7 @@ class MortalityPredictionView(APIView):
 
             if not created:
                 prediction.mortality_rate = mortality_pred
-                prediction.save()
+                # prediction.save()  # DÉSACTIVÉ TEMPORAIREMENT
 
             return Response({
                 'location': location.name,
@@ -326,7 +326,7 @@ class GeographicalSpreadPredictionView(APIView):
                 prediction_date=datetime.now().date() + timedelta(days=7),
                 predicted_new_locations=spread_pred
             )
-            prediction.save()
+            # prediction.save()  # DÉSACTIVÉ TEMPORAIREMENT
 
             return Response({
                 'virus': virus.name,
@@ -344,6 +344,7 @@ class GeographicalSpreadPredictionView(APIView):
                 {"error": str(e)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
 
 class CombinedPredictionView(APIView):
     """
@@ -399,7 +400,7 @@ class CombinedPredictionView(APIView):
                         predicted_cases=combined['predictions'].get('predicted_cases_next_week'),
                         predicted_deaths=combined['predictions'].get('predicted_deaths_next_week')
                     )
-                    prediction.save()
+                    # prediction.save()  # DÉSACTIVÉ TEMPORAIREMENT
 
                 # Prédiction pour la propagation géographique
                 if 'predictions' in combined and 'geographical_spread' in combined['predictions']:
@@ -408,7 +409,7 @@ class CombinedPredictionView(APIView):
                         prediction_date=datetime.now().date() + timedelta(days=7),
                         predicted_new_locations=combined['predictions']['geographical_spread']
                     )
-                    geo_prediction.save()
+                    geo_# prediction.save()  # DÉSACTIVÉ TEMPORAIREMENT
 
                 # Retourner les prédictions
                 return Response(combined)
@@ -567,7 +568,7 @@ class ForecastView(APIView):
                             predicted_cases=forecast['predictions'].get('predicted_cases_next_week'),
                             predicted_deaths=forecast['predictions'].get('predicted_deaths_next_week')
                         )
-                        prediction.save()
+                        # prediction.save()  # DÉSACTIVÉ TEMPORAIREMENT
 
             # Retourner les prévisions
             return Response({
@@ -593,6 +594,8 @@ class ForecastView(APIView):
                 {"error": str(e)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+
 @api_view(['GET'])
 def get_latest_data(request):
     """
@@ -664,12 +667,11 @@ def get_latest_data(request):
         )
 
 
-# Vue pour obtenir les métriques des modèles
-
+# 🔧 ANCIEN endpoint pour les métriques (gardé pour compatibilité)
 @api_view(['GET'])
 def get_model_metrics(request):
     """
-    Récupère les métriques des modèles d'IA
+    Récupère les métriques des modèles d'IA (version basique)
     """
     try:
         metrics = {}
@@ -691,6 +693,294 @@ def get_model_metrics(request):
     except Exception as e:
         return Response(
             {"error": str(e)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+
+# 🆕 NOUVEAUX endpoints améliorés
+
+@api_view(['GET'])
+def get_model_metrics_complete(request):
+    """
+    Récupère les métriques des modèles depuis la DB ET depuis les fichiers joblib
+    """
+    try:
+        metrics = {}
+
+        # 1. Essayer de récupérer depuis la base de données
+        for model_type in ['transmission', 'mortality', 'geographical_spread']:
+            model_metrics = ModelMetrics.objects.filter(model_type=model_type).order_by('-timestamp').first()
+
+            if model_metrics:
+                metrics[model_type] = {
+                    'source': 'database',
+                    'model_name': model_metrics.model_name,
+                    'mse': model_metrics.mse,
+                    'rmse': model_metrics.rmse,
+                    'mae': model_metrics.mae,
+                    'r2_score': model_metrics.r2_score,
+                    'cv_rmse': model_metrics.cv_rmse,
+                    'timestamp': model_metrics.timestamp.isoformat()
+                }
+
+        # 2. Si pas de données en base, essayer de lire depuis les fichiers joblib
+        if not metrics:
+            MODEL_DIR = os.path.join(os.path.dirname(__file__), "ml", "models")
+            
+            if os.path.exists(MODEL_DIR):
+                model_files = [f for f in os.listdir(MODEL_DIR) if f.endswith('_metadata.joblib')]
+                
+                for file in model_files:
+                    try:
+                        metadata_path = os.path.join(MODEL_DIR, file)
+                        metadata = joblib.load(metadata_path)
+                        
+                        model_type = metadata.get('model_type', 'unknown')
+                        model_name = metadata.get('model_name', 'unknown')
+                        
+                        if model_type not in metrics:
+                            metrics[model_type] = {
+                                'source': 'joblib_file',
+                                'model_name': model_name,
+                                'mse': metadata.get('mse', 0),
+                                'rmse': metadata.get('rmse', 0),
+                                'mae': metadata.get('mae', 0),
+                                'r2_score': metadata.get('r2_score', 0),
+                                'cv_rmse': metadata.get('cv_rmse', 0),
+                                'timestamp': None
+                            }
+                    except Exception as e:
+                        print(f"Erreur lors du chargement de {file}: {e}")
+
+        return Response({
+            'metrics': metrics,
+            'count': len(metrics),
+            'available_types': list(metrics.keys())
+        })
+        
+    except Exception as e:
+        return Response(
+            {"error": str(e)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+
+@api_view(['POST'])
+def sync_model_metrics(request):
+    """
+    Synchronise les métriques des fichiers joblib vers la base de données
+    """
+    try:
+        MODEL_DIR = os.path.join(os.path.dirname(__file__), "ml", "models")
+        
+        if not os.path.exists(MODEL_DIR):
+            return Response(
+                {"error": f"Répertoire de modèles non trouvé: {MODEL_DIR}"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        model_files = [f for f in os.listdir(MODEL_DIR) if f.endswith('_metadata.joblib')]
+        synced_count = 0
+        errors = []
+
+        for file in model_files:
+            try:
+                metadata_path = os.path.join(MODEL_DIR, file)
+                metadata = joblib.load(metadata_path)
+                
+                model_type = metadata.get('model_type', 'unknown')
+                model_name = metadata.get('model_name', 'unknown')
+                
+                # Créer ou mettre à jour l'entrée
+                metric_entry, created = ModelMetrics.objects.update_or_create(
+                    model_type=model_type,
+                    model_name=model_name,
+                    defaults={
+                        'mse': metadata.get('mse', 0),
+                        'rmse': metadata.get('rmse', 0),
+                        'mae': metadata.get('mae', 0),
+                        'r2_score': metadata.get('r2_score', 0),
+                        'cv_rmse': metadata.get('cv_rmse', 0)
+                    }
+                )
+                
+                synced_count += 1
+                
+            except Exception as e:
+                errors.append(f"Erreur avec {file}: {str(e)}")
+
+        return Response({
+            'message': f'{synced_count} métriques synchronisées',
+            'synced_count': synced_count,
+            'total_files': len(model_files),
+            'errors': errors
+        })
+        
+    except Exception as e:
+        return Response(
+            {"error": str(e)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+
+@api_view(['GET'])
+def get_prediction_summary(request):
+    """
+    Récupère un résumé complet des prédictions récentes
+    """
+    try:
+        # Paramètres de requête
+        days = request.query_params.get('days', 7)
+        location_name = request.query_params.get('location_name', None)
+        virus_name = request.query_params.get('virus_name', None)
+        
+        # Date limite
+        date_limit = datetime.now().date() - timedelta(days=int(days))
+        
+        # Prédictions par localisation
+        predictions_query = Prediction.objects.filter(
+            timestamp__gte=date_limit
+        ).select_related('location', 'virus')
+        
+        if location_name:
+            predictions_query = predictions_query.filter(location__name=location_name)
+        if virus_name:
+            predictions_query = predictions_query.filter(virus__name=virus_name)
+            
+        predictions = predictions_query.order_by('-timestamp')[:50]
+        
+        # Prédictions géographiques
+        geo_predictions_query = GeographicalSpreadPrediction.objects.filter(
+            timestamp__gte=date_limit
+        ).select_related('virus')
+        
+        if virus_name:
+            geo_predictions_query = geo_predictions_query.filter(virus__name=virus_name)
+            
+        geo_predictions = geo_predictions_query.order_by('-timestamp')[:20]
+        
+        # Sérialiser les données
+        predictions_data = []
+        for pred in predictions:
+            predictions_data.append({
+                'id': pred.id,
+                'location': pred.location.name,
+                'virus': pred.virus.name,
+                'prediction_date': pred.prediction_date.isoformat(),
+                'transmission_rate': pred.transmission_rate,
+                'mortality_rate': pred.mortality_rate,
+                'predicted_cases': pred.predicted_cases,
+                'predicted_deaths': pred.predicted_deaths,
+                'timestamp': pred.timestamp.isoformat()
+            })
+            
+        geo_predictions_data = []
+        for geo_pred in geo_predictions:
+            geo_predictions_data.append({
+                'id': geo_pred.id,
+                'virus': geo_pred.virus.name,
+                'prediction_date': geo_pred.prediction_date.isoformat(),
+                'predicted_new_locations': geo_pred.predicted_new_locations,
+                'timestamp': geo_pred.timestamp.isoformat()
+            })
+        
+        # Statistiques
+        stats = {
+            'total_predictions': len(predictions_data),
+            'total_geo_predictions': len(geo_predictions_data),
+            'locations_covered': len(set(p['location'] for p in predictions_data)),
+            'viruses_covered': len(set(p['virus'] for p in predictions_data)),
+            'date_range': f"Derniers {days} jours",
+            'avg_transmission_rate': sum(p['transmission_rate'] for p in predictions_data if p['transmission_rate']) / max(len([p for p in predictions_data if p['transmission_rate']]), 1),
+            'avg_mortality_rate': sum(p['mortality_rate'] for p in predictions_data if p['mortality_rate']) / max(len([p for p in predictions_data if p['mortality_rate']]), 1)
+        }
+        
+        return Response({
+            'predictions': predictions_data,
+            'geographical_predictions': geo_predictions_data,
+            'statistics': stats,
+            'filters_applied': {
+                'days': days,
+                'location_name': location_name,
+                'virus_name': virus_name
+            }
+        })
+        
+    except Exception as e:
+        return Response(
+            {"error": str(e)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+
+@api_view(['GET'])
+def health_check(request):
+    """
+    Vérifie que tous les composants fonctionnent correctement
+    """
+    try:
+        checks = {}
+        
+        # 1. Vérifier la base de données
+        try:
+            location_count = Location.objects.count()
+            virus_count = Virus.objects.count()
+            worldmeter_count = Worldmeter.objects.count()
+            prediction_count = Prediction.objects.count()
+            
+            checks['database'] = {
+                'status': 'OK',
+                'locations': location_count,
+                'viruses': virus_count,
+                'worldmeter_records': worldmeter_count,
+                'predictions': prediction_count
+            }
+        except Exception as e:
+            checks['database'] = {'status': 'ERROR', 'error': str(e)}
+        
+        # 2. Vérifier le prédicteur
+        try:
+            if predictor is not None:
+                model_count = len(predictor.models)
+                checks['predictor'] = {
+                    'status': 'OK',
+                    'models_loaded': model_count,
+                    'available_types': list(set(k[0] for k in predictor.models.keys()))
+                }
+            else:
+                checks['predictor'] = {'status': 'ERROR', 'error': 'Predictor not initialized'}
+        except Exception as e:
+            checks['predictor'] = {'status': 'ERROR', 'error': str(e)}
+        
+        # 3. Vérifier les fichiers de modèles
+        try:
+            MODEL_DIR = os.path.join(os.path.dirname(__file__), "ml", "models")
+            
+            if os.path.exists(MODEL_DIR):
+                model_files = [f for f in os.listdir(MODEL_DIR) if f.endswith('.joblib')]
+                checks['model_files'] = {
+                    'status': 'OK',
+                    'model_files_count': len(model_files),
+                    'model_directory': MODEL_DIR
+                }
+            else:
+                checks['model_files'] = {'status': 'WARNING', 'error': 'Model directory not found'}
+        except Exception as e:
+            checks['model_files'] = {'status': 'ERROR', 'error': str(e)}
+        
+        # Status global
+        all_statuses = [check.get('status', 'ERROR') for check in checks.values()]
+        overall_status = 'OK' if all(s == 'OK' for s in all_statuses) else 'WARNING' if any(s == 'WARNING' for s in all_statuses) else 'ERROR'
+        
+        return Response({
+            'overall_status': overall_status,
+            'timestamp': datetime.now().isoformat(),
+            'checks': checks
+        })
+        
+    except Exception as e:
+        return Response(
+            {"error": str(e), "overall_status": "ERROR"},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
 
@@ -749,15 +1039,12 @@ def aggregated_data(request):
 
 
 # Vue pour la page d'accueil
-
 def index(request):
     return render(request, 'index.html')
 
 
-
-
+# Vues pour les visualisations
 from django.http import HttpResponse, JsonResponse
-import os
 from django.conf import settings
 
 
@@ -816,3 +1103,423 @@ def interactive_visualization(request, viz_name):
         return HttpResponse(content)
     else:
         return HttpResponse('Visualisation non trouvée', status=404)
+
+
+@api_view(['GET'])
+def get_location_details(request):
+    """
+    Récupère les détails d'une localisation (incluant population)
+    """
+    location_name = request.query_params.get('name')
+
+    if not location_name:
+        return Response({"error": "Le paramètre 'name' est requis"}, status=400)
+
+    try:
+        location = Location.objects.get(name=location_name)
+        return Response({
+            'id': location.id,
+            'name': location.name,
+            'iso_code': location.iso_code,
+            'population': getattr(location, 'population', None)
+        })
+    except Location.DoesNotExist:
+        return Response({"error": "Localisation non trouvée"}, status=404)
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)
+
+
+@api_view(['POST'])
+def validate_model_predictions(request):
+    """
+    API pour exécuter la validation du modèle sur une localisation et période donnée
+    """
+    try:
+        # Récupérer les paramètres
+        location_name = request.data.get('location_name')
+        start_date = request.data.get('start_date', '2020-03-01')
+        end_date = request.data.get('end_date', '2022-05-01')
+        max_results = int(request.data.get('max_results', 100))
+
+        if not location_name:
+            return Response(
+                {"error": "location_name est requis"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Importer les fonctions du validator
+        from .ml.validator import load_mortality_model, get_covid_data, create_features_from_data, \
+            calculate_actual_mortality
+        import pandas as pd
+        import numpy as np
+
+        # Charger le modèle
+        model, scaler, feature_cols = load_mortality_model()
+        if model is None:
+            return Response(
+                {"error": "Impossible de charger le modèle de mortalité"},
+                status=status.HTTP_503_SERVICE_UNAVAILABLE
+            )
+
+        # Récupérer les données COVID pour cette localisation
+        df = get_covid_data(location_name, start_date, end_date)
+        if df is None or len(df) < 50:
+            return Response(
+                {"error": f"Données insuffisantes pour {location_name} sur la période {start_date} - {end_date}"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        results = []
+
+        # Générer les prédictions de validation
+        for i in range(30, min(len(df) - 14, max_results + 30)):
+            # Créer les features avec les données jusqu'au point actuel
+            features_dict = create_features_from_data(df, i)
+            if features_dict is None:
+                continue
+
+            try:
+                # Faire la prédiction
+                features_array = np.array([features_dict.get(col, 0) for col in feature_cols]).reshape(1, -1)
+                if scaler is not None:
+                    features_array = scaler.transform(features_array)
+
+                predicted_mortality = model.predict(features_array)[0]
+                predicted_mortality = max(0, min(predicted_mortality, 1))  # Limiter à [0,1]
+
+                # Calculer le taux de mortalité réel
+                actual_mortality = calculate_actual_mortality(df, i)
+
+                if actual_mortality is not None and actual_mortality > 0:
+                    current_row = df.iloc[i]
+                    error = abs(predicted_mortality - actual_mortality)
+                    rel_error = error / max(actual_mortality, 0.001)
+
+                    # Déterminer la qualité
+                    if rel_error < 0.15:
+                        quality = "Excellente"
+                        quality_class = "excellent"
+                    elif rel_error < 0.30:
+                        quality = "Bonne"
+                        quality_class = "good"
+                    elif rel_error < 0.50:
+                        quality = "Correcte"
+                        quality_class = "fair"
+                    else:
+                        quality = "Mauvaise"
+                        quality_class = "poor"
+
+                    results.append({
+                        'date': current_row['date'].strftime('%Y-%m-%d'),
+                        'predicted_mortality': round(predicted_mortality * 100, 3),  # En pourcentage
+                        'actual_mortality': round(actual_mortality * 100, 3),  # En pourcentage
+                        'error_absolute': round(error * 100, 3),  # En pourcentage
+                        'error_relative': round(rel_error * 100, 1),  # En pourcentage
+                        'quality': quality,
+                        'quality_class': quality_class,
+                        # Données de contexte
+                        'total_cases': int(current_row.get('total_cases', 0)),
+                        'total_deaths': int(current_row.get('total_deaths', 0)),
+                        'new_cases_7d': int(df.iloc[max(0, i - 6):i + 1]['new_cases'].sum()),
+                        'new_deaths_7d': int(df.iloc[max(0, i - 6):i + 1]['new_deaths'].sum())
+                    })
+
+            except Exception as e:
+                continue
+
+        if len(results) < 10:
+            return Response(
+                {"error": f"Pas assez de prédictions valides générées pour {location_name}"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Limiter le nombre de résultats
+        results = results[:max_results]
+
+        # Calculer les statistiques globales
+        df_results = pd.DataFrame(results)
+        stats = {
+            'total_predictions': len(results),
+            'period_start': results[0]['date'],
+            'period_end': results[-1]['date'],
+            'avg_error_relative': round(df_results['error_relative'].mean(), 1),
+            'median_error_relative': round(df_results['error_relative'].median(), 1),
+            'excellent_count': len(df_results[df_results['quality'] == 'Excellente']),
+            'good_count': len(df_results[df_results['quality'] == 'Bonne']),
+            'fair_count': len(df_results[df_results['quality'] == 'Correcte']),
+            'poor_count': len(df_results[df_results['quality'] == 'Mauvaise']),
+            'cases_range': f"{df_results['total_cases'].min():,} - {df_results['total_cases'].max():,}",
+            'deaths_range': f"{df_results['total_deaths'].min():,} - {df_results['total_deaths'].max():,}"
+        }
+
+        return Response({
+            'location': location_name,
+            'start_date': start_date,
+            'end_date': end_date,
+            'predictions': results,
+            'statistics': stats,
+            'model_info': {
+                'features_count': len(feature_cols),
+                'model_type': 'Random Forest Mortality Model'
+            }
+        })
+
+    except Exception as e:
+        return Response(
+            {"error": f"Erreur lors de la validation: {str(e)}"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+
+@api_view(['GET'])
+def get_available_countries_for_validation(request):
+    """
+    Récupère les pays avec suffisamment de données COVID pour la validation
+    """
+    try:
+        from .ml.validator import get_engine
+        from sqlalchemy import text
+        import pandas as pd
+
+        engine = get_engine()
+
+        query = text("""
+                     SELECT l.name                         as location,
+                            COUNT(*)                       as data_points,
+                            COALESCE(SUM(w.new_cases), 0)  as total_cases,
+                            COALESCE(SUM(w.new_deaths), 0) as total_deaths,
+                            MIN(w.date)                    as start_date,
+                            MAX(w.date)                    as end_date
+                     FROM worldmeter w
+                              JOIN location l ON w.location_id = l.id
+                              JOIN virus v ON w.virus_id = v.id
+                     WHERE v.name = 'COVID'
+                       AND w.date BETWEEN '2020-03-01' AND '2022-05-01'
+                     GROUP BY l.name
+                     HAVING COUNT(*) >= 100
+                        AND COALESCE(SUM(w.new_cases), 0) >= 1000
+                     ORDER BY COALESCE(SUM(w.new_cases), 0) DESC
+                     """)
+
+        df = pd.read_sql(query, engine)
+
+        countries = []
+        for _, row in df.iterrows():
+            # Gérer les valeurs NaN et None de manière sécurisée
+            total_cases = row['total_cases']
+            total_deaths = row['total_deaths']
+            data_points = row['data_points']
+
+            # Convertir en sécurité
+            total_cases_int = 0
+            total_deaths_int = 0
+            data_points_int = 0
+
+            try:
+                if pd.notna(total_cases) and total_cases is not None:
+                    total_cases_int = int(float(total_cases))
+            except (ValueError, TypeError):
+                total_cases_int = 0
+
+            try:
+                if pd.notna(total_deaths) and total_deaths is not None:
+                    total_deaths_int = int(float(total_deaths))
+            except (ValueError, TypeError):
+                total_deaths_int = 0
+
+            try:
+                if pd.notna(data_points) and data_points is not None:
+                    data_points_int = int(float(data_points))
+            except (ValueError, TypeError):
+                data_points_int = 0
+
+            # Déterminer la qualité des données
+            if data_points_int > 400:
+                data_quality = 'Excellente'
+            elif data_points_int > 200:
+                data_quality = 'Bonne'
+            else:
+                data_quality = 'Correcte'
+
+            countries.append({
+                'name': str(row['location']),
+                'data_points': data_points_int,
+                'total_cases': total_cases_int,
+                'total_deaths': total_deaths_int,
+                'start_date': row['start_date'].strftime('%Y-%m-%d'),
+                'end_date': row['end_date'].strftime('%Y-%m-%d'),
+                'data_quality': data_quality
+            })
+
+        return Response({
+            'countries': countries,
+            'total_count': len(countries),
+            'message': f'{len(countries)} pays disponibles pour la validation'
+        })
+
+    except Exception as e:
+        import traceback
+        error_detail = traceback.format_exc()
+        print(f"Erreur dans get_available_countries_for_validation: {error_detail}")
+
+        return Response(
+            {"error": str(e), "detail": error_detail},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+@api_view(['POST'])
+def validate_transmission_model_predictions(request):
+    """
+    API pour exécuter la validation du modèle de transmission sur une localisation et période donnée
+    """
+    try:
+        # Récupérer les paramètres
+        location_name = request.data.get('location_name')
+        start_date = request.data.get('start_date', '2020-03-01')
+        end_date = request.data.get('end_date', '2022-05-01')
+        max_results = int(request.data.get('max_results', 100))
+
+        if not location_name:
+            return Response(
+                {"error": "location_name est requis"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Import des fonctions spécifiques transmission
+        from .ml.transmission_validator import (
+            load_transmission_model, get_covid_data, create_features_from_data,
+            calculate_actual_rt
+        )
+        import pandas as pd
+        import numpy as np
+
+        # Charger le modèle de transmission
+        model, scaler, feature_cols = load_transmission_model()
+        if model is None:
+            return Response(
+                {"error": "Impossible de charger le modèle de transmission"},
+                status=status.HTTP_503_SERVICE_UNAVAILABLE
+            )
+
+        # Récupérer les données COVID pour cette localisation
+        df = get_covid_data(location_name, start_date, end_date)
+        if df is None or len(df) < 50:
+            return Response(
+                {"error": f"Données insuffisantes pour {location_name} sur la période {start_date} - {end_date}"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        results = []
+
+        # Générer les prédictions de validation Rt
+        for i in range(30, min(len(df) - 14, max_results + 30)):
+            # Créer les features avec les données jusqu'au point actuel
+            features_dict = create_features_from_data(df, i)
+            if features_dict is None:
+                continue
+
+            try:
+                # Faire la prédiction Rt
+                features_array = np.array([features_dict.get(col, 0) for col in feature_cols]).reshape(1, -1)
+                if scaler is not None:
+                    features_array = scaler.transform(features_array)
+
+                predicted_rt = model.predict(features_array)[0]
+                predicted_rt = max(0, min(predicted_rt, 10))  # Limiter à [0,10]
+
+                # Calculer le Rt réel futur (7-14 jours)
+                actual_rt = calculate_actual_rt(df, i)
+
+                if actual_rt is not None and actual_rt > 0:
+                    current_row = df.iloc[i]
+                    error = abs(predicted_rt - actual_rt)
+                    rel_error = error / max(actual_rt, 0.1)
+
+                    # Déterminer la qualité (même système que mortalité)
+                    if rel_error < 0.15:
+                        quality = "Excellente"
+                        quality_class = "excellent"
+                    elif rel_error < 0.30:
+                        quality = "Bonne"
+                        quality_class = "good"
+                    elif rel_error < 0.50:
+                        quality = "Correcte"
+                        quality_class = "fair"
+                    else:
+                        quality = "Mauvaise"
+                        quality_class = "poor"
+
+                    # Déterminer l'état épidémique futur
+                    if actual_rt > 1.5:
+                        future_epidemic_state = "Forte croissance"
+                    elif actual_rt > 1.0:
+                        future_epidemic_state = "Croissance"
+                    elif actual_rt > 0.8:
+                        future_epidemic_state = "Stable"
+                    else:
+                        future_epidemic_state = "Déclin"
+
+                    results.append({
+                        'date': current_row['date'].strftime('%Y-%m-%d'),
+                        'predicted_rt': round(predicted_rt, 3),
+                        'actual_rt_future': round(actual_rt, 3),
+                        'error_absolute': round(error, 3),
+                        'error_relative': round(rel_error * 100, 1),  # En pourcentage
+                        'quality': quality,
+                        'quality_class': quality_class,
+                        'future_epidemic_state': future_epidemic_state,
+                        # Données de contexte
+                        'total_cases': int(current_row.get('total_cases', 0)),
+                        'total_deaths': int(current_row.get('total_deaths', 0)),
+                        'new_cases_7d': int(df.iloc[max(0, i - 6):i + 1]['new_cases'].sum()),
+                        'new_deaths_7d': int(df.iloc[max(0, i - 6):i + 1]['new_deaths'].sum())
+                    })
+
+            except Exception as e:
+                continue
+
+        if len(results) < 10:
+            return Response(
+                {"error": f"Pas assez de prédictions Rt valides générées pour {location_name}"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Limiter le nombre de résultats
+        results = results[:max_results]
+
+        # Calculer les statistiques globales
+        df_results = pd.DataFrame(results)
+        stats = {
+            'total_predictions': len(results),
+            'period_start': results[0]['date'],
+            'period_end': results[-1]['date'],
+            'avg_error_relative': round(df_results['error_relative'].mean(), 1),
+            'median_error_relative': round(df_results['error_relative'].median(), 1),
+            'excellent_count': len(df_results[df_results['quality'] == 'Excellente']),
+            'good_count': len(df_results[df_results['quality'] == 'Bonne']),
+            'fair_count': len(df_results[df_results['quality'] == 'Correcte']),
+            'poor_count': len(df_results[df_results['quality'] == 'Mauvaise']),
+            'avg_predicted_rt': round(df_results['predicted_rt'].mean(), 2),
+            'avg_actual_rt': round(df_results['actual_rt_future'].mean(), 2),
+            'epidemic_periods': len(df_results[df_results['actual_rt_future'] > 1]),
+            'controlled_periods': len(df_results[df_results['actual_rt_future'] <= 1])
+        }
+
+        return Response({
+            'location': location_name,
+            'start_date': start_date,
+            'end_date': end_date,
+            'predictions': results,
+            'statistics': stats,
+            'model_info': {
+                'features_count': len(feature_cols),
+                'model_type': 'Random Forest Transmission Model (Rt)',
+                'prediction_type': 'Rt futur (7-14 jours à l\'avance)'
+            }
+        })
+
+    except Exception as e:
+        return Response(
+            {"error": f"Erreur lors de la validation transmission: {str(e)}"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )

@@ -1,0 +1,16 @@
+[2025-06-23T12:40:15.419+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: Airflow_ETL_DAG_with_Population.insert_worldmeter scheduled__2025-03-10T00:00:00+00:00 [queued]>
+[2025-06-23T12:40:15.429+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: Airflow_ETL_DAG_with_Population.insert_worldmeter scheduled__2025-03-10T00:00:00+00:00 [queued]>
+[2025-06-23T12:40:15.429+0000] {taskinstance.py:1361} INFO - Starting attempt 2 of 3
+[2025-06-23T12:40:15.446+0000] {taskinstance.py:1382} INFO - Executing <Task(PythonOperator): insert_worldmeter> on 2025-03-10 00:00:00+00:00
+[2025-06-23T12:40:15.454+0000] {standard_task_runner.py:57} INFO - Started process 444 to run task
+[2025-06-23T12:40:15.457+0000] {standard_task_runner.py:84} INFO - Running: ['airflow', 'tasks', 'run', 'Airflow_ETL_DAG_with_Population', 'insert_worldmeter', 'scheduled__2025-03-10T00:00:00+00:00', '--job-id', '18', '--raw', '--subdir', 'DAGS_FOLDER/airflow_etl.py', '--cfg-path', '/tmp/tmp6ep24ji5']
+[2025-06-23T12:40:15.459+0000] {standard_task_runner.py:85} INFO - Job 18: Subtask insert_worldmeter
+[2025-06-23T12:40:15.510+0000] {task_command.py:416} INFO - Running <TaskInstance: Airflow_ETL_DAG_with_Population.insert_worldmeter scheduled__2025-03-10T00:00:00+00:00 [running]> on host efd474e5dada
+[2025-06-23T12:40:15.605+0000] {taskinstance.py:1662} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='Airflow_ETL_DAG_with_Population' AIRFLOW_CTX_TASK_ID='insert_worldmeter' AIRFLOW_CTX_EXECUTION_DATE='2025-03-10T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='2' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2025-03-10T00:00:00+00:00'
+[2025-06-23T12:40:15.963+0000] {logging_mixin.py:151} INFO - Tables utilisées: pandemics.location, pandemics.worldmeter
+[2025-06-23T12:41:16.199+0000] {local_task_job_runner.py:294} WARNING - State of this instance has been externally set to skipped. Terminating instance.
+[2025-06-23T12:41:16.204+0000] {process_utils.py:131} INFO - Sending 15 to group 444. PIDs of all processes in the group: [444]
+[2025-06-23T12:41:16.204+0000] {process_utils.py:86} INFO - Sending the signal 15 to group 444
+[2025-06-23T12:41:16.205+0000] {taskinstance.py:1632} ERROR - Received SIGTERM. Terminating subprocesses.
+[2025-06-23T12:41:16.209+0000] {logging_mixin.py:151} INFO - Erreur dans task_insert_worldmeter: Task received SIGTERM signal
+[2025-06-23T12:41:17.556+0000] {process_utils.py:79} INFO - Process psutil.Process(pid=444, status='terminated', exitcode=0, started='12:40:14') (444) terminated with exit code 0

@@ -1,0 +1,258 @@
+[2025-06-23T12:39:25.252+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: Airflow_ETL_DAG_with_Population.insert_locations_with_population manual__2025-06-23T12:32:08.445187+00:00 [queued]>
+[2025-06-23T12:39:25.260+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: Airflow_ETL_DAG_with_Population.insert_locations_with_population manual__2025-06-23T12:32:08.445187+00:00 [queued]>
+[2025-06-23T12:39:25.263+0000] {taskinstance.py:1361} INFO - Starting attempt 2 of 3
+[2025-06-23T12:39:25.273+0000] {taskinstance.py:1382} INFO - Executing <Task(PythonOperator): insert_locations_with_population> on 2025-06-23 12:32:08.445187+00:00
+[2025-06-23T12:39:25.280+0000] {standard_task_runner.py:57} INFO - Started process 401 to run task
+[2025-06-23T12:39:25.282+0000] {standard_task_runner.py:84} INFO - Running: ['airflow', 'tasks', 'run', 'Airflow_ETL_DAG_with_Population', 'insert_locations_with_population', 'manual__2025-06-23T12:32:08.445187+00:00', '--job-id', '11', '--raw', '--subdir', 'DAGS_FOLDER/airflow_etl.py', '--cfg-path', '/tmp/tmpsl_4yegf']
+[2025-06-23T12:39:25.285+0000] {standard_task_runner.py:85} INFO - Job 11: Subtask insert_locations_with_population
+[2025-06-23T12:39:25.327+0000] {task_command.py:416} INFO - Running <TaskInstance: Airflow_ETL_DAG_with_Population.insert_locations_with_population manual__2025-06-23T12:32:08.445187+00:00 [running]> on host efd474e5dada
+[2025-06-23T12:39:25.391+0000] {taskinstance.py:1662} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='Airflow_ETL_DAG_with_Population' AIRFLOW_CTX_TASK_ID='insert_locations_with_population' AIRFLOW_CTX_EXECUTION_DATE='2025-06-23T12:32:08.445187+00:00' AIRFLOW_CTX_TRY_NUMBER='2' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-23T12:32:08.445187+00:00'
+[2025-06-23T12:39:25.597+0000] {logging_mixin.py:151} INFO - Table utilisée: pandemics.location
+[2025-06-23T12:39:25.835+0000] {logging_mixin.py:151} INFO - Données de population chargées: 238 pays
+[2025-06-23T12:39:25.874+0000] {logging_mixin.py:151} INFO - Inséré: Africa - Population: 1,340,598,147
+[2025-06-23T12:39:25.876+0000] {logging_mixin.py:151} INFO - Inséré: Andorra - Population: 77,265
+[2025-06-23T12:39:25.877+0000] {logging_mixin.py:151} INFO - Inséré: Argentina - Population: 0
+[2025-06-23T12:39:25.878+0000] {logging_mixin.py:151} INFO - Inséré: Aruba - Population: 106,766
+[2025-06-23T12:39:25.879+0000] {logging_mixin.py:151} INFO - Inséré: Asia - Population: 4,641,054,775
+[2025-06-23T12:39:25.881+0000] {logging_mixin.py:151} INFO - Inséré: Australia - Population: 25,739,256
+[2025-06-23T12:39:25.883+0000] {logging_mixin.py:151} INFO - Inséré: Austria - Population: 9,006,398
+[2025-06-23T12:39:25.884+0000] {logging_mixin.py:151} INFO - Inséré: Bahamas - Population: 393,244
+[2025-06-23T12:39:25.886+0000] {logging_mixin.py:151} INFO - Inséré: Bahrain - Population: 1,701,575
+[2025-06-23T12:39:25.887+0000] {logging_mixin.py:151} INFO - Inséré: Barbados - Population: 287,375
+[2025-06-23T12:39:25.888+0000] {logging_mixin.py:151} INFO - Inséré: Belgium - Population: 11,492,641
+[2025-06-23T12:39:25.889+0000] {logging_mixin.py:151} INFO - Inséré: Benin - Population: 12,123,200
+[2025-06-23T12:39:25.890+0000] {logging_mixin.py:151} INFO - Inséré: Bermuda - Population: 62,278
+[2025-06-23T12:39:25.891+0000] {logging_mixin.py:151} INFO - Inséré: Bolivia - Population: 11,832,940
+[2025-06-23T12:39:25.893+0000] {logging_mixin.py:151} INFO - Inséré: Bosnia and Herzegovina - Population: 3,280,819
+[2025-06-23T12:39:25.894+0000] {logging_mixin.py:151} INFO - Inséré: Brazil - Population: 215,313,498
+[2025-06-23T12:39:25.895+0000] {logging_mixin.py:151} INFO - Inséré: Bulgaria - Population: 6,948,445
+[2025-06-23T12:39:25.896+0000] {logging_mixin.py:151} INFO - Inséré: Cameroon - Population: 27,224,265
+[2025-06-23T12:39:25.898+0000] {logging_mixin.py:151} INFO - Inséré: Canada - Population: 38,454,327
+[2025-06-23T12:39:25.900+0000] {logging_mixin.py:151} INFO - Inséré: Central African Republic - Population: 4,829,767
+[2025-06-23T12:39:25.901+0000] {logging_mixin.py:151} INFO - Inséré: Chile - Population: 19,458,310
+[2025-06-23T12:39:25.902+0000] {logging_mixin.py:151} INFO - Inséré: China - Population: 1,412,175,000
+[2025-06-23T12:39:25.904+0000] {logging_mixin.py:151} INFO - Inséré: Colombia - Population: 51,265,844
+[2025-06-23T12:39:25.905+0000] {logging_mixin.py:151} INFO - Inséré: Congo - Population: 5,657,013
+[2025-06-23T12:39:25.906+0000] {logging_mixin.py:151} INFO - Inséré: Costa Rica - Population: 5,094,118
+[2025-06-23T12:39:25.908+0000] {logging_mixin.py:151} INFO - Inséré: Croatia - Population: 4,105,267
+[2025-06-23T12:39:25.909+0000] {logging_mixin.py:151} INFO - Inséré: Cuba - Population: 11,317,505
+[2025-06-23T12:39:25.910+0000] {logging_mixin.py:151} INFO - Inséré: Curacao - Population: 164,093
+[2025-06-23T12:39:25.912+0000] {logging_mixin.py:151} INFO - Inséré: Cyprus - Population: 1,207,359
+[2025-06-23T12:39:25.913+0000] {logging_mixin.py:151} INFO - Inséré: Czechia - Population: 0
+[2025-06-23T12:39:25.916+0000] {logging_mixin.py:151} INFO - Inséré: Democratic Republic of Congo - Population: 0
+[2025-06-23T12:39:25.918+0000] {logging_mixin.py:151} INFO - Inséré: Denmark - Population: 5,831,404
+[2025-06-23T12:39:25.920+0000] {logging_mixin.py:151} INFO - Inséré: Dominican Republic - Population: 10,953,703
+[2025-06-23T12:39:25.921+0000] {logging_mixin.py:151} INFO - Inséré: Ecuador - Population: 17,888,475
+[2025-06-23T12:39:25.922+0000] {logging_mixin.py:151} INFO - Inséré: Egypt - Population: 104,258,327
+[2025-06-23T12:39:25.923+0000] {logging_mixin.py:151} INFO - Inséré: El Salvador - Population: 6,518,499
+[2025-06-23T12:39:25.925+0000] {logging_mixin.py:151} INFO - Inséré: Estonia - Population: 1,326,535
+[2025-06-23T12:39:25.926+0000] {logging_mixin.py:151} INFO - Inséré: Europe - Population: 747,636,026
+[2025-06-23T12:39:25.927+0000] {logging_mixin.py:151} INFO - Inséré: Finland - Population: 5,540,720
+[2025-06-23T12:39:25.928+0000] {logging_mixin.py:151} INFO - Inséré: France - Population: 65,273,511
+[2025-06-23T12:39:25.929+0000] {logging_mixin.py:151} INFO - Inséré: Georgia - Population: 3,989,167
+[2025-06-23T12:39:25.931+0000] {logging_mixin.py:151} INFO - Inséré: Germany - Population: 83,783,942
+[2025-06-23T12:39:25.933+0000] {logging_mixin.py:151} INFO - Inséré: Ghana - Population: 31,072,940
+[2025-06-23T12:39:25.934+0000] {logging_mixin.py:151} INFO - Inséré: Gibraltar - Population: 33,691
+[2025-06-23T12:39:25.935+0000] {logging_mixin.py:151} INFO - Inséré: Greece - Population: 10,718,565
+[2025-06-23T12:39:25.936+0000] {logging_mixin.py:151} INFO - Inséré: Greenland - Population: 56,770
+[2025-06-23T12:39:25.938+0000] {logging_mixin.py:151} INFO - Inséré: Guadeloupe - Population: 400,124
+[2025-06-23T12:39:25.939+0000] {logging_mixin.py:151} INFO - Inséré: Guam - Population: 168,775
+[2025-06-23T12:39:25.940+0000] {logging_mixin.py:151} INFO - Inséré: Guatemala - Population: 18,249,860
+[2025-06-23T12:39:25.942+0000] {logging_mixin.py:151} INFO - Inséré: Guyana - Population: 786,552
+[2025-06-23T12:39:25.943+0000] {logging_mixin.py:151} INFO - Inséré: Honduras - Population: 9,904,607
+[2025-06-23T12:39:25.944+0000] {logging_mixin.py:151} INFO - Inséré: Hungary - Population: 9,749,763
+[2025-06-23T12:39:25.945+0000] {logging_mixin.py:151} INFO - Inséré: Iceland - Population: 371,580
+[2025-06-23T12:39:25.947+0000] {logging_mixin.py:151} INFO - Inséré: India - Population: 1,380,004,385
+[2025-06-23T12:39:25.948+0000] {logging_mixin.py:151} INFO - Inséré: Indonesia - Population: 273,523,615
+[2025-06-23T12:39:25.950+0000] {logging_mixin.py:151} INFO - Inséré: Iran - Population: 85,028,759
+[2025-06-23T12:39:25.951+0000] {logging_mixin.py:151} INFO - Inséré: Ireland - Population: 4,982,907
+[2025-06-23T12:39:25.952+0000] {logging_mixin.py:151} INFO - Inséré: Israel - Population: 9,187,000
+[2025-06-23T12:39:25.954+0000] {logging_mixin.py:151} INFO - Inséré: Italy - Population: 60,461,826
+[2025-06-23T12:39:25.955+0000] {logging_mixin.py:151} INFO - Inséré: Jamaica - Population: 2,961,167
+[2025-06-23T12:39:25.956+0000] {logging_mixin.py:151} INFO - Inséré: Japan - Population: 125,836,021
+[2025-06-23T12:39:25.957+0000] {logging_mixin.py:151} INFO - Inséré: Jordan - Population: 10,269,021
+[2025-06-23T12:39:25.959+0000] {logging_mixin.py:151} INFO - Inséré: Latvia - Population: 1,886,198
+[2025-06-23T12:39:25.960+0000] {logging_mixin.py:151} INFO - Inséré: Lebanon - Population: 6,825,445
+[2025-06-23T12:39:25.961+0000] {logging_mixin.py:151} INFO - Inséré: Liberia - Population: 5,057,681
+[2025-06-23T12:39:25.962+0000] {logging_mixin.py:151} INFO - Inséré: Lithuania - Population: 2,722,289
+[2025-06-23T12:39:25.963+0000] {logging_mixin.py:151} INFO - Inséré: Luxembourg - Population: 625,978
+[2025-06-23T12:39:25.965+0000] {logging_mixin.py:151} INFO - Inséré: Malta - Population: 441,543
+[2025-06-23T12:39:25.967+0000] {logging_mixin.py:151} INFO - Inséré: Martinique - Population: 375,265
+[2025-06-23T12:39:25.968+0000] {logging_mixin.py:151} INFO - Inséré: Mexico - Population: 130,262,216
+[2025-06-23T12:39:25.970+0000] {logging_mixin.py:151} INFO - Inséré: Moldova - Population: 4,033,963
+[2025-06-23T12:39:25.971+0000] {logging_mixin.py:151} INFO - Inséré: Monaco - Population: 39,242
+[2025-06-23T12:39:25.973+0000] {logging_mixin.py:151} INFO - Inséré: Montenegro - Population: 628,066
+[2025-06-23T12:39:25.974+0000] {logging_mixin.py:151} INFO - Inséré: Morocco - Population: 37,112,080
+[2025-06-23T12:39:25.975+0000] {logging_mixin.py:151} INFO - Inséré: Mozambique - Population: 32,163,047
+[2025-06-23T12:39:25.977+0000] {logging_mixin.py:151} INFO - Inséré: Netherlands - Population: 17,441,139
+[2025-06-23T12:39:25.978+0000] {logging_mixin.py:151} INFO - Inséré: New Caledonia - Population: 285,498
+[2025-06-23T12:39:25.979+0000] {logging_mixin.py:151} INFO - Inséré: New Zealand - Population: 5,084,300
+[2025-06-23T12:39:25.980+0000] {logging_mixin.py:151} INFO - Inséré: Nigeria - Population: 218,541,212
+[2025-06-23T12:39:25.982+0000] {logging_mixin.py:151} INFO - Inséré: North America - Population: 579,024,000
+[2025-06-23T12:39:25.983+0000] {logging_mixin.py:151} INFO - Inséré: Norway - Population: 5,421,241
+[2025-06-23T12:39:25.984+0000] {logging_mixin.py:151} INFO - Inséré: Oceania - Population: 45,376,763
+[2025-06-23T12:39:25.986+0000] {logging_mixin.py:151} INFO - Inséré: Pakistan - Population: 225,199,937
+[2025-06-23T12:39:25.988+0000] {logging_mixin.py:151} INFO - Inséré: Panama - Population: 4,314,767
+[2025-06-23T12:39:25.989+0000] {logging_mixin.py:151} INFO - Inséré: Paraguay - Population: 7,132,538
+[2025-06-23T12:39:25.991+0000] {logging_mixin.py:151} INFO - Inséré: Peru - Population: 33,105,273
+[2025-06-23T12:39:25.992+0000] {logging_mixin.py:151} INFO - Inséré: Philippines - Population: 109,581,078
+[2025-06-23T12:39:25.993+0000] {logging_mixin.py:151} INFO - Inséré: Poland - Population: 37,846,611
+[2025-06-23T12:39:25.995+0000] {logging_mixin.py:151} INFO - Inséré: Portugal - Population: 10,295,909
+[2025-06-23T12:39:25.996+0000] {logging_mixin.py:151} INFO - Inséré: Puerto Rico - Population: 2,860,853
+[2025-06-23T12:39:25.998+0000] {logging_mixin.py:151} INFO - Inséré: Qatar - Population: 2,881,053
+[2025-06-23T12:39:26.000+0000] {logging_mixin.py:151} INFO - Inséré: Romania - Population: 19,186,201
+[2025-06-23T12:39:26.002+0000] {logging_mixin.py:151} INFO - Inséré: Russia - Population: 145,912,025
+[2025-06-23T12:39:26.004+0000] {logging_mixin.py:151} INFO - Inséré: Saint Martin (French part) - Population: 0
+[2025-06-23T12:39:26.006+0000] {logging_mixin.py:151} INFO - Inséré: San Marino - Population: 33,931
+[2025-06-23T12:39:26.007+0000] {logging_mixin.py:151} INFO - Inséré: Saudi Arabia - Population: 34,813,871
+[2025-06-23T12:39:26.009+0000] {logging_mixin.py:151} INFO - Inséré: Serbia - Population: 8,737,371
+[2025-06-23T12:39:26.010+0000] {logging_mixin.py:151} INFO - Inséré: Singapore - Population: 5,685,807
+[2025-06-23T12:39:26.011+0000] {logging_mixin.py:151} INFO - Inséré: Slovakia - Population: 5,458,827
+[2025-06-23T12:39:26.013+0000] {logging_mixin.py:151} INFO - Inséré: Slovenia - Population: 2,078,938
+[2025-06-23T12:39:26.014+0000] {logging_mixin.py:151} INFO - Inséré: South Africa - Population: 59,308,690
+[2025-06-23T12:39:26.016+0000] {logging_mixin.py:151} INFO - Inséré: South America - Population: 434,254,119
+[2025-06-23T12:39:26.018+0000] {logging_mixin.py:151} INFO - Inséré: South Korea - Population: 51,780,579
+[2025-06-23T12:39:26.019+0000] {logging_mixin.py:151} INFO - Inséré: Spain - Population: 0
+[2025-06-23T12:39:26.020+0000] {logging_mixin.py:151} INFO - Inséré: Sri Lanka - Population: 21,919,000
+[2025-06-23T12:39:26.022+0000] {logging_mixin.py:151} INFO - Inséré: Sudan - Population: 45,657,202
+[2025-06-23T12:39:26.023+0000] {logging_mixin.py:151} INFO - Inséré: Sweden - Population: 10,379,295
+[2025-06-23T12:39:26.024+0000] {logging_mixin.py:151} INFO - Inséré: Switzerland - Population: 8,654,622
+[2025-06-23T12:39:26.025+0000] {logging_mixin.py:151} INFO - Inséré: Thailand - Population: 69,799,978
+[2025-06-23T12:39:26.027+0000] {logging_mixin.py:151} INFO - Inséré: Turkey - Population: 84,339,067
+[2025-06-23T12:39:26.028+0000] {logging_mixin.py:151} INFO - Inséré: Ukraine - Population: 43,733,762
+[2025-06-23T12:39:26.029+0000] {logging_mixin.py:151} INFO - Inséré: United Arab Emirates - Population: 9,890,402
+[2025-06-23T12:39:26.030+0000] {logging_mixin.py:151} INFO - Inséré: United Kingdom - Population: 67,886,011
+[2025-06-23T12:39:26.032+0000] {logging_mixin.py:151} INFO - Inséré: United States - Population: 331,900,000
+[2025-06-23T12:39:26.034+0000] {logging_mixin.py:151} INFO - Inséré: Uruguay - Population: 3,473,730
+[2025-06-23T12:39:26.036+0000] {logging_mixin.py:151} INFO - Inséré: Venezuela - Population: 28,435,940
+[2025-06-23T12:39:26.037+0000] {logging_mixin.py:151} INFO - Inséré: Vietnam - Population: 97,338,579
+[2025-06-23T12:39:26.038+0000] {logging_mixin.py:151} INFO - Inséré: World - Population: 7,794,798,739
+[2025-06-23T12:39:26.039+0000] {logging_mixin.py:151} INFO - Inséré: Afghanistan - Population: 39,835,428
+[2025-06-23T12:39:26.040+0000] {logging_mixin.py:151} INFO - Inséré: Albania - Population: 2,877,797
+[2025-06-23T12:39:26.042+0000] {logging_mixin.py:151} INFO - Inséré: Algeria - Population: 44,700,000
+[2025-06-23T12:39:26.043+0000] {logging_mixin.py:151} INFO - Inséré: Angola - Population: 33,933,610
+[2025-06-23T12:39:26.044+0000] {logging_mixin.py:151} INFO - Inséré: Anguilla - Population: 15,003
+[2025-06-23T12:39:26.045+0000] {logging_mixin.py:151} INFO - Inséré: Antigua And Barbuda - Population: 0
+[2025-06-23T12:39:26.047+0000] {logging_mixin.py:151} INFO - Inséré: Armenia - Population: 2,963,243
+[2025-06-23T12:39:26.049+0000] {logging_mixin.py:151} INFO - Inséré: Azerbaijan - Population: 10,110,116
+[2025-06-23T12:39:26.051+0000] {logging_mixin.py:151} INFO - Inséré: Bangladesh - Population: 166,303,498
+[2025-06-23T12:39:26.053+0000] {logging_mixin.py:151} INFO - Inséré: Belarus - Population: 9,398,861
+[2025-06-23T12:39:26.055+0000] {logging_mixin.py:151} INFO - Inséré: Belize - Population: 397,628
+[2025-06-23T12:39:26.057+0000] {logging_mixin.py:151} INFO - Inséré: Bhutan - Population: 771,608
+[2025-06-23T12:39:26.059+0000] {logging_mixin.py:151} INFO - Inséré: Bosnia And Herzegovina - Population: 0
+[2025-06-23T12:39:26.060+0000] {logging_mixin.py:151} INFO - Inséré: Botswana - Population: 2,351,627
+[2025-06-23T12:39:26.062+0000] {logging_mixin.py:151} INFO - Inséré: British Virgin Islands - Population: 30,231
+[2025-06-23T12:39:26.064+0000] {logging_mixin.py:151} INFO - Inséré: Brunei Darussalam - Population: 0
+[2025-06-23T12:39:26.066+0000] {logging_mixin.py:151} INFO - Inséré: Burkina Faso - Population: 22,100,683
+[2025-06-23T12:39:26.068+0000] {logging_mixin.py:151} INFO - Inséré: Burundi - Population: 11,890,784
+[2025-06-23T12:39:26.069+0000] {logging_mixin.py:151} INFO - Inséré: Cabo Verde - Population: 0
+[2025-06-23T12:39:26.071+0000] {logging_mixin.py:151} INFO - Inséré: Cambodia - Population: 16,718,965
+[2025-06-23T12:39:26.073+0000] {logging_mixin.py:151} INFO - Inséré: Caribbean Netherlands - Population: 26,223
+[2025-06-23T12:39:26.074+0000] {logging_mixin.py:151} INFO - Inséré: Cayman Islands - Population: 65,722
+[2025-06-23T12:39:26.076+0000] {logging_mixin.py:151} INFO - Inséré: Chad - Population: 16,425,864
+[2025-06-23T12:39:26.077+0000] {logging_mixin.py:151} INFO - Inséré: Channel Islands - Population: 173,863
+[2025-06-23T12:39:26.078+0000] {logging_mixin.py:151} INFO - Inséré: China Hong Kong Sar - Population: 0
+[2025-06-23T12:39:26.080+0000] {logging_mixin.py:151} INFO - Inséré: China Macao Sar - Population: 0
+[2025-06-23T12:39:26.082+0000] {logging_mixin.py:151} INFO - Inséré: Comoros - Population: 869,601
+[2025-06-23T12:39:26.083+0000] {logging_mixin.py:151} INFO - Inséré: Cook Islands - Population: 17,564
+[2025-06-23T12:39:26.085+0000] {logging_mixin.py:151} INFO - Inséré: Cote D Ivoire - Population: 0
+[2025-06-23T12:39:26.086+0000] {logging_mixin.py:151} INFO - Inséré: Czech Republic - Population: 10,697,858
+[2025-06-23T12:39:26.087+0000] {logging_mixin.py:151} INFO - Inséré: Democratic Republic Of The Congo - Population: 0
+[2025-06-23T12:39:26.088+0000] {logging_mixin.py:151} INFO - Inséré: Djibouti - Population: 988,000
+[2025-06-23T12:39:26.089+0000] {logging_mixin.py:151} INFO - Inséré: Dominica - Population: 71,986
+[2025-06-23T12:39:26.090+0000] {logging_mixin.py:151} INFO - Inséré: Equatorial Guinea - Population: 1,402,985
+[2025-06-23T12:39:26.092+0000] {logging_mixin.py:151} INFO - Inséré: Eritrea - Population: 3,546,421
+[2025-06-23T12:39:26.093+0000] {logging_mixin.py:151} INFO - Inséré: Ethiopia - Population: 117,876,227
+[2025-06-23T12:39:26.094+0000] {logging_mixin.py:151} INFO - Inséré: Faeroe Islands - Population: 0
+[2025-06-23T12:39:26.095+0000] {logging_mixin.py:151} INFO - Inséré: Falkland Islands Malvinas - Population: 0
+[2025-06-23T12:39:26.096+0000] {logging_mixin.py:151} INFO - Inséré: Fiji - Population: 896,445
+[2025-06-23T12:39:26.098+0000] {logging_mixin.py:151} INFO - Inséré: French Guiana - Population: 298,682
+[2025-06-23T12:39:26.099+0000] {logging_mixin.py:151} INFO - Inséré: French Polynesia - Population: 280,908
+[2025-06-23T12:39:26.100+0000] {logging_mixin.py:151} INFO - Inséré: Gabon - Population: 2,225,734
+[2025-06-23T12:39:26.101+0000] {logging_mixin.py:151} INFO - Inséré: Gambia - Population: 2,416,668
+[2025-06-23T12:39:26.103+0000] {logging_mixin.py:151} INFO - Inséré: Grenada - Population: 112,523
+[2025-06-23T12:39:26.104+0000] {logging_mixin.py:151} INFO - Inséré: Guinea Bissau - Population: 0
+[2025-06-23T12:39:26.105+0000] {logging_mixin.py:151} INFO - Inséré: Guinea - Population: 13,132,795
+[2025-06-23T12:39:26.106+0000] {logging_mixin.py:151} INFO - Inséré: Haiti - Population: 11,541,685
+[2025-06-23T12:39:26.108+0000] {logging_mixin.py:151} INFO - Inséré: Holy See - Population: 0
+[2025-06-23T12:39:26.109+0000] {logging_mixin.py:151} INFO - Inséré: Iraq - Population: 40,222,493
+[2025-06-23T12:39:26.110+0000] {logging_mixin.py:151} INFO - Inséré: Isle Of Man - Population: 0
+[2025-06-23T12:39:26.111+0000] {logging_mixin.py:151} INFO - Inséré: Kazakhstan - Population: 19,002,586
+[2025-06-23T12:39:26.113+0000] {logging_mixin.py:151} INFO - Inséré: Kenya - Population: 53,771,296
+[2025-06-23T12:39:26.114+0000] {logging_mixin.py:151} INFO - Inséré: Kiribati - Population: 119,449
+[2025-06-23T12:39:26.115+0000] {logging_mixin.py:151} INFO - Inséré: Kuwait - Population: 4,270,571
+[2025-06-23T12:39:26.117+0000] {logging_mixin.py:151} INFO - Inséré: Kyrgyzstan - Population: 6,591,600
+[2025-06-23T12:39:26.118+0000] {logging_mixin.py:151} INFO - Inséré: Laos - Population: 7,275,560
+[2025-06-23T12:39:26.119+0000] {logging_mixin.py:151} INFO - Inséré: Lesotho - Population: 2,142,249
+[2025-06-23T12:39:26.120+0000] {logging_mixin.py:151} INFO - Inséré: Libya - Population: 6,871,292
+[2025-06-23T12:39:26.121+0000] {logging_mixin.py:151} INFO - Inséré: Liechtenstein - Population: 38,128
+[2025-06-23T12:39:26.123+0000] {logging_mixin.py:151} INFO - Inséré: Macedonia - Population: 0
+[2025-06-23T12:39:26.124+0000] {logging_mixin.py:151} INFO - Inséré: Madagascar - Population: 28,427,328
+[2025-06-23T12:39:26.125+0000] {logging_mixin.py:151} INFO - Inséré: Malawi - Population: 19,647,681
+[2025-06-23T12:39:26.127+0000] {logging_mixin.py:151} INFO - Inséré: Malaysia - Population: 32,776,194
+[2025-06-23T12:39:26.128+0000] {logging_mixin.py:151} INFO - Inséré: Maldives - Population: 540,544
+[2025-06-23T12:39:26.129+0000] {logging_mixin.py:151} INFO - Inséré: Mali - Population: 20,856,622
+[2025-06-23T12:39:26.131+0000] {logging_mixin.py:151} INFO - Inséré: Marshall Islands - Population: 59,190
+[2025-06-23T12:39:26.132+0000] {logging_mixin.py:151} INFO - Inséré: Mauritania - Population: 4,649,658
+[2025-06-23T12:39:26.133+0000] {logging_mixin.py:151} INFO - Inséré: Mauritius - Population: 1,271,768
+[2025-06-23T12:39:26.135+0000] {logging_mixin.py:151} INFO - Inséré: Mayotte - Population: 272,815
+[2025-06-23T12:39:26.136+0000] {logging_mixin.py:151} INFO - Inséré: Micronesia - Population: 115,023
+[2025-06-23T12:39:26.137+0000] {logging_mixin.py:151} INFO - Inséré: Mongolia - Population: 3,278,290
+[2025-06-23T12:39:26.138+0000] {logging_mixin.py:151} INFO - Inséré: Montserrat - Population: 4,992
+[2025-06-23T12:39:26.139+0000] {logging_mixin.py:151} INFO - Inséré: Myanmar - Population: 54,409,800
+[2025-06-23T12:39:26.141+0000] {logging_mixin.py:151} INFO - Inséré: Namibia - Population: 2,540,905
+[2025-06-23T12:39:26.142+0000] {logging_mixin.py:151} INFO - Inséré: Nauru - Population: 10,824
+[2025-06-23T12:39:26.143+0000] {logging_mixin.py:151} INFO - Inséré: Nepal - Population: 29,192,480
+[2025-06-23T12:39:26.145+0000] {logging_mixin.py:151} INFO - Inséré: Nicaragua - Population: 6,624,554
+[2025-06-23T12:39:26.146+0000] {logging_mixin.py:151} INFO - Inséré: Niger - Population: 25,130,817
+[2025-06-23T12:39:26.147+0000] {logging_mixin.py:151} INFO - Inséré: Niue - Population: 1,626
+[2025-06-23T12:39:26.149+0000] {logging_mixin.py:151} INFO - Inséré: Oman - Population: 5,106,626
+[2025-06-23T12:39:26.150+0000] {logging_mixin.py:151} INFO - Inséré: Palau - Population: 18,094
+[2025-06-23T12:39:26.152+0000] {logging_mixin.py:151} INFO - Inséré: Papua New Guinea - Population: 8,947,024
+[2025-06-23T12:39:26.153+0000] {logging_mixin.py:151} INFO - Inséré: Reunion - Population: 0
+[2025-06-23T12:39:26.154+0000] {logging_mixin.py:151} INFO - Inséré: Rwanda - Population: 12,952,218
+[2025-06-23T12:39:26.155+0000] {logging_mixin.py:151} INFO - Inséré: Saint Barthelemy - Population: 0
+[2025-06-23T12:39:26.157+0000] {logging_mixin.py:151} INFO - Inséré: Saint Helena - Population: 6,077
+[2025-06-23T12:39:26.158+0000] {logging_mixin.py:151} INFO - Inséré: Saint Kitts And Nevis - Population: 0
+[2025-06-23T12:39:26.159+0000] {logging_mixin.py:151} INFO - Inséré: Saint Lucia - Population: 183,627
+[2025-06-23T12:39:26.160+0000] {logging_mixin.py:151} INFO - Inséré: Saint Martin - Population: 38,666
+[2025-06-23T12:39:26.162+0000] {logging_mixin.py:151} INFO - Inséré: Saint Pierre And Miquelon - Population: 0
+[2025-06-23T12:39:26.163+0000] {logging_mixin.py:151} INFO - Inséré: Saint Vincent And The Grenadines - Population: 0
+[2025-06-23T12:39:26.165+0000] {logging_mixin.py:151} INFO - Inséré: Samoa - Population: 198,414
+[2025-06-23T12:39:26.166+0000] {logging_mixin.py:151} INFO - Inséré: Sao Tome And Principe - Population: 0
+[2025-06-23T12:39:26.167+0000] {logging_mixin.py:151} INFO - Inséré: Senegal - Population: 17,196,308
+[2025-06-23T12:39:26.168+0000] {logging_mixin.py:151} INFO - Inséré: Seychelles - Population: 98,347
+[2025-06-23T12:39:26.170+0000] {logging_mixin.py:151} INFO - Inséré: Sierra Leone - Population: 8,141,343
+[2025-06-23T12:39:26.171+0000] {logging_mixin.py:151} INFO - Inséré: Sint Maarten - Population: 42,876
+[2025-06-23T12:39:26.173+0000] {logging_mixin.py:151} INFO - Inséré: Solomon Islands - Population: 686,884
+[2025-06-23T12:39:26.175+0000] {logging_mixin.py:151} INFO - Inséré: Somalia - Population: 15,893,222
+[2025-06-23T12:39:26.177+0000] {logging_mixin.py:151} INFO - Inséré: South Sudan - Population: 11,193,725
+[2025-06-23T12:39:26.178+0000] {logging_mixin.py:151} INFO - Inséré: State Of Palestine - Population: 0
+[2025-06-23T12:39:26.179+0000] {logging_mixin.py:151} INFO - Inséré: Suriname - Population: 586,632
+[2025-06-23T12:39:26.181+0000] {logging_mixin.py:151} INFO - Inséré: Swaziland - Population: 0
+[2025-06-23T12:39:26.183+0000] {logging_mixin.py:151} INFO - Inséré: Syria - Population: 18,275,702
+[2025-06-23T12:39:26.185+0000] {logging_mixin.py:151} INFO - Inséré: Taiwan - Population: 0
+[2025-06-23T12:39:26.187+0000] {logging_mixin.py:151} INFO - Inséré: Tajikistan - Population: 9,749,627
+[2025-06-23T12:39:26.188+0000] {logging_mixin.py:151} INFO - Inséré: Tanzania - Population: 61,498,437
+[2025-06-23T12:39:26.190+0000] {logging_mixin.py:151} INFO - Inséré: Timor Leste - Population: 0
+[2025-06-23T12:39:26.192+0000] {logging_mixin.py:151} INFO - Inséré: Togo - Population: 8,278,724
+[2025-06-23T12:39:26.194+0000] {logging_mixin.py:151} INFO - Inséré: Tonga - Population: 105,695
+[2025-06-23T12:39:26.196+0000] {logging_mixin.py:151} INFO - Inséré: Trinidad And Tobago - Population: 0
+[2025-06-23T12:39:26.197+0000] {logging_mixin.py:151} INFO - Inséré: Tunisia - Population: 11,935,766
+[2025-06-23T12:39:26.199+0000] {logging_mixin.py:151} INFO - Inséré: Turks And Caicos Islands - Population: 0
+[2025-06-23T12:39:26.201+0000] {logging_mixin.py:151} INFO - Inséré: Uganda - Population: 45,741,007
+[2025-06-23T12:39:26.202+0000] {logging_mixin.py:151} INFO - Inséré: UK - Population: 0
+[2025-06-23T12:39:26.203+0000] {logging_mixin.py:151} INFO - Inséré: USA - Population: 0
+[2025-06-23T12:39:26.205+0000] {logging_mixin.py:151} INFO - Inséré: Uzbekistan - Population: 34,232,050
+[2025-06-23T12:39:26.206+0000] {logging_mixin.py:151} INFO - Inséré: Vanuatu - Population: 307,145
+[2025-06-23T12:39:26.208+0000] {logging_mixin.py:151} INFO - Inséré: Viet Nam - Population: 0
+[2025-06-23T12:39:26.210+0000] {logging_mixin.py:151} INFO - Inséré: Wallis And Futuna Islands - Population: 0
+[2025-06-23T12:39:26.212+0000] {logging_mixin.py:151} INFO - Inséré: Western Sahara - Population: 597,339
+[2025-06-23T12:39:26.213+0000] {logging_mixin.py:151} INFO - Inséré: Yemen - Population: 30,490,640
+[2025-06-23T12:39:26.215+0000] {logging_mixin.py:151} INFO - Inséré: Zambia - Population: 18,920,651
+[2025-06-23T12:39:26.217+0000] {logging_mixin.py:151} INFO - Inséré: Zimbabwe - Population: 15,092,171
+[2025-06-23T12:39:26.222+0000] {logging_mixin.py:151} INFO - Insertion des locations avec population terminée.
+[2025-06-23T12:39:26.226+0000] {python.py:194} INFO - Done. Returned value was: None
+[2025-06-23T12:39:26.236+0000] {taskinstance.py:1400} INFO - Marking task as SUCCESS. dag_id=Airflow_ETL_DAG_with_Population, task_id=insert_locations_with_population, execution_date=20250623T123208, start_date=20250623T123925, end_date=20250623T123926
+[2025-06-23T12:39:26.259+0000] {local_task_job_runner.py:228} INFO - Task exited with return code 0
+[2025-06-23T12:39:26.284+0000] {taskinstance.py:2778} INFO - 1 downstream tasks scheduled from follow-on schedule check

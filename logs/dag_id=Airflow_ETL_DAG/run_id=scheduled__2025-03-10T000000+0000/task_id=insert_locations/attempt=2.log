@@ -12,3 +12,218 @@
 [2025-04-28T06:53:35.436+0000] {taskinstance.py:1400} INFO - Marking task as SUCCESS. dag_id=Airflow_ETL_DAG, task_id=insert_locations, execution_date=20250310T000000, start_date=20250428T065334, end_date=20250428T065335
 [2025-04-28T06:53:35.493+0000] {local_task_job_runner.py:228} INFO - Task exited with return code 0
 [2025-04-28T06:53:35.519+0000] {taskinstance.py:2778} INFO - 1 downstream tasks scheduled from follow-on schedule check
+[2025-06-06T14:41:19.941+0000] {logging_mixin.py:151} INFO - Changing /opt/airflow/logs/dag_id=Airflow_ETL_DAG/run_id=scheduled__2025-03-10T00:00:00+00:00/task_id=insert_locations permission to 509
+[2025-06-06T14:41:19.942+0000] {logging_mixin.py:151} INFO - Failed to change /opt/airflow/logs/dag_id=Airflow_ETL_DAG/run_id=scheduled__2025-03-10T00:00:00+00:00/task_id=insert_locations permission to 509: [Errno 1] Operation not permitted: '/opt/airflow/logs/dag_id=Airflow_ETL_DAG/run_id=scheduled__2025-03-10T00:00:00+00:00/task_id=insert_locations'
+[2025-06-06T14:41:19.995+0000] {logging_mixin.py:151} INFO - Changing /opt/airflow/logs/dag_id=Airflow_ETL_DAG/run_id=scheduled__2025-03-10T00:00:00+00:00/task_id=insert_locations permission to 509
+[2025-06-06T14:41:19.996+0000] {logging_mixin.py:151} INFO - Failed to change /opt/airflow/logs/dag_id=Airflow_ETL_DAG/run_id=scheduled__2025-03-10T00:00:00+00:00/task_id=insert_locations permission to 509: [Errno 1] Operation not permitted: '/opt/airflow/logs/dag_id=Airflow_ETL_DAG/run_id=scheduled__2025-03-10T00:00:00+00:00/task_id=insert_locations'
+[2025-06-06T14:41:20.068+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: Airflow_ETL_DAG.insert_locations scheduled__2025-03-10T00:00:00+00:00 [queued]>
+[2025-06-06T14:41:20.097+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: Airflow_ETL_DAG.insert_locations scheduled__2025-03-10T00:00:00+00:00 [queued]>
+[2025-06-06T14:41:20.097+0000] {taskinstance.py:1361} INFO - Starting attempt 2 of 2
+[2025-06-06T14:41:20.122+0000] {taskinstance.py:1382} INFO - Executing <Task(PythonOperator): insert_locations> on 2025-03-10 00:00:00+00:00
+[2025-06-06T14:41:20.133+0000] {standard_task_runner.py:57} INFO - Started process 244 to run task
+[2025-06-06T14:41:20.137+0000] {standard_task_runner.py:84} INFO - Running: ['airflow', 'tasks', 'run', 'Airflow_ETL_DAG', 'insert_locations', 'scheduled__2025-03-10T00:00:00+00:00', '--job-id', '3', '--raw', '--subdir', 'DAGS_FOLDER/airflow_etl.py', '--cfg-path', '/tmp/tmpqz4kxwx6']
+[2025-06-06T14:41:20.139+0000] {standard_task_runner.py:85} INFO - Job 3: Subtask insert_locations
+[2025-06-06T14:41:20.226+0000] {logging_mixin.py:151} INFO - Changing /opt/airflow/logs/dag_id=Airflow_ETL_DAG/run_id=scheduled__2025-03-10T00:00:00+00:00/task_id=insert_locations permission to 509
+[2025-06-06T14:41:20.227+0000] {logging_mixin.py:151} INFO - Failed to change /opt/airflow/logs/dag_id=Airflow_ETL_DAG/run_id=scheduled__2025-03-10T00:00:00+00:00/task_id=insert_locations permission to 509: [Errno 1] Operation not permitted: '/opt/airflow/logs/dag_id=Airflow_ETL_DAG/run_id=scheduled__2025-03-10T00:00:00+00:00/task_id=insert_locations'
+[2025-06-06T14:41:20.229+0000] {task_command.py:416} INFO - Running <TaskInstance: Airflow_ETL_DAG.insert_locations scheduled__2025-03-10T00:00:00+00:00 [running]> on host 6ddf3bd32fe2
+[2025-06-06T14:41:20.380+0000] {taskinstance.py:1662} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='Airflow_ETL_DAG' AIRFLOW_CTX_TASK_ID='insert_locations' AIRFLOW_CTX_EXECUTION_DATE='2025-03-10T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='2' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2025-03-10T00:00:00+00:00'
+[2025-06-06T14:41:20.862+0000] {taskinstance.py:1937} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/operators/python.py", line 192, in execute
+    return_value = self.execute_callable()
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/operators/python.py", line 209, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+  File "/opt/airflow/dags/airflow_etl.py", line 40, in task_insert_locations
+    metadata.reflect(bind=engine)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/schema.py", line 4901, in reflect
+    Table(name, self, **reflect_opts)
+  File "<string>", line 2, in __new__
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/util/deprecations.py", line 375, in warned
+    return fn(*args, **kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/schema.py", line 619, in __new__
+    metadata._remove_table(name, schema)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/util/langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/schema.py", line 614, in __new__
+    table._init(name, metadata, *args, **kw)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/schema.py", line 689, in _init
+    self._autoload(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/schema.py", line 724, in _autoload
+    conn_insp.reflect_table(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/engine/reflection.py", line 795, in reflect_table
+    self._reflect_fk(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/engine/reflection.py", line 978, in _reflect_fk
+    sa_schema.Table(
+  File "<string>", line 2, in __new__
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/util/deprecations.py", line 375, in warned
+    return fn(*args, **kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/schema.py", line 619, in __new__
+    metadata._remove_table(name, schema)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/util/langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/schema.py", line 614, in __new__
+    table._init(name, metadata, *args, **kw)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/schema.py", line 689, in _init
+    self._autoload(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/schema.py", line 724, in _autoload
+    conn_insp.reflect_table(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/engine/reflection.py", line 774, in reflect_table
+    for col_d in self.get_columns(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/engine/reflection.py", line 497, in get_columns
+    col_defs = self.dialect.get_columns(
+  File "<string>", line 2, in get_columns
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/engine/reflection.py", line 55, in cache
+    ret = fn(self, con, *args, **kw)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/dialects/postgresql/base.py", line 3856, in get_columns
+    table_oid = self.get_table_oid(
+  File "<string>", line 2, in get_table_oid
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/engine/reflection.py", line 55, in cache
+    ret = fn(self, con, *args, **kw)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/dialects/postgresql/base.py", line 3736, in get_table_oid
+    raise exc.NoSuchTableError(table_name)
+sqlalchemy.exc.NoSuchTableError: location"
+[2025-06-06T14:41:20.890+0000] {taskinstance.py:1400} INFO - Marking task as FAILED. dag_id=Airflow_ETL_DAG, task_id=insert_locations, execution_date=20250310T000000, start_date=20250606T144120, end_date=20250606T144120
+[2025-06-06T14:41:20.924+0000] {standard_task_runner.py:104} ERROR - Failed to execute job 3 for task insert_locations (location"; 244)
+[2025-06-06T14:41:20.996+0000] {local_task_job_runner.py:228} INFO - Task exited with return code 1
+[2025-06-06T14:41:21.052+0000] {taskinstance.py:2778} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2025-06-07T13:40:22.608+0000] {logging_mixin.py:151} INFO - Changing /opt/airflow/logs/dag_id=Airflow_ETL_DAG/run_id=scheduled__2025-03-10T00:00:00+00:00/task_id=insert_locations permission to 509
+[2025-06-07T13:40:22.625+0000] {logging_mixin.py:151} INFO - Failed to change /opt/airflow/logs/dag_id=Airflow_ETL_DAG/run_id=scheduled__2025-03-10T00:00:00+00:00/task_id=insert_locations permission to 509: [Errno 1] Operation not permitted: '/opt/airflow/logs/dag_id=Airflow_ETL_DAG/run_id=scheduled__2025-03-10T00:00:00+00:00/task_id=insert_locations'
+[2025-06-07T13:40:22.694+0000] {logging_mixin.py:151} INFO - Changing /opt/airflow/logs/dag_id=Airflow_ETL_DAG/run_id=scheduled__2025-03-10T00:00:00+00:00/task_id=insert_locations permission to 509
+[2025-06-07T13:40:22.695+0000] {logging_mixin.py:151} INFO - Failed to change /opt/airflow/logs/dag_id=Airflow_ETL_DAG/run_id=scheduled__2025-03-10T00:00:00+00:00/task_id=insert_locations permission to 509: [Errno 1] Operation not permitted: '/opt/airflow/logs/dag_id=Airflow_ETL_DAG/run_id=scheduled__2025-03-10T00:00:00+00:00/task_id=insert_locations'
+[2025-06-07T13:40:22.802+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: Airflow_ETL_DAG.insert_locations scheduled__2025-03-10T00:00:00+00:00 [queued]>
+[2025-06-07T13:40:22.830+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: Airflow_ETL_DAG.insert_locations scheduled__2025-03-10T00:00:00+00:00 [queued]>
+[2025-06-07T13:40:22.831+0000] {taskinstance.py:1361} INFO - Starting attempt 2 of 2
+[2025-06-07T13:40:22.874+0000] {taskinstance.py:1382} INFO - Executing <Task(PythonOperator): insert_locations> on 2025-03-10 00:00:00+00:00
+[2025-06-07T13:40:22.885+0000] {standard_task_runner.py:57} INFO - Started process 330 to run task
+[2025-06-07T13:40:22.894+0000] {standard_task_runner.py:84} INFO - Running: ['airflow', 'tasks', 'run', 'Airflow_ETL_DAG', 'insert_locations', 'scheduled__2025-03-10T00:00:00+00:00', '--job-id', '3', '--raw', '--subdir', 'DAGS_FOLDER/airflow_etl.py', '--cfg-path', '/tmp/tmpwx053hyh']
+[2025-06-07T13:40:22.901+0000] {standard_task_runner.py:85} INFO - Job 3: Subtask insert_locations
+[2025-06-07T13:40:23.089+0000] {logging_mixin.py:151} INFO - Changing /opt/airflow/logs/dag_id=Airflow_ETL_DAG/run_id=scheduled__2025-03-10T00:00:00+00:00/task_id=insert_locations permission to 509
+[2025-06-07T13:40:23.090+0000] {logging_mixin.py:151} INFO - Failed to change /opt/airflow/logs/dag_id=Airflow_ETL_DAG/run_id=scheduled__2025-03-10T00:00:00+00:00/task_id=insert_locations permission to 509: [Errno 1] Operation not permitted: '/opt/airflow/logs/dag_id=Airflow_ETL_DAG/run_id=scheduled__2025-03-10T00:00:00+00:00/task_id=insert_locations'
+[2025-06-07T13:40:23.096+0000] {task_command.py:416} INFO - Running <TaskInstance: Airflow_ETL_DAG.insert_locations scheduled__2025-03-10T00:00:00+00:00 [running]> on host 4cec46ae5e0e
+[2025-06-07T13:40:23.328+0000] {taskinstance.py:1662} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='Airflow_ETL_DAG' AIRFLOW_CTX_TASK_ID='insert_locations' AIRFLOW_CTX_EXECUTION_DATE='2025-03-10T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='2' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2025-03-10T00:00:00+00:00'
+[2025-06-07T13:40:23.779+0000] {logging_mixin.py:151} INFO - Erreur dans task_insert_locations: location"
+[2025-06-07T13:40:24.085+0000] {logging_mixin.py:151} INFO - Erreur avec approche explicite aussi: location"
+[2025-06-07T13:40:24.087+0000] {taskinstance.py:1937} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/opt/airflow/dags/airflow_etl.py", line 47, in task_insert_locations
+    metadata.reflect(bind=engine)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/schema.py", line 4901, in reflect
+    Table(name, self, **reflect_opts)
+  File "<string>", line 2, in __new__
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/util/deprecations.py", line 375, in warned
+    return fn(*args, **kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/schema.py", line 619, in __new__
+    metadata._remove_table(name, schema)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/util/langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/schema.py", line 614, in __new__
+    table._init(name, metadata, *args, **kw)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/schema.py", line 689, in _init
+    self._autoload(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/schema.py", line 724, in _autoload
+    conn_insp.reflect_table(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/engine/reflection.py", line 795, in reflect_table
+    self._reflect_fk(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/engine/reflection.py", line 978, in _reflect_fk
+    sa_schema.Table(
+  File "<string>", line 2, in __new__
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/util/deprecations.py", line 375, in warned
+    return fn(*args, **kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/schema.py", line 619, in __new__
+    metadata._remove_table(name, schema)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/util/langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/schema.py", line 614, in __new__
+    table._init(name, metadata, *args, **kw)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/schema.py", line 689, in _init
+    self._autoload(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/schema.py", line 724, in _autoload
+    conn_insp.reflect_table(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/engine/reflection.py", line 774, in reflect_table
+    for col_d in self.get_columns(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/engine/reflection.py", line 497, in get_columns
+    col_defs = self.dialect.get_columns(
+  File "<string>", line 2, in get_columns
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/engine/reflection.py", line 55, in cache
+    ret = fn(self, con, *args, **kw)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/dialects/postgresql/base.py", line 3856, in get_columns
+    table_oid = self.get_table_oid(
+  File "<string>", line 2, in get_table_oid
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/engine/reflection.py", line 55, in cache
+    ret = fn(self, con, *args, **kw)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/dialects/postgresql/base.py", line 3736, in get_table_oid
+    raise exc.NoSuchTableError(table_name)
+sqlalchemy.exc.NoSuchTableError: location"
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/operators/python.py", line 192, in execute
+    return_value = self.execute_callable()
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/operators/python.py", line 209, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+  File "/opt/airflow/dags/airflow_etl.py", line 80, in task_insert_locations
+    metadata.reflect(bind=engine, schema='pandemics')
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/schema.py", line 4901, in reflect
+    Table(name, self, **reflect_opts)
+  File "<string>", line 2, in __new__
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/util/deprecations.py", line 375, in warned
+    return fn(*args, **kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/schema.py", line 619, in __new__
+    metadata._remove_table(name, schema)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/util/langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/schema.py", line 614, in __new__
+    table._init(name, metadata, *args, **kw)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/schema.py", line 689, in _init
+    self._autoload(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/schema.py", line 724, in _autoload
+    conn_insp.reflect_table(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/engine/reflection.py", line 795, in reflect_table
+    self._reflect_fk(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/engine/reflection.py", line 978, in _reflect_fk
+    sa_schema.Table(
+  File "<string>", line 2, in __new__
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/util/deprecations.py", line 375, in warned
+    return fn(*args, **kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/schema.py", line 619, in __new__
+    metadata._remove_table(name, schema)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/util/langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/schema.py", line 614, in __new__
+    table._init(name, metadata, *args, **kw)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/schema.py", line 689, in _init
+    self._autoload(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/schema.py", line 724, in _autoload
+    conn_insp.reflect_table(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/engine/reflection.py", line 774, in reflect_table
+    for col_d in self.get_columns(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/engine/reflection.py", line 497, in get_columns
+    col_defs = self.dialect.get_columns(
+  File "<string>", line 2, in get_columns
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/engine/reflection.py", line 55, in cache
+    ret = fn(self, con, *args, **kw)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/dialects/postgresql/base.py", line 3856, in get_columns
+    table_oid = self.get_table_oid(
+  File "<string>", line 2, in get_table_oid
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/engine/reflection.py", line 55, in cache
+    ret = fn(self, con, *args, **kw)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/dialects/postgresql/base.py", line 3736, in get_table_oid
+    raise exc.NoSuchTableError(table_name)
+sqlalchemy.exc.NoSuchTableError: location"
+[2025-06-07T13:40:24.124+0000] {taskinstance.py:1400} INFO - Marking task as FAILED. dag_id=Airflow_ETL_DAG, task_id=insert_locations, execution_date=20250310T000000, start_date=20250607T134022, end_date=20250607T134024
+[2025-06-07T13:40:24.183+0000] {standard_task_runner.py:104} ERROR - Failed to execute job 3 for task insert_locations (location"; 330)
+[2025-06-07T13:40:24.232+0000] {local_task_job_runner.py:228} INFO - Task exited with return code 1
+[2025-06-07T13:40:24.283+0000] {taskinstance.py:2778} INFO - 0 downstream tasks scheduled from follow-on schedule check

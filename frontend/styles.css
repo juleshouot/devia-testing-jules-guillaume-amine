@@ -106,13 +106,14 @@ body {
     padding: 5px 10px;
     border-radius: 20px;
     margin-right: 5px;
-    margin-bottom: 5px; /* Ajout pour espacement vertical */
-    display: inline-block; /* Pour que margin-bottom fonctionne */
+    margin-bottom: 5px;
+    display: inline-block;
 }
 
 .prediction-badge.transmission {
-    background-color: var(--warning-color);
-    color: #333;
+    background: linear-gradient(135deg, #0077b6 0%, #00b4d8 100%);
+    color: white;
+    border: 1px solid #0077b6;
 }
 
 .prediction-badge.mortality {
@@ -188,4 +189,171 @@ a:focus, button:focus, input:focus, select:focus {
 
 .skip-link:focus {
     top: 0;
+}
+
+/* Styles pour la validation du modèle */
+.validation-results {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 10px;
+    padding: 15px;
+    margin: 15px 0;
+}
+
+.validation-quality {
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    border: 1px solid #e9ecef;
+}
+
+.validation-quality .col-3 {
+    padding: 10px;
+    border-radius: 5px;
+    margin: 2px;
+}
+
+.validation-quality .col-3:hover {
+    background-color: #f8f9fa;
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+}
+
+#validation-status,
+#transmission-validation-status {
+    font-weight: 500;
+}
+
+#validate-model-btn,
+#validate-transmission-model-btn {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+#validate-model-btn:hover,
+#validate-transmission-model-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 119, 182, 0.3);
+}
+
+#validate-model-btn:disabled,
+#validate-transmission-model-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.list-group-item {
+    border-left: 4px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.list-group-item:hover {
+    border-left-color: var(--primary-color);
+    background-color: #f8f9fa;
+    transform: translateX(5px);
+}
+
+/* Badges de qualité */
+.badge.bg-success {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+}
+
+.badge.bg-info {
+    background: linear-gradient(135deg, #17a2b8 0%, #6f42c1 100%) !important;
+}
+
+.badge.bg-warning {
+    background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%) !important;
+}
+
+.badge.bg-danger {
+    background: linear-gradient(135deg, #dc3545 0%, #e83e8c 100%) !important;
+}
+
+/* Animation pour les statistiques */
+@keyframes countUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.display-6 {
+    animation: countUp 0.6s ease-out;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+/* Animation pour les métriques de validation (mortalité ET transmission) */
+#validation-accuracy,
+#validation-count,
+#transmission-validation-accuracy,
+#transmission-validation-count {
+    animation: countUp 0.8s ease-out;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+/* Styles pour les états épidémiques futurs */
+.future-epidemic-state {
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.future-epidemic-state.forte-croissance {
+    background-color: #dc3545;
+    color: white;
+}
+
+.future-epidemic-state.croissance {
+    background-color: #fd7e14;
+    color: white;
+}
+
+.future-epidemic-state.stable {
+    background-color: #20c997;
+    color: white;
+}
+
+.future-epidemic-state.declin {
+    background-color: #6f42c1;
+    color: white;
+}
+
+/* Responsive pour la validation */
+@media (max-width: 768px) {
+    .validation-quality .row {
+        text-align: center;
+    }
+
+    .validation-quality .col-3 {
+        flex: 0 0 50%;
+        max-width: 50%;
+        margin-bottom: 10px;
+    }
+
+    #validate-model-btn,
+    #validate-transmission-model-btn {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
+
+/* Indicateurs de statut pour tous les types de validation */
+#validation-status.text-primary,
+#transmission-validation-status.text-primary {
+    color: #0077b6 !important;
+}
+
+#validation-status.text-success,
+#transmission-validation-status.text-success {
+    color: #028a0f !important;
+}
+
+#validation-status.text-danger,
+#transmission-validation-status.text-danger {
+    color: #d00000 !important;
 }

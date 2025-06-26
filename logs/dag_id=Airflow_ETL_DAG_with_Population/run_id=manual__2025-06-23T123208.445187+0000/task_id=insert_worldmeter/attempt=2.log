@@ -1,0 +1,59 @@
+[2025-06-23T12:39:29.317+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: Airflow_ETL_DAG_with_Population.insert_worldmeter manual__2025-06-23T12:32:08.445187+00:00 [queued]>
+[2025-06-23T12:39:29.325+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: Airflow_ETL_DAG_with_Population.insert_worldmeter manual__2025-06-23T12:32:08.445187+00:00 [queued]>
+[2025-06-23T12:39:29.325+0000] {taskinstance.py:1361} INFO - Starting attempt 2 of 3
+[2025-06-23T12:39:29.340+0000] {taskinstance.py:1382} INFO - Executing <Task(PythonOperator): insert_worldmeter> on 2025-06-23 12:32:08.445187+00:00
+[2025-06-23T12:39:29.349+0000] {standard_task_runner.py:57} INFO - Started process 413 to run task
+[2025-06-23T12:39:29.352+0000] {standard_task_runner.py:84} INFO - Running: ['airflow', 'tasks', 'run', 'Airflow_ETL_DAG_with_Population', 'insert_worldmeter', 'manual__2025-06-23T12:32:08.445187+00:00', '--job-id', '13', '--raw', '--subdir', 'DAGS_FOLDER/airflow_etl.py', '--cfg-path', '/tmp/tmpcvt8uiwk']
+[2025-06-23T12:39:29.354+0000] {standard_task_runner.py:85} INFO - Job 13: Subtask insert_worldmeter
+[2025-06-23T12:39:29.399+0000] {task_command.py:416} INFO - Running <TaskInstance: Airflow_ETL_DAG_with_Population.insert_worldmeter manual__2025-06-23T12:32:08.445187+00:00 [running]> on host efd474e5dada
+[2025-06-23T12:39:29.475+0000] {taskinstance.py:1662} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='Airflow_ETL_DAG_with_Population' AIRFLOW_CTX_TASK_ID='insert_worldmeter' AIRFLOW_CTX_EXECUTION_DATE='2025-06-23T12:32:08.445187+00:00' AIRFLOW_CTX_TRY_NUMBER='2' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-23T12:32:08.445187+00:00'
+[2025-06-23T12:39:29.682+0000] {logging_mixin.py:151} INFO - Tables utilisées: pandemics.location, pandemics.worldmeter
+[2025-06-23T12:40:09.808+0000] {local_task_job_runner.py:294} WARNING - State of this instance has been externally set to None. Terminating instance.
+[2025-06-23T12:40:09.812+0000] {process_utils.py:131} INFO - Sending 15 to group 413. PIDs of all processes in the group: [413]
+[2025-06-23T12:40:09.813+0000] {process_utils.py:86} INFO - Sending the signal 15 to group 413
+[2025-06-23T12:40:09.814+0000] {taskinstance.py:1632} ERROR - Received SIGTERM. Terminating subprocesses.
+[2025-06-23T12:40:09.817+0000] {logging_mixin.py:151} INFO - Erreur dans task_insert_worldmeter: Task received SIGTERM signal
+[2025-06-23T12:40:09.827+0000] {taskinstance.py:1937} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/operators/python.py", line 192, in execute
+    return_value = self.execute_callable()
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/operators/python.py", line 209, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+  File "/opt/airflow/dags/airflow_etl.py", line 229, in task_insert_worldmeter
+    session.execute(stmt)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/orm/session.py", line 1717, in execute
+    result = conn._execute_20(statement, params or {}, execution_options)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1710, in _execute_20
+    return meth(self, args_10style, kwargs_10style, execution_options)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 334, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1569, in _execute_clauseelement
+    compiled_sql, extracted_params, cache_hit = elem._compile_w_cache(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 545, in _compile_w_cache
+    compiled_sql = self._compiler(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 567, in _compiler
+    return dialect.statement_compiler(dialect, self, **kw)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/compiler.py", line 809, in __init__
+    Compiled.__init__(self, dialect, statement, **kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/compiler.py", line 464, in __init__
+    self.string = self.process(self.statement, **compile_kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/compiler.py", line 499, in process
+    return obj._compiler_dispatch(self, **kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/visitors.py", line 82, in _compiler_dispatch
+    return meth(self, **kw)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/compiler.py", line 4017, in visit_insert
+    crud_params = crud._get_crud_params(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/crud.py", line 178, in _get_crud_params
+    values = _extend_values_for_multiparams(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/crud.py", line 961, in _extend_values_for_multiparams
+    new_param = _create_bind_param(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/crud.py", line 211, in _create_bind_param
+    bindparam = elements.BindParameter(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 1552, in __init__
+    self.literal_execute = literal_execute
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/models/taskinstance.py", line 1634, in signal_handler
+    raise AirflowException("Task received SIGTERM signal")
+airflow.exceptions.AirflowException: Task received SIGTERM signal
+[2025-06-23T12:40:09.839+0000] {taskinstance.py:1400} INFO - Marking task as UP_FOR_RETRY. dag_id=Airflow_ETL_DAG_with_Population, task_id=insert_worldmeter, execution_date=20250623T123208, start_date=20250623T123929, end_date=20250623T124009
+[2025-06-23T12:40:09.852+0000] {standard_task_runner.py:104} ERROR - Failed to execute job 13 for task insert_worldmeter (Task received SIGTERM signal; 413)
+[2025-06-23T12:40:10.027+0000] {process_utils.py:79} INFO - Process psutil.Process(pid=413, status='terminated', exitcode=1, started='12:39:28') (413) terminated with exit code 1

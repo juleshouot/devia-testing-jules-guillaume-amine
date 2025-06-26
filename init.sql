@@ -7,7 +7,8 @@ CREATE SCHEMA IF NOT EXISTS pandemics;
 CREATE TABLE IF NOT EXISTS pandemics.location (
   id SERIAL PRIMARY KEY,       -- "SERIAL" remplace AUTO_INCREMENT et crée automatiquement un entier séquentiel
   name VARCHAR(45) NOT NULL,
-  iso_code VARCHAR(45)
+  iso_code VARCHAR(45),
+  population BIGINT            -- NOUVEAU: Population du pays
 );
 
 -- Création de la table "virus"

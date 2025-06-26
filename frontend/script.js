@@ -178,7 +178,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Fonction pour charger les virus depuis l'API
  function loadViruses() {
     log('INFO', 'Chargement des virus...');
-    fetch('http://localhost:8000/api/viruses/')
+    fetch('http://localhost:8001/api/viruses/')
         .then(response => {
             if (!response.ok) {
                 throw new Error(`Erreur HTTP: ${response.status}`);
@@ -239,7 +239,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
-    loadPage('http://localhost:8000/api/locations/')
+    loadPage('http://localhost:8001/api/locations/')
         .then(locations => {
             log('INFO', `Toutes les localisations chargées (${locations.length})`, locations);
             showStatus(`${locations.length} localisations chargées avec succès.`, 'success');
@@ -414,7 +414,7 @@ function populateSelect(selectElement, items, textProperty, valueProperty) {
       params.append('end_date', endDate);
     }
 
-    const url = `http://localhost:8000/api/aggregated-data/?${params.toString()}`;
+    const url = `http://localhost:8001/api/aggregated-data/?${params.toString()}`;
     log('INFO', 'Récupération des données agrégées:', url);
 
     return fetch(url)
@@ -439,87 +439,100 @@ function populateSelect(selectElement, items, textProperty, valueProperty) {
   }
 
   // Fonction pour afficher les données agrégées
-  function displayAggregatedData(data) {
-    if (!data || !Array.isArray(data) || data.length === 0) {
-      log('WARN', 'Aucune donnée agrégée à afficher');
-      showStatus('Aucune donnée trouvée pour les critères sélectionnés.', 'warning');
-      return;
-    }
-
-    // Calculer les totaux
-    const stats = calculateAggregatedStats(data);
-
-    // Mettre à jour les cartes
-    updateCards(stats);
-
-    // Mettre à jour le tableau si disponible
-    updateDataTable(data);
-
-    // Mettre à jour les graphiques si disponibles
-    updateCharts(data);
-
-    log('INFO', 'Affichage mis à jour avec les données agrégées');
+ function displayAggregatedData(data) {
+  if (!data || !Array.isArray(data) || data.length === 0) {
+    log('WARN', 'Aucune donnée agrégée à afficher');
+    showStatus('Aucune donnée trouvée pour les critères sélectionnés.', 'warning');
+    return;
   }
+
+  // Calculer les totaux
+  const stats = calculateAggregatedStats(data);
+
+  // NOUVEAU: Récupérer les données de localisation pour la population
+  const locationName = locationSelect.options[locationSelect.selectedIndex].text;
+  if (locationName && locationName !== 'all') {
+    fetchLocationData(locationName).then(locationData => {
+      updateCards(stats, locationData);
+    });
+  } else {
+    updateCards(stats);
+  }
+
+  // Mettre à jour le tableau et graphiques
+  updateDataTable(data);
+  updateCharts(data);
+
+  log('INFO', 'Affichage mis à jour avec les données agrégées');
+}
 
   function calculateAggregatedStats(data) {
-    const stats = {
-      totalCases: 0,
-      totalDeaths: 0,
-      newCases: 0,
-      newDeaths: 0,
-      avgCasesPerMillion: 0,
-      avgDeathsPerMillion: 0,
-      count: data.length
-    };
+  const stats = {
+    totalCases: 0,
+    totalDeaths: 0,
+    newCases: 0,
+    newDeaths: 0,
+    avgCasesPerMillion: 0,
+    avgDeathsPerMillion: 0,
+    globalMortalityRate: 0,
+    count: data.length
+  };
 
-    if (data.length > 0) {
-      // Calculer les sommes pour les nouveaux cas et décès
-      data.forEach(item => {
-        stats.newCases += Number(item.sum_new_cases || 0);
-        stats.newDeaths += Number(item.sum_new_deaths || 0);
+  if (data.length > 0) {
+    // Calculer les sommes pour les nouveaux cas et décès
+    data.forEach(item => {
+      stats.newCases += Number(item.sum_new_cases || 0);
+      stats.newDeaths += Number(item.sum_new_deaths || 0);
 
-        // Pour les statistiques par million, ne prendre en compte que les valeurs non nulles
-        if (item.avg_new_cases_per_million !== null) {
-          stats.avgCasesPerMillion += Number(item.avg_new_cases_per_million || 0);
-        }
-        if (item.avg_new_deaths_per_million !== null) {
-          stats.avgDeathsPerMillion += Number(item.avg_new_deaths_per_million || 0);
-        }
-
-        // Pour les cas et décès totaux, prendre la valeur la plus récente non nulle
-        // (les résultats sont typiquement triés par date)
-        if (item.total_cases !== null && item.total_cases !== undefined) {
-          stats.totalCases = Number(item.total_cases);
-        }
-        if (item.total_deaths !== null && item.total_deaths !== undefined) {
-          stats.totalDeaths = Number(item.total_deaths);
-        }
-      });
-
-      // Si nous n'avons pas trouvé de total, essayons d'extraire de la dernière entrée
-      const lastItem = data[data.length - 1];
-      if ((stats.totalCases === 0 || stats.totalCases === undefined) && lastItem) {
-        stats.totalCases = Number(lastItem.total_cases || 0);
+      // Pour les statistiques par million, ne prendre en compte que les valeurs non nulles
+      if (item.avg_new_cases_per_million !== null) {
+        stats.avgCasesPerMillion += Number(item.avg_new_cases_per_million || 0);
       }
-      if ((stats.totalDeaths === 0 || stats.totalDeaths === undefined) && lastItem) {
-        stats.totalDeaths = Number(lastItem.total_deaths || 0);
+      if (item.avg_new_deaths_per_million !== null) {
+        stats.avgDeathsPerMillion += Number(item.avg_new_deaths_per_million || 0);
       }
 
-      // Calculer les moyennes pour les valeurs par million
-      const nonNullCasesPerMillion = data.filter(item => item.avg_new_cases_per_million !== null).length;
-      const nonNullDeathsPerMillion = data.filter(item => item.avg_new_deaths_per_million !== null).length;
+      // Pour les cas et décès totaux, prendre la valeur la plus récente non nulle
+      // (les résultats sont typiquement triés par date)
+      if (item.total_cases !== null && item.total_cases !== undefined) {
+        stats.totalCases = Number(item.total_cases);
+      }
+      if (item.total_deaths !== null && item.total_deaths !== undefined) {
+        stats.totalDeaths = Number(item.total_deaths);
+      }
+    });
 
-      if (nonNullCasesPerMillion > 0) {
-        stats.avgCasesPerMillion = stats.avgCasesPerMillion / nonNullCasesPerMillion;
-      }
-      if (nonNullDeathsPerMillion > 0) {
-        stats.avgDeathsPerMillion = stats.avgDeathsPerMillion / nonNullDeathsPerMillion;
-      }
+    // Si nous n'avons pas trouvé de total, essayons d'extraire de la dernière entrée
+    const lastItem = data[data.length - 1];
+    if ((stats.totalCases === 0 || stats.totalCases === undefined) && lastItem) {
+      stats.totalCases = Number(lastItem.total_cases || 0);
+    }
+    if ((stats.totalDeaths === 0 || stats.totalDeaths === undefined) && lastItem) {
+      stats.totalDeaths = Number(lastItem.total_deaths || 0);
     }
 
-    log('INFO', 'Statistiques calculées à partir des données agrégées:', stats);
-    return stats;
+    // Calculer le taux de mortalité global (nouveaux décès / nouveaux cas) * 100
+    if (stats.newCases > 0) {
+      stats.globalMortalityRate = (stats.newDeaths / stats.newCases) * 100;
+    } else {
+      stats.globalMortalityRate = 0;
+    }
+
+    // Calculer les moyennes pour les valeurs par million
+    const nonNullCasesPerMillion = data.filter(item => item.avg_new_cases_per_million !== null).length;
+    const nonNullDeathsPerMillion = data.filter(item => item.avg_new_deaths_per_million !== null).length;
+
+    if (nonNullCasesPerMillion > 0) {
+      stats.avgCasesPerMillion = stats.avgCasesPerMillion / nonNullCasesPerMillion;
+    }
+    if (nonNullDeathsPerMillion > 0) {
+      stats.avgDeathsPerMillion = stats.avgDeathsPerMillion / nonNullDeathsPerMillion;
+    }
   }
+
+  log('INFO', 'Statistiques calculées à partir des données agrégées:', stats);
+  return stats;
+}
 // Fonction pour vérifier si toutes les données sont chargées et initialiser les prédictions
 function checkAndInitializePredictions() {
     if (dataLoaded.viruses && dataLoaded.locations) {
@@ -575,21 +588,55 @@ function checkAndInitializePredictions() {
         }, 500); // Court délai pour s'assurer que le DOM est bien mis à jour
     }
 }
-  // Fonction pour mettre à jour les cartes
-  function updateCards(stats) {
-    if (totalCasesElem) totalCasesElem.textContent = (stats.avgCasesPerMillion || 0).toFixed(2);
-    if (totalDeathsElem) totalDeathsElem.textContent = (stats.avgDeathsPerMillion || 0).toFixed(2);
-    if (newCasesElem) newCasesElem.textContent = (stats.newCases || 0).toLocaleString();
-    if (newDeathsElem) newDeathsElem.textContent = (stats.newDeaths || 0).toLocaleString();
+// Fonction pour mettre à jour les cartes avec population
+function updateCards(stats, locationData = null) {
+  // Taux de mortalité global
+  if (totalCasesElem) totalCasesElem.textContent = (stats.globalMortalityRate || 0).toFixed(2) + '%';
 
-    // Mettre à jour les étiquettes si nécessaire
-    const totalCasesLabel = document.querySelector('.card:has(#total-cases) .label');
-    const totalDeathsLabel = document.querySelector('.card:has(#total-deaths) .label');
-
-    if (totalCasesLabel) totalCasesLabel.textContent = 'Cas moyens par million';
-    if (totalDeathsLabel) totalDeathsLabel.textContent = 'Décès moyens par million';
+  // Population du pays
+  if (totalDeathsElem) {
+    if (locationData && locationData.population) {
+      const population = Number(locationData.population);
+      totalDeathsElem.textContent = population.toLocaleString();
+      log('INFO', `Population affichée: ${population.toLocaleString()}`);
+    } else {
+      totalDeathsElem.textContent = 'N/A';
+      log('WARN', 'Aucune donnée de population disponible');
+    }
   }
 
+  // Nouveaux cas et décès
+  if (newCasesElem) newCasesElem.textContent = (stats.newCases || 0).toLocaleString();
+  if (newDeathsElem) newDeathsElem.textContent = (stats.newDeaths || 0).toLocaleString();
+
+  // Mettre à jour les étiquettes si elles existent
+  updateCardLabels();
+}
+
+// Fonction pour mettre à jour les étiquettes des cartes
+function updateCardLabels() {
+  const cards = document.querySelectorAll('.stat-card');
+
+  cards.forEach((card, index) => {
+    const label = card.querySelector('.label');
+    if (label) {
+      switch(index) {
+        case 0:
+          label.textContent = 'Population du pays';
+          break;
+        case 1:
+          label.textContent = 'Nouveaux cas (période)';
+          break;
+        case 2:
+          label.textContent = 'Nouveaux décès (période)';
+          break;
+        case 3:
+          label.textContent = 'Taux de mortalité global';
+          break;
+      }
+    }
+  });
+}
   // Fonction pour mettre à jour le tableau de données
   function updateDataTable(data) {
     const tableBody = document.getElementById('worldmeter-table-body');
@@ -795,7 +842,7 @@ function checkAndInitializePredictions() {
     log('INFO', 'Chargement des métriques des modèles...');
     showStatus('Chargement des métriques des modèles...', 'info');
 
-    fetch('http://localhost:8000/api/model-metrics-summary/')
+    fetch('http://localhost:8001/api/model-metrics-summary/')
       .then(response => {
         if (!response.ok) {
           throw new Error(`Erreur HTTP: ${response.status}`);
@@ -887,7 +934,7 @@ function loadPredictions() {
         weeks: 4
     };
 
-    fetch('http://localhost:8000/api/predict/forecast/', {
+    fetch('http://localhost:8001/api/predict/forecast/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -915,7 +962,7 @@ function loadPredictions() {
         virus_id: virusId
     };
 
-    fetch('http://localhost:8000/api/predict/geographical-spread/', {
+    fetch('http://localhost:8001/api/predict/geographical-spread/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -1119,7 +1166,7 @@ function loadPredictions() {
     showStatus(`Chargement des prédictions de propagation pour ${virusName}...`, 'info');
 
     // Essayer d'abord l'API geographical-predictions
-    fetch(`http://localhost:8000/api/geographical-predictions/?virus=${virusName}`)
+    fetch(`http://localhost:8001/api/geographical-predictions/?virus=${virusName}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`Erreur HTTP: ${response.status}`);
@@ -1285,7 +1332,7 @@ function loadPredictions() {
     const endDate = endDateInput ? endDateInput.value : null;
 
     // Construire l'URL avec les mêmes paramètres que le filtrage manuel
-    let url = 'http://localhost:8000/api/aggregated-data/';
+    let url = 'http://localhost:8001/api/aggregated-data/';
     let params = new URLSearchParams();
 
     params.append('virus_name', virusName);
@@ -1343,107 +1390,1061 @@ function loadPredictions() {
       });
   }
 
-  // Fonction pour rechercher des données spécifiques (pour le bouton "Tester jour spécifique")
-  function fetchSpecificDay(virusName, locationName, date) {
-    log('INFO', `Recherche pour ${virusName} en ${locationName} le ${date}`);
+// NOUVEAU: Fonction pour récupérer les données de localisation (incluant population)
+function fetchLocationData(locationName) {
+  log('INFO', `Récupération des données pour ${locationName}...`);
 
-    const url = `http://localhost:8000/api/aggregated-data/?virus_name=${virusName}&location_name=${locationName}&date=${date}`;
-
-    showStatus(`Recherche des données pour ${virusName} en ${locationName} le ${date}...`, 'info');
-
-    fetch(url)
-      .then(response => {
-        if (!response.ok) throw new Error(`Erreur HTTP: ${response.status}`);
-        return response.json();
-      })
-      .then(data => {
-        log('INFO', 'Données spécifiques récupérées:', data);
-
-        if (data && data.length > 0) {
-          // Afficher les données dans la console
-          const item = data[0];
-          log('SUCCESS', `=== DONNÉES POUR ${virusName} EN ${locationName} LE ${date} ===`);
-          log('SUCCESS', `Nouveaux cas: ${item.sum_new_cases}`);
-          log('SUCCESS', `Nouveaux décès: ${item.sum_new_deaths}`);
-          log('SUCCESS', `Cas par million: ${item.avg_new_cases_per_million}`);
-          log('SUCCESS', `Décès par million: ${item.avg_new_deaths_per_million}`);
-          log('SUCCESS', '======================================');
-
-          // Mettre à jour l'interface
-          displayAggregatedData(data);
-
-          // Message de succès
-          showStatus(`Données trouvées pour ${virusName} en ${locationName} le ${date}: ${item.sum_new_cases} nouveaux cas, ${item.sum_new_deaths} nouveaux décès`, 'success');
-        } else {
-          log('WARN', `Aucune donnée trouvée pour ${virusName} en ${locationName} le ${date}`);
-          showStatus(`Aucune donnée trouvée pour ${virusName} en ${locationName} le ${date}`, 'warning');
-        }
-      })
-      .catch(error => {
-        log('ERROR', `Erreur lors de la recherche: ${error.message}`, error);
-        showStatus(`Erreur lors de la recherche: ${error.message}`, 'error');
-      });
-  }
-
-  // =================== Initialisation et boutons de test ===================
-
-  // Fonction pour ajouter des boutons de test dans l'interface
-  function addTestButtons() {
-    // Vérifier si les boutons existent déjà
-    if (document.getElementById('test-buttons-container')) {
-      return;
-    }
-
-    const testContainer = document.createElement('div');
-    testContainer.id = 'test-buttons-container';
-    testContainer.style.margin = '20px 0';
-    testContainer.style.padding = '15px';
-    testContainer.style.backgroundColor = '#f8f9fa';
-    testContainer.style.borderRadius = '5px';
-    testContainer.style.border = '1px solid #dee2e6';
-
-    testContainer.innerHTML = `
-      <h3>Tests</h3>
-      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-        <button id="test-monkeypox-africa" style="background-color: #007bff; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">
-          Tester jour spécifique (Monkeypox, Africa, 2022-05-01)
-        </button>
-        <button id="test-covid-france" style="background-color: #28a745; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">
-          Calculer sommes (COVID, France)
-        </button>
-        <button id="test-all-data" style="background-color: #dc3545; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">
-          Afficher toutes les données
-        </button>
-      </div>
-    `;
-
-    // Trouver un bon emplacement pour les boutons de test
-    const mainSection = document.querySelector('#main-content') || document.body;
-    mainSection.appendChild(testContainer);
-
-    // Ajouter les écouteurs d'événements
-    document.getElementById('test-monkeypox-africa').addEventListener('click', function() {
-      fetchSpecificDay('Monkeypox', 'Africa', '2022-05-01');
+  return fetch(`http://localhost:8001/api/location-details/?name=${encodeURIComponent(locationName)}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Erreur HTTP: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      log('INFO', `Données de localisation récupérées pour ${locationName}:`, data);
+      return data;
+    })
+    .catch(error => {
+      log('ERROR', `Erreur lors de la récupération des données de ${locationName}:`, error);
+      return null;
     });
+}
+  // =================== Fonctions pour la validation du modèle ===================
 
-    document.getElementById('test-covid-france').addEventListener('click', function() {
-      calculateSums('COVID', 'France');
-    });
+// =================== VALIDATION DU MODÈLE - CODE COMPLET ===================
 
-    document.getElementById('test-all-data').addEventListener('click', function() {
-      fetch('http://localhost:8000/api/aggregated-data/')
-        .then(response => response.json())
+// 1. Fonction pour charger les pays disponibles
+function loadAvailableCountries() {
+    log('INFO', 'Chargement des pays disponibles pour la validation...');
+
+    fetch('http://localhost:8001/api/available-countries/')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Erreur HTTP: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
-          log('INFO', 'Toutes les données récupérées:', data);
-          displayAggregatedData(data);
-          showStatus(`Toutes les données récupérées: ${data.length} enregistrements`, 'success');
+            log('INFO', `${data.total_count} pays chargés pour la validation:`, data);
+            populateCountrySelect(data.countries);
         })
         .catch(error => {
-          log('ERROR', 'Erreur lors de la récupération des données:', error);
-          showStatus(`Erreur: ${error.message}`, 'error');
+            log('ERROR', 'Erreur lors du chargement des pays:', error);
+            // En cas d'erreur, utiliser la liste par défaut
+            useDefaultCountries();
         });
+}
+
+// 2. Fonction pour remplir le sélecteur de pays
+function populateCountrySelect(countries) {
+    // 🔧 MODIFIER : Remplir TOUS les sélecteurs de validation
+    const selectors = [
+        'validation-location-select',           // Mortalité (existant)
+        'transmission-validation-location-select' // Transmission (nouveau)
+    ];
+
+    selectors.forEach(selectorId => {
+        const locationSelect = document.getElementById(selectorId);
+
+        if (!locationSelect) {
+            log('DEBUG', `Sélecteur ${selectorId} non trouvé (normal si carte pas présente)`);
+            return; // Continuer avec le suivant
+        }
+
+        // Vider le sélecteur
+        locationSelect.innerHTML = '<option value="">Sélectionner un pays...</option>';
+
+        // Grouper les pays par qualité des données
+        const excellentCountries = countries.filter(c => c.data_quality === 'Excellente');
+        const goodCountries = countries.filter(c => c.data_quality === 'Bonne');
+        const fairCountries = countries.filter(c => c.data_quality === 'Correcte');
+
+        // Ajouter les groupes avec des optgroups
+        if (excellentCountries.length > 0) {
+            const excellentGroup = document.createElement('optgroup');
+            excellentGroup.label = `🌟 Qualité Excellente (${excellentCountries.length} pays)`;
+            excellentCountries.forEach(country => {
+                const option = document.createElement('option');
+                option.value = country.name;
+                option.textContent = `${country.name} (${country.total_cases.toLocaleString()} cas)`;
+                excellentGroup.appendChild(option);
+            });
+            locationSelect.appendChild(excellentGroup);
+        }
+
+        if (goodCountries.length > 0) {
+            const goodGroup = document.createElement('optgroup');
+            goodGroup.label = `✅ Qualité Bonne (${goodCountries.length} pays)`;
+            goodCountries.forEach(country => {
+                const option = document.createElement('option');
+                option.value = country.name;
+                option.textContent = `${country.name} (${country.total_cases.toLocaleString()} cas)`;
+                goodGroup.appendChild(option);
+            });
+            locationSelect.appendChild(goodGroup);
+        }
+
+        if (fairCountries.length > 0) {
+            const fairGroup = document.createElement('optgroup');
+            fairGroup.label = `⚠️ Qualité Correcte (${fairCountries.length} pays)`;
+            fairCountries.forEach(country => {
+                const option = document.createElement('option');
+                option.value = country.name;
+                option.textContent = `${country.name} (${country.total_cases.toLocaleString()} cas)`;
+                fairGroup.appendChild(option);
+            });
+            locationSelect.appendChild(fairGroup);
+        }
+
+        log('INFO', `Sélecteur ${selectorId} rempli avec ${countries.length} pays`);
+
+        // Sélectionner la France par défaut après un délai
+        setTimeout(() => {
+            locationSelect.value = 'France';
+            log('INFO', `France sélectionnée par défaut pour ${selectorId}`);
+        }, 500);
     });
-  }
+}
+
+// 3. Fonction de fallback avec la liste par défaut
+function useDefaultCountries() {
+    log('WARN', 'Utilisation de la liste de pays par défaut');
+
+    const defaultCountries = [
+        { name: 'France', data_quality: 'Excellente' },
+        { name: 'USA', data_quality: 'Excellente' },
+        { name: 'UK', data_quality: 'Excellente' },
+        { name: 'Germany', data_quality: 'Excellente' },
+        { name: 'Italy', data_quality: 'Excellente' },
+        { name: 'Spain', data_quality: 'Excellente' },
+        { name: 'Brazil', data_quality: 'Excellente' },
+        { name: 'India', data_quality: 'Excellente' }
+    ];
+
+    const locationSelect = document.getElementById('validation-location-select');
+    if (locationSelect) {
+        locationSelect.innerHTML = '<option value="">Sélectionner un pays...</option>';
+
+        defaultCountries.forEach(country => {
+            const option = document.createElement('option');
+            option.value = country.name;
+            option.textContent = country.name;
+            locationSelect.appendChild(option);
+        });
+
+        // Sélectionner la France par défaut
+        setTimeout(() => {
+            locationSelect.value = 'France';
+        }, 500);
+    }
+}
+
+// 4. Fonction pour charger la validation du modèle
+function loadModelValidation() {
+    const locationSelect = document.getElementById('validation-location-select');
+    const periodSelect = document.getElementById('validation-period-select');
+    const statusSpan = document.getElementById('validation-status');
+
+    if (!locationSelect || !periodSelect) {
+        log('ERROR', 'Sélecteurs de validation non trouvés');
+        return;
+    }
+
+    const locationName = locationSelect.value;
+    const periodValue = periodSelect.value;
+
+    if (!locationName || !periodValue) {
+        showStatus('Veuillez sélectionner un pays et une période.', 'warning');
+        return;
+    }
+
+    const [startDate, endDate] = periodValue.split(',');
+
+    log('INFO', `Validation du modèle pour ${locationName} (${startDate} - ${endDate})`);
+    statusSpan.textContent = 'Validation en cours...';
+    statusSpan.className = 'ms-2 text-primary';
+
+    const requestData = {
+        location_name: locationName,
+        start_date: startDate,
+        end_date: endDate,
+        max_results: 100
+    };
+
+    fetch('http://localhost:8001/api/validate-model/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Erreur HTTP: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        log('INFO', 'Résultats de validation reçus:', data);
+        statusSpan.textContent = 'Validation terminée';
+        statusSpan.className = 'ms-2 text-success';
+        displayValidationResults(data);
+    })
+    .catch(error => {
+        log('ERROR', 'Erreur lors de la validation:', error);
+        statusSpan.textContent = 'Erreur lors de la validation';
+        statusSpan.className = 'ms-2 text-danger';
+        showStatus(`Erreur lors de la validation: ${error.message}`, 'error');
+    });
+}
+
+// 5. Fonction pour afficher les résultats de validation
+function displayValidationResults(data) {
+    const resultsDiv = document.getElementById('validation-results');
+    const validationList = document.getElementById('validation-list');
+
+    if (!resultsDiv || !validationList) {
+        log('ERROR', 'Éléments de résultats de validation non trouvés');
+        return;
+    }
+
+    resultsDiv.style.display = 'block';
+    updateValidationStats(data.statistics);
+    displayValidationPredictions(data.predictions);
+    updateValidationChart(data.predictions);
+    showStatus(`Validation terminée: ${data.statistics.total_predictions} prédictions analysées pour ${data.location}`, 'success');
+}
+
+// 6. Fonction pour mettre à jour les statistiques de validation
+function updateValidationStats(stats) {
+    const elements = {
+        'validation-accuracy': `${stats.median_error_relative}%`,
+        'validation-count': stats.total_predictions,
+        'excellent-count': stats.excellent_count,
+        'good-count': stats.good_count,
+        'fair-count': stats.fair_count,
+        'poor-count': stats.poor_count
+    };
+
+    for (const [id, value] of Object.entries(elements)) {
+        const elem = document.getElementById(id);
+        if (elem) {
+            elem.textContent = value;
+        }
+    }
+}
+
+// 7. Fonction pour afficher la liste des prédictions
+function displayValidationPredictions(predictions) {
+    const validationList = document.getElementById('validation-list');
+    if (!validationList) return;
+
+    let html = '';
+
+    // Ajouter des contrôles d'affichage
+    html += `
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="mb-0">Détails des Prédictions (${predictions.length} total)</h6>
+            <div>
+                <button id="show-more-btn" class="btn btn-sm btn-outline-primary me-2">Voir plus</button>
+                <button id="show-all-btn" class="btn btn-sm btn-outline-secondary">Tout voir</button>
+            </div>
+        </div>
+    `;
+
+    // Par défaut, afficher les 20 premières
+    let displayCount = Math.min(20, predictions.length);
+    let displayPredictions = predictions.slice(0, displayCount);
+
+    displayPredictions.forEach((pred) => {
+        const qualityClass = getQualityClass(pred.quality_class);
+        const qualityIcon = getQualityIcon(pred.quality_class);
+
+        html += `
+            <div class="list-group-item">
+                <div class="d-flex w-100 justify-content-between">
+                    <h6 class="mb-1">${formatDateFr(pred.date)}</h6>
+                    <small class="text-muted">Erreur: ${pred.error_relative}%</small>
+                </div>
+                <div class="mb-1">
+                    <span class="badge ${qualityClass} me-1">${qualityIcon} ${pred.quality}</span>
+                    <span class="prediction-badge mortality">Prédit: ${pred.predicted_mortality}%</span>
+                    <span class="prediction-badge transmission">Réel: ${pred.actual_mortality}%</span>
+                </div>
+                <small class="text-muted">
+                    Cas: ${pred.new_cases_7d.toLocaleString()} (7j) | 
+                    Décès: ${pred.new_deaths_7d.toLocaleString()} (7j) |
+                    Total: ${pred.total_cases.toLocaleString()} cas
+                </small>
+            </div>
+        `;
+    });
+
+    if (predictions.length > displayCount) {
+        html += `
+            <div class="list-group-item text-center text-muted">
+                <small>... et ${predictions.length - displayCount} autres prédictions</small>
+            </div>
+        `;
+    }
+
+    validationList.innerHTML = html;
+
+    // Ajouter les événements pour "Voir plus" et "Tout voir"
+    const showMoreBtn = document.getElementById('show-more-btn');
+    const showAllBtn = document.getElementById('show-all-btn');
+
+    if (showMoreBtn) {
+        showMoreBtn.addEventListener('click', () => showMorePredictions(predictions, 50));
+    }
+
+    if (showAllBtn) {
+        showAllBtn.addEventListener('click', () => showAllPredictions(predictions));
+    }
+}
+
+// 8. Fonction pour afficher plus de prédictions
+function showMorePredictions(predictions, count) {
+    const validationList = document.getElementById('validation-list');
+    if (!validationList) return;
+
+    let html = `
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="mb-0">Détails des Prédictions (${predictions.length} total)</h6>
+            <div>
+                <button id="show-all-btn" class="btn btn-sm btn-outline-secondary me-2">Tout voir</button>
+                <button id="show-less-btn" class="btn btn-sm btn-outline-danger">Réduire</button>
+            </div>
+        </div>
+    `;
+
+    const displayCount = Math.min(count, predictions.length);
+    const displayPredictions = predictions.slice(0, displayCount);
+
+    displayPredictions.forEach((pred) => {
+        const qualityClass = getQualityClass(pred.quality_class);
+        const qualityIcon = getQualityIcon(pred.quality_class);
+
+        html += `
+            <div class="list-group-item">
+                <div class="d-flex w-100 justify-content-between">
+                    <h6 class="mb-1">${formatDateFr(pred.date)}</h6>
+                    <small class="text-muted">Erreur: ${pred.error_relative}%</small>
+                </div>
+                <div class="mb-1">
+                    <span class="badge ${qualityClass} me-1">${qualityIcon} ${pred.quality}</span>
+                    <span class="prediction-badge mortality">Prédit: ${pred.predicted_mortality}%</span>
+                    <span class="prediction-badge transmission">Réel: ${pred.actual_mortality}%</span>
+                </div>
+                <small class="text-muted">
+                    Cas: ${pred.new_cases_7d.toLocaleString()} (7j) | 
+                    Décès: ${pred.new_deaths_7d.toLocaleString()} (7j) |
+                    Total: ${pred.total_cases.toLocaleString()} cas
+                </small>
+            </div>
+        `;
+    });
+
+    if (predictions.length > displayCount) {
+        html += `
+            <div class="list-group-item text-center text-muted">
+                <small>... et ${predictions.length - displayCount} autres prédictions</small>
+            </div>
+        `;
+    }
+
+    validationList.innerHTML = html;
+
+    const showAllBtn = document.getElementById('show-all-btn');
+    const showLessBtn = document.getElementById('show-less-btn');
+
+    if (showAllBtn) {
+        showAllBtn.addEventListener('click', () => showAllPredictions(predictions));
+    }
+
+    if (showLessBtn) {
+        showLessBtn.addEventListener('click', () => displayValidationPredictions(predictions));
+    }
+}
+
+// 9. Fonction pour afficher toutes les prédictions
+function showAllPredictions(predictions) {
+    const validationList = document.getElementById('validation-list');
+    if (!validationList) return;
+
+    let html = `
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="mb-0">Toutes les Prédictions (${predictions.length})</h6>
+            <div>
+                <button id="show-less-btn" class="btn btn-sm btn-outline-danger me-2">Réduire</button>
+                <button id="export-csv-btn" class="btn btn-sm btn-outline-success">Exporter CSV</button>
+            </div>
+        </div>
+    `;
+
+    predictions.forEach((pred) => {
+        const qualityClass = getQualityClass(pred.quality_class);
+        const qualityIcon = getQualityIcon(pred.quality_class);
+
+        html += `
+            <div class="list-group-item">
+                <div class="d-flex w-100 justify-content-between">
+                    <h6 class="mb-1">${formatDateFr(pred.date)}</h6>
+                    <small class="text-muted">Erreur: ${pred.error_relative}%</small>
+                </div>
+                <div class="mb-1">
+                    <span class="badge ${qualityClass} me-1">${qualityIcon} ${pred.quality}</span>
+                    <span class="prediction-badge mortality">Prédit: ${pred.predicted_mortality}%</span>
+                    <span class="prediction-badge transmission">Réel: ${pred.actual_mortality}%</span>
+                </div>
+                <small class="text-muted">
+                    Cas: ${pred.new_cases_7d.toLocaleString()} (7j) | 
+                    Décès: ${pred.new_deaths_7d.toLocaleString()} (7j) |
+                    Total: ${pred.total_cases.toLocaleString()} cas
+                </small>
+            </div>
+        `;
+    });
+
+    validationList.innerHTML = html;
+
+    const showLessBtn = document.getElementById('show-less-btn');
+    const exportCsvBtn = document.getElementById('export-csv-btn');
+
+    if (showLessBtn) {
+        showLessBtn.addEventListener('click', () => displayValidationPredictions(predictions));
+    }
+
+    if (exportCsvBtn) {
+        exportCsvBtn.addEventListener('click', () => exportPredictionsToCSV(predictions));
+    }
+}
+
+// 10. Fonction pour exporter en CSV
+function exportPredictionsToCSV(predictions) {
+    const headers = ['Date', 'Taux_Predit_%', 'Taux_Reel_%', 'Erreur_Relative_%', 'Qualite', 'Cas_7j', 'Deces_7j', 'Total_Cas'];
+
+    let csvContent = headers.join(',') + '\n';
+
+    predictions.forEach(pred => {
+        const row = [
+            pred.date,
+            pred.predicted_mortality,
+            pred.actual_mortality,
+            pred.error_relative,
+            pred.quality,
+            pred.new_cases_7d,
+            pred.new_deaths_7d,
+            pred.total_cases
+        ];
+        csvContent += row.join(',') + '\n';
+    });
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `validation_predictions_${new Date().toISOString().slice(0,10)}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// 11. Fonction pour obtenir la classe CSS selon la qualité
+function getQualityClass(qualityClass) {
+    const classes = {
+        'excellent': 'bg-success text-white',
+        'good': 'bg-info text-white',
+        'fair': 'bg-warning text-dark',
+        'poor': 'bg-danger text-white'
+    };
+    return classes[qualityClass] || 'bg-secondary text-white';
+}
+
+// 12. Fonction pour obtenir l'icône selon la qualité
+function getQualityIcon(qualityClass) {
+    const icons = {
+        'excellent': '🎯',
+        'good': '✅',
+        'fair': '⚠️',
+        'poor': '❌'
+    };
+    return icons[qualityClass] || '📊';
+}
+
+// 13. Fonction pour mettre à jour le graphique de validation
+function updateValidationChart(predictions) {
+    const chartCanvas = document.getElementById('validation-chart');
+    if (!chartCanvas) {
+        log('ERROR', 'Canvas validation-chart non trouvé');
+        return;
+    }
+
+    if (window.validationChart instanceof Chart) {
+        window.validationChart.destroy();
+    }
+
+    const displayData = predictions.slice(-30);
+    const labels = displayData.map(p => formatShortDate(p.date));
+    const predictedData = displayData.map(p => p.predicted_mortality);
+    const actualData = displayData.map(p => p.actual_mortality);
+    const errorData = displayData.map(p => p.error_relative);
+
+    window.validationChart = new Chart(chartCanvas, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Taux Prédit (%)',
+                    data: predictedData,
+                    borderColor: '#0077b6',
+                    backgroundColor: 'rgba(0, 119, 182, 0.1)',
+                    borderWidth: 2,
+                    fill: false,
+                    yAxisID: 'y'
+                },
+                {
+                    label: 'Taux Réel (%)',
+                    data: actualData,
+                    borderColor: '#d00000',
+                    backgroundColor: 'rgba(208, 0, 0, 0.1)',
+                    borderWidth: 2,
+                    fill: false,
+                    yAxisID: 'y'
+                },
+                {
+                    label: 'Erreur Relative (%)',
+                    data: errorData,
+                    borderColor: '#ff9500',
+                    backgroundColor: 'rgba(255, 149, 0, 0.1)',
+                    borderWidth: 1,
+                    fill: true,
+                    yAxisID: 'y1',
+                    type: 'bar'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    callbacks: {
+                        afterBody: function(context) {
+                            const index = context[0].dataIndex;
+                            const pred = displayData[index];
+                            return [
+                                `Qualité: ${pred.quality}`,
+                                `Cas (7j): ${pred.new_cases_7d.toLocaleString()}`,
+                                `Décès (7j): ${pred.new_deaths_7d.toLocaleString()}`
+                            ];
+                        }
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'Validation du Modèle: Prédictions vs Réalité'
+                }
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        maxRotation: 45,
+                        minRotation: 45
+                    }
+                },
+                y: {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    title: {
+                        display: true,
+                        text: 'Taux de Mortalité (%)'
+                    }
+                },
+                y1: {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    title: {
+                        display: true,
+                        text: 'Erreur Relative (%)'
+                    },
+                    grid: {
+                        drawOnChartArea: false,
+                    },
+                }
+            }
+        }
+    });
+}
+
+// 14. Fonction d'initialisation pour la validation
+function initializeValidation() {
+    const validateBtn = document.getElementById('validate-model-btn');
+
+    if (validateBtn) {
+        validateBtn.addEventListener('click', loadModelValidation);
+        log('INFO', 'Écouteur de validation ajouté');
+    } else {
+        log('ERROR', 'Bouton validate-model-btn non trouvé');
+    }
+
+    // Charger tous les pays disponibles pour la validation
+    loadAvailableCountries();
+}
+
+function loadTransmissionModelValidation() {
+    const locationSelect = document.getElementById('transmission-validation-location-select');
+    const periodSelect = document.getElementById('transmission-validation-period-select');
+    const statusSpan = document.getElementById('transmission-validation-status');
+
+    if (!locationSelect || !periodSelect) {
+        log('ERROR', 'Sélecteurs de validation transmission non trouvés');
+        return;
+    }
+
+    const locationName = locationSelect.value;
+    const periodValue = periodSelect.value;
+
+    if (!locationName || !periodValue) {
+        showStatus('Veuillez sélectionner un pays et une période pour la validation transmission.', 'warning');
+        return;
+    }
+
+    const [startDate, endDate] = periodValue.split(',');
+
+    log('INFO', `Validation du modèle de transmission pour ${locationName} (${startDate} - ${endDate})`);
+    statusSpan.textContent = 'Validation transmission en cours...';
+    statusSpan.className = 'ms-2 text-primary';
+
+    const requestData = {
+        location_name: locationName,
+        start_date: startDate,
+        end_date: endDate,
+        max_results: 100
+    };
+
+    fetch('http://localhost:8001/api/validate-transmission-model/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Erreur HTTP: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        log('INFO', 'Résultats de validation transmission reçus:', data);
+        statusSpan.textContent = 'Validation transmission terminée';
+        statusSpan.className = 'ms-2 text-success';
+        displayTransmissionValidationResults(data);
+    })
+    .catch(error => {
+        log('ERROR', 'Erreur lors de la validation transmission:', error);
+        statusSpan.textContent = 'Erreur lors de la validation transmission';
+        statusSpan.className = 'ms-2 text-danger';
+        showStatus(`Erreur lors de la validation transmission: ${error.message}`, 'error');
+    });
+}
+
+// 2. Fonction pour afficher les résultats de validation transmission
+function displayTransmissionValidationResults(data) {
+    const resultsDiv = document.getElementById('transmission-validation-results');
+    const validationList = document.getElementById('transmission-validation-list');
+
+    if (!resultsDiv || !validationList) {
+        log('ERROR', 'Éléments de résultats de validation transmission non trouvés');
+        return;
+    }
+
+    resultsDiv.style.display = 'block';
+    updateTransmissionValidationStats(data.statistics);
+    displayTransmissionValidationPredictions(data.predictions);
+    updateTransmissionValidationChart(data.predictions);
+    showStatus(`Validation transmission terminée: ${data.statistics.total_predictions} prédictions Rt analysées pour ${data.location}`, 'success');
+}
+
+// 3. Fonction pour mettre à jour les statistiques de validation transmission
+function updateTransmissionValidationStats(stats) {
+    const elements = {
+        'transmission-validation-accuracy': `${stats.median_error_relative}%`,
+        'transmission-validation-count': stats.total_predictions,
+        'transmission-excellent-count': stats.excellent_count,
+        'transmission-good-count': stats.good_count,
+        'transmission-fair-count': stats.fair_count,
+        'transmission-poor-count': stats.poor_count
+    };
+
+    for (const [id, value] of Object.entries(elements)) {
+        const elem = document.getElementById(id);
+        if (elem) {
+            elem.textContent = value;
+        }
+    }
+}
+
+// 4. Fonction pour afficher la liste des prédictions transmission
+function displayTransmissionValidationPredictions(predictions) {
+    const validationList = document.getElementById('transmission-validation-list');
+    if (!validationList) return;
+
+    let html = '';
+
+    // Ajouter des contrôles d'affichage
+    html += `
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="mb-0">Détails des Prédictions Rt (${predictions.length} total)</h6>
+            <div>
+                <button id="transmission-show-more-btn" class="btn btn-sm btn-outline-primary me-2">Voir plus</button>
+                <button id="transmission-show-all-btn" class="btn btn-sm btn-outline-secondary">Tout voir</button>
+            </div>
+        </div>
+    `;
+
+    // Par défaut, afficher les 20 premières
+    let displayCount = Math.min(20, predictions.length);
+    let displayPredictions = predictions.slice(0, displayCount);
+
+    displayPredictions.forEach((pred) => {
+        const qualityClass = getQualityClass(pred.quality_class);
+        const qualityIcon = getQualityIcon(pred.quality_class);
+
+        // Spécifique transmission: afficher Rt prédit vs Rt futur réel
+        html += `
+            <div class="list-group-item">
+                <div class="d-flex w-100 justify-content-between">
+                    <h6 class="mb-1">${formatDateFr(pred.date)}</h6>
+                    <small class="text-muted">Erreur: ${pred.error_relative}%</small>
+                </div>
+                <div class="mb-1">
+                    <span class="badge ${qualityClass} me-1">${qualityIcon} ${pred.quality}</span>
+                    <span class="prediction-badge transmission">Rt Prédit: ${pred.predicted_rt}</span>
+                    <span class="prediction-badge cases">Rt Futur Réel: ${pred.actual_rt_future}</span>
+                </div>
+                <small class="text-muted">
+                    État Futur: ${pred.future_epidemic_state} | 
+                    Cas: ${pred.new_cases_7d.toLocaleString()} (7j) |
+                    Total: ${pred.total_cases.toLocaleString()} cas
+                </small>
+            </div>
+        `;
+    });
+
+    if (predictions.length > displayCount) {
+        html += `
+            <div class="list-group-item text-center text-muted">
+                <small>... et ${predictions.length - displayCount} autres prédictions Rt</small>
+            </div>
+        `;
+    }
+
+    validationList.innerHTML = html;
+
+    // Ajouter les événements pour "Voir plus" et "Tout voir"
+    const showMoreBtn = document.getElementById('transmission-show-more-btn');
+    const showAllBtn = document.getElementById('transmission-show-all-btn');
+
+    if (showMoreBtn) {
+        showMoreBtn.addEventListener('click', () => showMoreTransmissionPredictions(predictions, 50));
+    }
+
+    if (showAllBtn) {
+        showAllBtn.addEventListener('click', () => showAllTransmissionPredictions(predictions));
+    }
+}
+
+// 5. Fonction pour afficher plus de prédictions transmission
+function showMoreTransmissionPredictions(predictions, count) {
+    const validationList = document.getElementById('transmission-validation-list');
+    if (!validationList) return;
+
+    let html = `
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="mb-0">Détails des Prédictions Rt (${predictions.length} total)</h6>
+            <div>
+                <button id="transmission-show-all-btn" class="btn btn-sm btn-outline-secondary me-2">Tout voir</button>
+                <button id="transmission-show-less-btn" class="btn btn-sm btn-outline-danger">Réduire</button>
+            </div>
+        </div>
+    `;
+
+    const displayCount = Math.min(count, predictions.length);
+    const displayPredictions = predictions.slice(0, displayCount);
+
+    displayPredictions.forEach((pred) => {
+        const qualityClass = getQualityClass(pred.quality_class);
+        const qualityIcon = getQualityIcon(pred.quality_class);
+
+        html += `
+            <div class="list-group-item">
+                <div class="d-flex w-100 justify-content-between">
+                    <h6 class="mb-1">${formatDateFr(pred.date)}</h6>
+                    <small class="text-muted">Erreur: ${pred.error_relative}%</small>
+                </div>
+                <div class="mb-1">
+                    <span class="badge ${qualityClass} me-1">${qualityIcon} ${pred.quality}</span>
+                    <span class="prediction-badge transmission">Rt Prédit: ${pred.predicted_rt}</span>
+                    <span class="prediction-badge cases">Rt Futur Réel: ${pred.actual_rt_future}</span>
+                </div>
+                <small class="text-muted">
+                    État Futur: ${pred.future_epidemic_state} | 
+                    Cas: ${pred.new_cases_7d.toLocaleString()} (7j) |
+                    Total: ${pred.total_cases.toLocaleString()} cas
+                </small>
+            </div>
+        `;
+    });
+
+    if (predictions.length > displayCount) {
+        html += `
+            <div class="list-group-item text-center text-muted">
+                <small>... et ${predictions.length - displayCount} autres prédictions Rt</small>
+            </div>
+        `;
+    }
+
+    validationList.innerHTML = html;
+
+    const showAllBtn = document.getElementById('transmission-show-all-btn');
+    const showLessBtn = document.getElementById('transmission-show-less-btn');
+
+    if (showAllBtn) {
+        showAllBtn.addEventListener('click', () => showAllTransmissionPredictions(predictions));
+    }
+
+    if (showLessBtn) {
+        showLessBtn.addEventListener('click', () => displayTransmissionValidationPredictions(predictions));
+    }
+}
+
+// 6. Fonction pour afficher toutes les prédictions transmission
+function showAllTransmissionPredictions(predictions) {
+    const validationList = document.getElementById('transmission-validation-list');
+    if (!validationList) return;
+
+    let html = `
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="mb-0">Toutes les Prédictions Rt (${predictions.length})</h6>
+            <div>
+                <button id="transmission-show-less-btn" class="btn btn-sm btn-outline-danger me-2">Réduire</button>
+                <button id="transmission-export-csv-btn" class="btn btn-sm btn-outline-success">Exporter CSV</button>
+            </div>
+        </div>
+    `;
+
+    predictions.forEach((pred) => {
+        const qualityClass = getQualityClass(pred.quality_class);
+        const qualityIcon = getQualityIcon(pred.quality_class);
+
+        html += `
+            <div class="list-group-item">
+                <div class="d-flex w-100 justify-content-between">
+                    <h6 class="mb-1">${formatDateFr(pred.date)}</h6>
+                    <small class="text-muted">Erreur: ${pred.error_relative}%</small>
+                </div>
+                <div class="mb-1">
+                    <span class="badge ${qualityClass} me-1">${qualityIcon} ${pred.quality}</span>
+                    <span class="prediction-badge transmission">Rt Prédit: ${pred.predicted_rt}</span>
+                    <span class="prediction-badge cases">Rt Futur Réel: ${pred.actual_rt_future}</span>
+                </div>
+                <small class="text-muted">
+                    État Futur: ${pred.future_epidemic_state} | 
+                    Cas: ${pred.new_cases_7d.toLocaleString()} (7j) |
+                    Total: ${pred.total_cases.toLocaleString()} cas
+                </small>
+            </div>
+        `;
+    });
+
+    validationList.innerHTML = html;
+
+    const showLessBtn = document.getElementById('transmission-show-less-btn');
+    const exportCsvBtn = document.getElementById('transmission-export-csv-btn');
+
+    if (showLessBtn) {
+        showLessBtn.addEventListener('click', () => displayTransmissionValidationPredictions(predictions));
+    }
+
+    if (exportCsvBtn) {
+        exportCsvBtn.addEventListener('click', () => exportTransmissionPredictionsToCSV(predictions));
+    }
+}
+
+// 7. Fonction pour exporter les prédictions transmission en CSV
+function exportTransmissionPredictionsToCSV(predictions) {
+    const headers = ['Date', 'Rt_Predit', 'Rt_Futur_Reel', 'Erreur_Relative_%', 'Qualite', 'Etat_Futur', 'Cas_7j', 'Total_Cas'];
+
+    let csvContent = headers.join(',') + '\n';
+
+    predictions.forEach(pred => {
+        const row = [
+            pred.date,
+            pred.predicted_rt,
+            pred.actual_rt_future,
+            pred.error_relative,
+            pred.quality,
+            pred.future_epidemic_state,
+            pred.new_cases_7d,
+            pred.total_cases
+        ];
+        csvContent += row.join(',') + '\n';
+    });
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `validation_transmission_predictions_${new Date().toISOString().slice(0,10)}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// 8. Fonction pour mettre à jour le graphique de validation transmission
+function updateTransmissionValidationChart(predictions) {
+    const chartCanvas = document.getElementById('transmission-validation-chart');
+    if (!chartCanvas) {
+        log('ERROR', 'Canvas transmission-validation-chart non trouvé');
+        return;
+    }
+
+    if (window.transmissionValidationChart instanceof Chart) {
+        window.transmissionValidationChart.destroy();
+    }
+
+    const displayData = predictions.slice(-30);
+    const labels = displayData.map(p => formatShortDate(p.date));
+    const predictedData = displayData.map(p => p.predicted_rt);
+    const actualData = displayData.map(p => p.actual_rt_future);
+    const errorData = displayData.map(p => p.error_relative);
+
+    window.transmissionValidationChart = new Chart(chartCanvas, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Rt Prédit',
+                    data: predictedData,
+                    borderColor: '#0077b6',
+                    backgroundColor: 'rgba(0, 119, 182, 0.1)',
+                    borderWidth: 2,
+                    fill: false,
+                    yAxisID: 'y'
+                },
+                {
+                    label: 'Rt Futur Réel',
+                    data: actualData,
+                    borderColor: '#d00000',
+                    backgroundColor: 'rgba(208, 0, 0, 0.1)',
+                    borderWidth: 2,
+                    fill: false,
+                    yAxisID: 'y'
+                },
+                {
+                    label: 'Erreur Relative (%)',
+                    data: errorData,
+                    borderColor: '#ff9500',
+                    backgroundColor: 'rgba(255, 149, 0, 0.1)',
+                    borderWidth: 1,
+                    fill: true,
+                    yAxisID: 'y1',
+                    type: 'bar'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    callbacks: {
+                        afterBody: function(context) {
+                            const index = context[0].dataIndex;
+                            const pred = displayData[index];
+                            return [
+                                `Qualité: ${pred.quality}`,
+                                `État Futur: ${pred.future_epidemic_state}`,
+                                `Cas (7j): ${pred.new_cases_7d.toLocaleString()}`
+                            ];
+                        }
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'Validation Modèle Transmission: Rt Prédit vs Rt Futur Réel'
+                }
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        maxRotation: 45,
+                        minRotation: 45
+                    }
+                },
+                y: {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    title: {
+                        display: true,
+                        text: 'Taux de Reproduction (Rt)'
+                    }
+                },
+                y1: {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    title: {
+                        display: true,
+                        text: 'Erreur Relative (%)'
+                    },
+                    grid: {
+                        drawOnChartArea: false,
+                    },
+                }
+            }
+        }
+    });
+}
+
+// 9. Fonction d'initialisation pour la validation transmission
+function initializeTransmissionValidation() {
+    const validateTransmissionBtn = document.getElementById('validate-transmission-model-btn');
+
+    if (validateTransmissionBtn) {
+        validateTransmissionBtn.addEventListener('click', loadTransmissionModelValidation);
+        log('INFO', 'Écouteur de validation transmission ajouté');
+    } else {
+        log('ERROR', 'Bouton validate-transmission-model-btn non trouvé');
+    }
+
+    // Charger les pays disponibles (réutiliser la fonction existante)
+    loadAvailableCountries();
+}
+
+
+
+
 
 function initialize() {
     console.log("Tentative d'appel à loadModelMetrics()...");
@@ -1453,21 +2454,6 @@ function initialize() {
         console.error("Erreur lors du chargement des métriques:", error);
     }
 
-    // Désactiver le select de période par défaut
-    const defaultPeriodSelect = document.getElementById('date-range');
-    if (defaultPeriodSelect) {
-        const parentElement = defaultPeriodSelect.parentElement;
-        if (parentElement) {
-            parentElement.style.display = 'none';
-        }
-    }
-
-    const totalCasesCard = document.querySelector('.card:has(#total-cases)');
-    const totalDeathsCard = document.querySelector('.card:has(#total-deaths)');
-    if (totalCasesCard) totalCasesCard.style.display = 'none';
-    if (totalDeathsCard) totalDeathsCard.style.display = 'none';
-
-    // Charger les virus et les localisations (qui vont déclencher checkAndInitializePredictions)
     loadViruses();
     loadAllLocations();
 
@@ -1477,7 +2463,6 @@ function initialize() {
     }
 
     updateDateSelector();
-    addTestButtons();
 
     // Ajouter les écouteurs d'événements pour les prédictions
     const predVirusSelect = document.getElementById('pred-virus-select');
@@ -1493,11 +2478,14 @@ function initialize() {
         geoPredVirusSelect.addEventListener('change', loadGeoPredictions);
     }
 
+    // 🆕 NOUVEAU: Initialiser la validation du modèle
+    initializeValidation();
+    initializeTransmissionValidation();
+
     log('INFO', 'Initialisation terminée');
 }
 
 // Démarrer l'application - UNE SEULE FOIS à la fin
 initialize();
-
 
 });

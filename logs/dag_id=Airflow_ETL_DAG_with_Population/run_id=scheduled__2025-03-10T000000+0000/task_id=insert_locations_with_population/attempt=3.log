@@ -1,0 +1,258 @@
+[2025-06-23T12:41:10.997+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: Airflow_ETL_DAG_with_Population.insert_locations_with_population scheduled__2025-03-10T00:00:00+00:00 [queued]>
+[2025-06-23T12:41:11.009+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: Airflow_ETL_DAG_with_Population.insert_locations_with_population scheduled__2025-03-10T00:00:00+00:00 [queued]>
+[2025-06-23T12:41:11.012+0000] {taskinstance.py:1361} INFO - Starting attempt 3 of 4
+[2025-06-23T12:41:11.027+0000] {taskinstance.py:1382} INFO - Executing <Task(PythonOperator): insert_locations_with_population> on 2025-03-10 00:00:00+00:00
+[2025-06-23T12:41:11.036+0000] {standard_task_runner.py:57} INFO - Started process 469 to run task
+[2025-06-23T12:41:11.048+0000] {standard_task_runner.py:84} INFO - Running: ['airflow', 'tasks', 'run', 'Airflow_ETL_DAG_with_Population', 'insert_locations_with_population', 'scheduled__2025-03-10T00:00:00+00:00', '--job-id', '19', '--raw', '--subdir', 'DAGS_FOLDER/airflow_etl.py', '--cfg-path', '/tmp/tmpxmn9hh66']
+[2025-06-23T12:41:11.058+0000] {standard_task_runner.py:85} INFO - Job 19: Subtask insert_locations_with_population
+[2025-06-23T12:41:11.129+0000] {task_command.py:416} INFO - Running <TaskInstance: Airflow_ETL_DAG_with_Population.insert_locations_with_population scheduled__2025-03-10T00:00:00+00:00 [running]> on host efd474e5dada
+[2025-06-23T12:41:11.240+0000] {taskinstance.py:1662} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='Airflow_ETL_DAG_with_Population' AIRFLOW_CTX_TASK_ID='insert_locations_with_population' AIRFLOW_CTX_EXECUTION_DATE='2025-03-10T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='3' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2025-03-10T00:00:00+00:00'
+[2025-06-23T12:41:11.526+0000] {logging_mixin.py:151} INFO - Table utilisée: pandemics.location
+[2025-06-23T12:41:11.788+0000] {logging_mixin.py:151} INFO - Données de population chargées: 238 pays
+[2025-06-23T12:41:11.811+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Africa
+[2025-06-23T12:41:11.814+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Andorra
+[2025-06-23T12:41:11.816+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Argentina
+[2025-06-23T12:41:11.818+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Aruba
+[2025-06-23T12:41:11.819+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Asia
+[2025-06-23T12:41:11.821+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Australia
+[2025-06-23T12:41:11.822+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Austria
+[2025-06-23T12:41:11.824+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Bahamas
+[2025-06-23T12:41:11.826+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Bahrain
+[2025-06-23T12:41:11.829+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Barbados
+[2025-06-23T12:41:11.831+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Belgium
+[2025-06-23T12:41:11.833+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Benin
+[2025-06-23T12:41:11.835+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Bermuda
+[2025-06-23T12:41:11.837+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Bolivia
+[2025-06-23T12:41:11.839+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Bosnia and Herzegovina
+[2025-06-23T12:41:11.841+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Brazil
+[2025-06-23T12:41:11.843+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Bulgaria
+[2025-06-23T12:41:11.845+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Cameroon
+[2025-06-23T12:41:11.848+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Canada
+[2025-06-23T12:41:11.850+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Central African Republic
+[2025-06-23T12:41:11.852+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Chile
+[2025-06-23T12:41:11.854+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: China
+[2025-06-23T12:41:11.856+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Colombia
+[2025-06-23T12:41:11.858+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Congo
+[2025-06-23T12:41:11.859+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Costa Rica
+[2025-06-23T12:41:11.861+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Croatia
+[2025-06-23T12:41:11.864+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Cuba
+[2025-06-23T12:41:11.867+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Curacao
+[2025-06-23T12:41:11.868+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Cyprus
+[2025-06-23T12:41:11.870+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Czechia
+[2025-06-23T12:41:11.872+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Democratic Republic of Congo
+[2025-06-23T12:41:11.874+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Denmark
+[2025-06-23T12:41:11.875+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Dominican Republic
+[2025-06-23T12:41:11.878+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Ecuador
+[2025-06-23T12:41:11.880+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Egypt
+[2025-06-23T12:41:11.882+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: El Salvador
+[2025-06-23T12:41:11.884+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Estonia
+[2025-06-23T12:41:11.886+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Europe
+[2025-06-23T12:41:11.888+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Finland
+[2025-06-23T12:41:11.890+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: France
+[2025-06-23T12:41:11.892+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Georgia
+[2025-06-23T12:41:11.894+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Germany
+[2025-06-23T12:41:11.897+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Ghana
+[2025-06-23T12:41:11.900+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Gibraltar
+[2025-06-23T12:41:11.902+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Greece
+[2025-06-23T12:41:11.904+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Greenland
+[2025-06-23T12:41:11.906+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Guadeloupe
+[2025-06-23T12:41:11.909+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Guam
+[2025-06-23T12:41:11.911+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Guatemala
+[2025-06-23T12:41:11.914+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Guyana
+[2025-06-23T12:41:11.916+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Honduras
+[2025-06-23T12:41:11.918+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Hungary
+[2025-06-23T12:41:11.920+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Iceland
+[2025-06-23T12:41:11.922+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: India
+[2025-06-23T12:41:11.924+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Indonesia
+[2025-06-23T12:41:11.926+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Iran
+[2025-06-23T12:41:11.927+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Ireland
+[2025-06-23T12:41:11.930+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Israel
+[2025-06-23T12:41:11.933+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Italy
+[2025-06-23T12:41:11.935+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Jamaica
+[2025-06-23T12:41:11.937+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Japan
+[2025-06-23T12:41:11.938+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Jordan
+[2025-06-23T12:41:11.940+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Latvia
+[2025-06-23T12:41:11.942+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Lebanon
+[2025-06-23T12:41:11.944+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Liberia
+[2025-06-23T12:41:11.948+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Lithuania
+[2025-06-23T12:41:11.949+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Luxembourg
+[2025-06-23T12:41:11.952+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Malta
+[2025-06-23T12:41:11.953+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Martinique
+[2025-06-23T12:41:11.955+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Mexico
+[2025-06-23T12:41:11.957+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Moldova
+[2025-06-23T12:41:11.958+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Monaco
+[2025-06-23T12:41:11.960+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Montenegro
+[2025-06-23T12:41:11.961+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Morocco
+[2025-06-23T12:41:11.964+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Mozambique
+[2025-06-23T12:41:11.966+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Netherlands
+[2025-06-23T12:41:11.968+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: New Caledonia
+[2025-06-23T12:41:11.970+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: New Zealand
+[2025-06-23T12:41:11.971+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Nigeria
+[2025-06-23T12:41:11.973+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: North America
+[2025-06-23T12:41:11.975+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Norway
+[2025-06-23T12:41:11.977+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Oceania
+[2025-06-23T12:41:11.978+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Pakistan
+[2025-06-23T12:41:11.981+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Panama
+[2025-06-23T12:41:11.983+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Paraguay
+[2025-06-23T12:41:11.986+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Peru
+[2025-06-23T12:41:11.989+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Philippines
+[2025-06-23T12:41:11.991+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Poland
+[2025-06-23T12:41:11.993+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Portugal
+[2025-06-23T12:41:11.995+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Puerto Rico
+[2025-06-23T12:41:11.998+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Qatar
+[2025-06-23T12:41:12.000+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Romania
+[2025-06-23T12:41:12.002+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Russia
+[2025-06-23T12:41:12.005+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Saint Martin (French part)
+[2025-06-23T12:41:12.007+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: San Marino
+[2025-06-23T12:41:12.010+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Saudi Arabia
+[2025-06-23T12:41:12.012+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Serbia
+[2025-06-23T12:41:12.015+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Singapore
+[2025-06-23T12:41:12.018+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Slovakia
+[2025-06-23T12:41:12.021+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Slovenia
+[2025-06-23T12:41:12.023+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: South Africa
+[2025-06-23T12:41:12.025+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: South America
+[2025-06-23T12:41:12.027+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: South Korea
+[2025-06-23T12:41:12.029+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Spain
+[2025-06-23T12:41:12.033+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Sri Lanka
+[2025-06-23T12:41:12.035+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Sudan
+[2025-06-23T12:41:12.036+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Sweden
+[2025-06-23T12:41:12.038+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Switzerland
+[2025-06-23T12:41:12.041+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Thailand
+[2025-06-23T12:41:12.043+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Turkey
+[2025-06-23T12:41:12.044+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Ukraine
+[2025-06-23T12:41:12.047+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: United Arab Emirates
+[2025-06-23T12:41:12.050+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: United Kingdom
+[2025-06-23T12:41:12.053+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: United States
+[2025-06-23T12:41:12.056+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Uruguay
+[2025-06-23T12:41:12.058+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Venezuela
+[2025-06-23T12:41:12.060+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Vietnam
+[2025-06-23T12:41:12.063+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: World
+[2025-06-23T12:41:12.065+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Afghanistan
+[2025-06-23T12:41:12.067+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Albania
+[2025-06-23T12:41:12.069+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Algeria
+[2025-06-23T12:41:12.071+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Angola
+[2025-06-23T12:41:12.073+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Anguilla
+[2025-06-23T12:41:12.075+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Antigua And Barbuda
+[2025-06-23T12:41:12.077+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Armenia
+[2025-06-23T12:41:12.080+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Azerbaijan
+[2025-06-23T12:41:12.084+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Bangladesh
+[2025-06-23T12:41:12.086+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Belarus
+[2025-06-23T12:41:12.088+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Belize
+[2025-06-23T12:41:12.090+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Bhutan
+[2025-06-23T12:41:12.092+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Bosnia And Herzegovina
+[2025-06-23T12:41:12.095+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Botswana
+[2025-06-23T12:41:12.098+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: British Virgin Islands
+[2025-06-23T12:41:12.101+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Brunei Darussalam
+[2025-06-23T12:41:12.103+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Burkina Faso
+[2025-06-23T12:41:12.105+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Burundi
+[2025-06-23T12:41:12.107+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Cabo Verde
+[2025-06-23T12:41:12.109+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Cambodia
+[2025-06-23T12:41:12.111+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Caribbean Netherlands
+[2025-06-23T12:41:12.114+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Cayman Islands
+[2025-06-23T12:41:12.117+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Chad
+[2025-06-23T12:41:12.119+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Channel Islands
+[2025-06-23T12:41:12.121+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: China Hong Kong Sar
+[2025-06-23T12:41:12.123+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: China Macao Sar
+[2025-06-23T12:41:12.124+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Comoros
+[2025-06-23T12:41:12.126+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Cook Islands
+[2025-06-23T12:41:12.128+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Cote D Ivoire
+[2025-06-23T12:41:12.130+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Czech Republic
+[2025-06-23T12:41:12.132+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Democratic Republic Of The Congo
+[2025-06-23T12:41:12.134+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Djibouti
+[2025-06-23T12:41:12.136+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Dominica
+[2025-06-23T12:41:12.138+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Equatorial Guinea
+[2025-06-23T12:41:12.139+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Eritrea
+[2025-06-23T12:41:12.141+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Ethiopia
+[2025-06-23T12:41:12.143+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Faeroe Islands
+[2025-06-23T12:41:12.145+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Falkland Islands Malvinas
+[2025-06-23T12:41:12.148+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Fiji
+[2025-06-23T12:41:12.150+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: French Guiana
+[2025-06-23T12:41:12.152+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: French Polynesia
+[2025-06-23T12:41:12.154+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Gabon
+[2025-06-23T12:41:12.155+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Gambia
+[2025-06-23T12:41:12.157+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Grenada
+[2025-06-23T12:41:12.158+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Guinea Bissau
+[2025-06-23T12:41:12.160+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Guinea
+[2025-06-23T12:41:12.162+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Haiti
+[2025-06-23T12:41:12.164+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Holy See
+[2025-06-23T12:41:12.166+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Iraq
+[2025-06-23T12:41:12.168+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Isle Of Man
+[2025-06-23T12:41:12.170+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Kazakhstan
+[2025-06-23T12:41:12.171+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Kenya
+[2025-06-23T12:41:12.173+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Kiribati
+[2025-06-23T12:41:12.174+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Kuwait
+[2025-06-23T12:41:12.176+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Kyrgyzstan
+[2025-06-23T12:41:12.178+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Laos
+[2025-06-23T12:41:12.180+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Lesotho
+[2025-06-23T12:41:12.182+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Libya
+[2025-06-23T12:41:12.184+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Liechtenstein
+[2025-06-23T12:41:12.186+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Macedonia
+[2025-06-23T12:41:12.188+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Madagascar
+[2025-06-23T12:41:12.189+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Malawi
+[2025-06-23T12:41:12.191+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Malaysia
+[2025-06-23T12:41:12.193+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Maldives
+[2025-06-23T12:41:12.194+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Mali
+[2025-06-23T12:41:12.196+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Marshall Islands
+[2025-06-23T12:41:12.198+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Mauritania
+[2025-06-23T12:41:12.200+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Mauritius
+[2025-06-23T12:41:12.202+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Mayotte
+[2025-06-23T12:41:12.203+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Micronesia
+[2025-06-23T12:41:12.206+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Mongolia
+[2025-06-23T12:41:12.207+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Montserrat
+[2025-06-23T12:41:12.209+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Myanmar
+[2025-06-23T12:41:12.210+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Namibia
+[2025-06-23T12:41:12.212+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Nauru
+[2025-06-23T12:41:12.214+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Nepal
+[2025-06-23T12:41:12.216+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Nicaragua
+[2025-06-23T12:41:12.218+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Niger
+[2025-06-23T12:41:12.220+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Niue
+[2025-06-23T12:41:12.222+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Oman
+[2025-06-23T12:41:12.223+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Palau
+[2025-06-23T12:41:12.225+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Papua New Guinea
+[2025-06-23T12:41:12.227+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Reunion
+[2025-06-23T12:41:12.228+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Rwanda
+[2025-06-23T12:41:12.231+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Saint Barthelemy
+[2025-06-23T12:41:12.233+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Saint Helena
+[2025-06-23T12:41:12.235+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Saint Kitts And Nevis
+[2025-06-23T12:41:12.237+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Saint Lucia
+[2025-06-23T12:41:12.238+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Saint Martin
+[2025-06-23T12:41:12.240+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Saint Pierre And Miquelon
+[2025-06-23T12:41:12.241+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Saint Vincent And The Grenadines
+[2025-06-23T12:41:12.243+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Samoa
+[2025-06-23T12:41:12.245+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Sao Tome And Principe
+[2025-06-23T12:41:12.248+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Senegal
+[2025-06-23T12:41:12.250+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Seychelles
+[2025-06-23T12:41:12.252+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Sierra Leone
+[2025-06-23T12:41:12.253+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Sint Maarten
+[2025-06-23T12:41:12.255+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Solomon Islands
+[2025-06-23T12:41:12.256+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Somalia
+[2025-06-23T12:41:12.258+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: South Sudan
+[2025-06-23T12:41:12.260+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: State Of Palestine
+[2025-06-23T12:41:12.262+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Suriname
+[2025-06-23T12:41:12.265+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Swaziland
+[2025-06-23T12:41:12.266+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Syria
+[2025-06-23T12:41:12.269+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Taiwan
+[2025-06-23T12:41:12.270+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Tajikistan
+[2025-06-23T12:41:12.272+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Tanzania
+[2025-06-23T12:41:12.273+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Timor Leste
+[2025-06-23T12:41:12.275+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Togo
+[2025-06-23T12:41:12.277+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Tonga
+[2025-06-23T12:41:12.278+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Trinidad And Tobago
+[2025-06-23T12:41:12.281+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Tunisia
+[2025-06-23T12:41:12.283+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Turks And Caicos Islands
+[2025-06-23T12:41:12.285+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Uganda
+[2025-06-23T12:41:12.287+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: UK
+[2025-06-23T12:41:12.288+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: USA
+[2025-06-23T12:41:12.290+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Uzbekistan
+[2025-06-23T12:41:12.291+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Vanuatu
+[2025-06-23T12:41:12.293+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Viet Nam
+[2025-06-23T12:41:12.294+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Wallis And Futuna Islands
+[2025-06-23T12:41:12.297+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Western Sahara
+[2025-06-23T12:41:12.299+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Yemen
+[2025-06-23T12:41:12.301+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Zambia
+[2025-06-23T12:41:12.303+0000] {logging_mixin.py:151} INFO - Mis à jour population pour: Zimbabwe
+[2025-06-23T12:41:12.307+0000] {logging_mixin.py:151} INFO - Insertion des locations avec population terminée.
+[2025-06-23T12:41:12.310+0000] {python.py:194} INFO - Done. Returned value was: None
+[2025-06-23T12:41:12.320+0000] {taskinstance.py:1400} INFO - Marking task as SUCCESS. dag_id=Airflow_ETL_DAG_with_Population, task_id=insert_locations_with_population, execution_date=20250310T000000, start_date=20250623T124110, end_date=20250623T124112
+[2025-06-23T12:41:12.347+0000] {local_task_job_runner.py:228} INFO - Task exited with return code 0
+[2025-06-23T12:41:12.370+0000] {taskinstance.py:2778} INFO - 1 downstream tasks scheduled from follow-on schedule check

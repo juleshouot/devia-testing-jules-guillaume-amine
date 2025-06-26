@@ -1,5 +1,5 @@
 # Rapport d'Analyse des Pandémies
-*Généré le 2025-05-27 10:35*
+*Généré le 2025-06-24 08:56*
 
 ## 1. Statistiques Globales
 
@@ -57,51 +57,15 @@ Performances des modèles entraînés:
 
 ### transmission - Random Forest
 - **R²**: 0.9978680710833163
-- **RMSE**: 0.08164673520676612
-- **MAE**: 0.0055493817601768485
+- **RMSE**: 0.08164673520676613
+- **MAE**: 0.005549381760176857
 - **CV RMSE**: 0.16854708418525638
-
-### mortality - GradientBoosting
-- **R²**: nan
-- **RMSE**: nan
-- **MAE**: nan
-- **CV RMSE**: nan
-
-### transmission - Linear Regression
-- **R²**: 0.035042428922618996
-- **RMSE**: 1842.785617086059
-- **MAE**: 170.73077864094827
-- **CV RMSE**: 1731.8989354777411
 
 ### mortality - Random Forest
 - **R²**: 0.9984848382144575
 - **RMSE**: 0.002724994636315382
-- **MAE**: 9.623012605816439e-05
+- **MAE**: 9.623012605816437e-05
 - **CV RMSE**: 0.007231456000615563
-
-### geographical - Ridge
-- **R²**: nan
-- **RMSE**: nan
-- **MAE**: nan
-- **CV RMSE**: nan
-
-### geographical_spread - Random_Forest
-- **R²**: -0.01674399821428585
-- **RMSE**: 1.3256452412148416
-- **MAE**: nan
-- **CV RMSE**: nan
-
-### unknown - unknown
-- **R²**: nan
-- **RMSE**: nan
-- **MAE**: nan
-- **CV RMSE**: nan
-
-### transmission - GradientBoosting
-- **R²**: nan
-- **RMSE**: nan
-- **MAE**: nan
-- **CV RMSE**: nan
 
 ### geographical_spread - Linear Regression
 - **R²**: 1.0

@@ -38,21 +38,22 @@ class Location(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=45)
     iso_code = models.CharField(max_length=45, null=True, blank=True)
+    population = models.BigIntegerField(null=True, blank=True)
 
     class Meta:
-        db_table = 'pandemics.location'
+        db_table = 'location'
         managed = False
 
     def __str__(self):
         return self.name
 
-
 class Virus(models.Model):
-    id = models.AutoField(primary_key=True)
+    id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=45)
 
-    db_table = 'pandemics.virus'
-    managed = False
+    class Meta:
+        db_table = 'virus'  # ⚠️ CORRIGÉ: juste 'virus' sans préfixe
+        managed = False
 
     def __str__(self):
         return self.name
@@ -61,23 +62,24 @@ class Virus(models.Model):
 class Worldmeter(models.Model):
     id = models.AutoField(primary_key=True)
     date = models.DateField(null=True, blank=True)
-    total_cases = models.IntegerField(null=True, blank=True)
-    total_deaths = models.IntegerField(null=True, blank=True)
-    new_cases = models.IntegerField(null=True, blank=True)
-    new_deaths = models.IntegerField(null=True, blank=True)
-    new_cases_smoothed = models.IntegerField(null=True, blank=True)
-    new_deaths_smoothed = models.IntegerField(null=True, blank=True)
-    new_cases_per_million = models.IntegerField(null=True, blank=True)
-    total_cases_per_million = models.IntegerField(null=True, blank=True)
-    new_cases_smoothed_per_million = models.IntegerField(null=True, blank=True)
-    new_deaths_per_million = models.IntegerField(null=True, blank=True)
-    total_deaths_per_million = models.IntegerField(null=True, blank=True)
-    new_deaths_smoothed_per_million = models.IntegerField(null=True, blank=True)
-    location = models.ForeignKey(Location, on_delete=models.CASCADE)
-    virus = models.ForeignKey(Virus, on_delete=models.CASCADE)
+    total_cases = models.BigIntegerField(null=True, blank=True)
+    total_deaths = models.BigIntegerField(null=True, blank=True)
+    new_cases = models.BigIntegerField(null=True, blank=True)
+    new_deaths = models.BigIntegerField(null=True, blank=True)
+    new_cases_smoothed = models.DecimalField(max_digits=15, decimal_places=3, null=True, blank=True)
+    new_deaths_smoothed = models.DecimalField(max_digits=15, decimal_places=3, null=True, blank=True)
+    new_cases_per_million = models.DecimalField(max_digits=15, decimal_places=3, null=True, blank=True)
+    total_cases_per_million = models.DecimalField(max_digits=15, decimal_places=3, null=True, blank=True)
+    new_cases_smoothed_per_million = models.DecimalField(max_digits=15, decimal_places=3, null=True, blank=True)
+    new_deaths_per_million = models.DecimalField(max_digits=15, decimal_places=3, null=True, blank=True)
+    total_deaths_per_million = models.DecimalField(max_digits=15, decimal_places=3, null=True, blank=True)
+    new_deaths_smoothed_per_million = models.DecimalField(max_digits=15, decimal_places=3, null=True, blank=True)
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, db_column='location_id')
+    virus = models.ForeignKey(Virus, on_delete=models.CASCADE, db_column='virus_id')
 
-    db_table = 'pandemics.Worldmeter'
-    managed = False
+    class Meta:
+        db_table = 'worldmeter'  # ⚠️ CORRIGÉ: juste 'worldmeter' sans préfixe
+        managed = False
 
     def __str__(self):
         return f"{self.location.name} - {self.virus.name} - {self.date}"

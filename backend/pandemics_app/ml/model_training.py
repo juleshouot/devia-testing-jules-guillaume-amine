@@ -34,6 +34,56 @@ def get_engine():
     )
 
 
+def save_model_metrics_to_db(model_name, model_type, metrics):
+    """Sauvegarde les métriques dans la base de données Django - VERSION CORRIGÉE"""
+    try:
+        import django
+        import sys
+        
+        # 🔧 CORRECTION 1: Ajouter le répertoire racine Django au PYTHONPATH
+        django_root = '/django_api'
+        if django_root not in sys.path:
+            sys.path.insert(0, django_root)
+            print(f"✅ Ajout de {django_root} au PYTHONPATH")
+        
+        # 🔧 CORRECTION 2: Utiliser le bon nom de settings module
+        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'pandemics_project.settings')
+        django.setup()
+        print("✅ Django setup réussi")
+        
+        # 🔧 CORRECTION 3: Utiliser le bon nom de l'app
+        from pandemics_app.models import ModelMetrics
+        
+        # Récupérer les métriques pour ce modèle
+        model_metrics = metrics.get(model_name, {})
+        
+        # Créer ou mettre à jour l'entrée
+        metric_entry, created = ModelMetrics.objects.update_or_create(
+            model_type=model_type,
+            model_name=model_name,
+            defaults={
+                'mse': float(model_metrics.get('mse', 0)),
+                'rmse': float(model_metrics.get('rmse', 0)),
+                'mae': float(model_metrics.get('mae', 0)),
+                'r2_score': float(model_metrics.get('r2_score', 0)),
+                'cv_rmse': float(model_metrics.get('cv_rmse', 0))
+            }
+        )
+        
+        action = "créée" if created else "mise à jour"
+        print(f"✅ Métriques {action} dans la DB pour {model_type} - {model_name}")
+        print(f"   📊 RMSE: {model_metrics.get('rmse', 0):.4f}, R²: {model_metrics.get('r2_score', 0):.4f}")
+        
+        return True
+        
+    except Exception as e:
+        print(f"❌ Erreur lors de la sauvegarde des métriques en DB: {e}")
+        import traceback
+        traceback.print_exc()
+        print("📝 Les métriques restent disponibles dans les fichiers joblib")
+        return False
+
+
 def load_prepared_data():
     """Charge les données de base et effectue des jointures"""
     engine = get_engine()
@@ -85,9 +135,11 @@ def prepare_train_test_data_temporal(df, target_col, feature_cols, test_size=0.2
 
 
 def save_model(model, scaler, feature_cols, model_name, model_type, metrics):
-    """Sauvegarde le modèle, le scaler et les métadonnées"""
+    """Sauvegarde le modèle, le scaler, les métadonnées ET les métriques en base de données"""
     os.makedirs(MODEL_DIR, exist_ok=True)
     safe_name = model_name.replace(" ", "_")
+    
+    # Sauvegarde des fichiers (comme avant)
     joblib.dump(model, os.path.join(MODEL_DIR, f"{model_type}_{safe_name}_model.joblib"))
     joblib.dump(scaler, os.path.join(MODEL_DIR, f"{model_type}_{safe_name}_scaler.joblib"))
 
@@ -97,12 +149,15 @@ def save_model(model, scaler, feature_cols, model_name, model_type, metrics):
         'model_type': model_type,
         'model_name': model_name,
     }
-    # Ajouter les métriques spécifiques au modèle si elles existent
     if metrics and model_name in metrics:
         metadata_to_save.update(metrics[model_name])
 
     joblib.dump(metadata_to_save, os.path.join(MODEL_DIR, f"{model_type}_{safe_name}_metadata.joblib"))
-    print(f"✅ Modèle {model_type} sauvegardé ({model_name}) avec métriques.")
+    
+    # 🔧 NOUVEAU : Sauvegarder aussi dans la base de données Django
+    save_model_metrics_to_db(model_name, model_type, metrics)
+    
+    print(f"✅ Modèle {model_type} sauvegardé ({model_name}) avec métriques en fichier ET en base.")
 
 
 def train_and_evaluate_models(X_train, X_test, y_train, y_test, model_type):
@@ -482,28 +537,42 @@ def train_models():
     os.makedirs(MODEL_DIR, exist_ok=True)
     os.makedirs(DATA_DIR, exist_ok=True)
 
-    # Entraînement de chaque modèle
+    # Entraînement de chaque modèle avec sauvegarde automatique en base de données
     try:
+        print("\n🚀 Entraînement du modèle de transmission...")
         transmission_metrics = train_transmission_model()
+        print("✅ Modèle de transmission terminé")
     except Exception as e:
         print(f"❌ Erreur lors de l'entraînement du modèle de transmission: {e}")
         transmission_metrics = None
 
     try:
+        print("\n🚀 Entraînement du modèle de mortalité...")
         mortality_metrics = train_mortality_model()
+        print("✅ Modèle de mortalité terminé")
     except Exception as e:
         print(f"❌ Erreur lors de l'entraînement du modèle de mortalité: {e}")
         mortality_metrics = None
 
     try:
+        print("\n🚀 Entraînement du modèle de propagation géographique...")
         geographical_metrics = train_geographical_spread_model()
+        print("✅ Modèle de propagation géographique terminé")
     except Exception as e:
         print(f"❌ Erreur lors de l'entraînement du modèle de propagation géographique: {e}")
         geographical_metrics = None
 
-    print("\n✅ Entraînement terminé.")
-
-    # Retourner les métriques
+    print("\n🎉 Entraînement terminé avec sauvegarde automatique des métriques en base de données.")
+    
+    # Résumé final
+    print("\n📊 RÉSUMÉ:")
+    if transmission_metrics:
+        print(f"   ✅ Transmission: {len(transmission_metrics)} modèles entraînés")
+    if mortality_metrics:
+        print(f"   ✅ Mortalité: {len(mortality_metrics)} modèles entraînés")
+    if geographical_metrics:
+        print(f"   ✅ Propagation: {len(geographical_metrics)} modèles entraînés")
+    
     return transmission_metrics, mortality_metrics, geographical_metrics
 
 

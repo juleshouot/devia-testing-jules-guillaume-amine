@@ -27,9 +27,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#predictions">Prédictions</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#data-explorer">Explorateur de données</a>
-                    </li>
+
                     <li class="nav-item">
                         <a class="nav-link" href="#about">À propos</a>
                     </li>
@@ -56,16 +54,7 @@
                             <option value="all" selected>Toutes les localisations</option>
                         </select>
                     </div>
-                    <div class="col-md-4 mb-3">
-                        <label for="date-range" class="form-label">Période</label>
-                        <select id="date-range" class="form-select" aria-label="Sélectionner une période">
-                            <option value="7" selected>7 derniers jours</option>
-                            <option value="30">30 derniers jours</option>
-                            <option value="90">90 derniers jours</option>
-                            <option value="365">Dernière année</option>
-                            <option value="all_time">Depuis le début</option>
-                        </select>
-                    </div>
+
                 </div>
             </div>
 
@@ -73,15 +62,7 @@
                 <div class="col-md-3 mb-4">
                     <div class="card stat-card">
                         <div class="card-body">
-                            <div class="label">Cas totaux</div>
-                            <div class="value" id="total-cases">-</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 mb-4">
-                    <div class="card stat-card">
-                        <div class="card-body">
-                            <div class="label">Décès totaux</div>
+                            <div class="label">Population du pays</div>
                             <div class="value" id="total-deaths">-</div>
                         </div>
                     </div>
@@ -102,10 +83,18 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-md-3 mb-4">
+                    <div class="card stat-card">
+                        <div class="card-body">
+                            <div class="label">Taux de mortalité global</div>
+                            <div class="value" id="total-cases">-</div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="row">
-                <div class="col-lg-8 mb-4">
+                <div class="col-lg-12 mb-4">
                     <div class="card">
                         <div class="card-header">
                             Évolution des cas
@@ -117,18 +106,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4 mb-4">
-                    <div class="card">
-                        <div class="card-header">
-                            Répartition par localisation (Top 5)
-                        </div>
-                        <div class="card-body">
-                            <div class="chart-container">
-                                <canvas id="location-chart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
             </div>
         </section>
 
@@ -139,63 +117,197 @@
                 <div class="col-md-6 mb-4">
                     <div class="card">
                         <div class="card-header">
-                            Prédictions de transmission et mortalité
+                            Validation du Modèle de Mortalité IA
                         </div>
                         <div class="card-body">
                             <div class="filter-section mb-3">
                                 <div class="row">
                                     <div class="col-md-6 mb-2">
-                                        <label for="pred-virus-select" class="form-label">Virus</label>
-                                        <select id="pred-virus-select" class="form-select" aria-label="Sélectionner un virus pour les prédictions">
-                                            <!-- Options will be populated by API -->
+                                        <label for="validation-location-select" class="form-label">Pays</label>
+                                        <select id="validation-location-select" class="form-select" aria-label="Sélectionner un pays pour la validation">
+                                            <option value="">Sélectionner un pays...</option>
+                                            <option value="France">France</option>
+                                            <option value="USA">États-Unis</option>
+                                            <option value="UK">Royaume-Uni</option>
+                                            <option value="Germany">Allemagne</option>
+                                            <option value="Italy">Italie</option>
+                                            <option value="Spain">Espagne</option>
+                                            <option value="Brazil">Brésil</option>
+                                            <option value="India">Inde</option>
                                         </select>
                                     </div>
                                     <div class="col-md-6 mb-2">
-                                        <label for="pred-location-select" class="form-label">Localisation</label>
-                                        <select id="pred-location-select" class="form-select" aria-label="Sélectionner une localisation pour les prédictions">
+                                        <label for="validation-period-select" class="form-label">Période</label>
+                                        <select id="validation-period-select" class="form-select" aria-label="Sélectionner une période">
+                                            <option value="2020-03-01,2020-12-31">2020 (Mars - Décembre)</option>
+                                            <option value="2021-01-01,2021-12-31">2021 (Année complète)</option>
+                                            <option value="2022-01-01,2022-04-30">2022 (Janvier - Avril)</option>
+                                            <option value="2020-03-01,2022-04-30" selected>Période complète (2020-2022)</option>
                                         </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <button id="validate-model-btn" class="btn btn-primary">
+                                            <i class="bi bi-cpu"></i> Valider le Modèle
+                                        </button>
+                                        <span id="validation-status" class="ms-2 text-muted"></span>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="prediction-results mb-3">
-                                <h5>Prédictions pour les 4 prochaines semaines</h5>
-                                <div id="prediction-list" class="list-group">
-                                    <p id="no-prediction-data">Aucune prédiction disponible pour la sélection actuelle.</p>
+                            <div class="validation-results mb-3" id="validation-results" style="display: none;">
+                                <h5>Résultats de Validation</h5>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <div class="card border-info">
+                                            <div class="card-body text-center">
+                                                <h6 class="card-title">Précision Globale</h6>
+                                                <div class="display-6" id="validation-accuracy">-</div>
+                                                <small class="text-muted">Erreur médiane</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card border-success">
+                                            <div class="card-body text-center">
+                                                <h6 class="card-title">Prédictions</h6>
+                                                <div class="display-6" id="validation-count">-</div>
+                                                <small class="text-muted">Points de données</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="validation-quality mb-3">
+                                    <h6>Qualité des Prédictions</h6>
+                                    <div class="row">
+                                        <div class="col-3 text-center">
+                                            <div class="text-success fw-bold" id="excellent-count">-</div>
+                                            <small>Excellentes</small>
+                                        </div>
+                                        <div class="col-3 text-center">
+                                            <div class="text-info fw-bold" id="good-count">-</div>
+                                            <small>Bonnes</small>
+                                        </div>
+                                        <div class="col-3 text-center">
+                                            <div class="text-warning fw-bold" id="fair-count">-</div>
+                                            <small>Correctes</small>
+                                        </div>
+                                        <div class="col-3 text-center">
+                                            <div class="text-danger fw-bold" id="poor-count">-</div>
+                                            <small>Mauvaises</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="validation-list" class="list-group mb-3" style="max-height: 300px; overflow-y: auto;">
+                                    <!-- Les résultats de validation seront affichés ici -->
                                 </div>
                             </div>
 
                             <div class="chart-container">
-                                <canvas id="prediction-chart"></canvas>
+                                <canvas id="validation-chart"></canvas>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-md-6 mb-4">
-                    <div class="card">
-                        <div class="card-header">
-                            Prédiction de propagation géographique
+        <div class="card">
+            <div class="card-header">
+                Validation du Modèle de Transmission IA (Rt)
+            </div>
+            <div class="card-body">
+                <div class="filter-section mb-3">
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <label for="transmission-validation-location-select" class="form-label">Pays</label>
+                            <select id="transmission-validation-location-select" class="form-select" aria-label="Sélectionner un pays pour la validation transmission">
+                                <option value="">Sélectionner un pays...</option>
+                                <option value="France">France</option>
+                                <option value="USA">États-Unis</option>
+                                <option value="UK">Royaume-Uni</option>
+                                <option value="Germany">Allemagne</option>
+                                <option value="Italy">Italie</option>
+                                <option value="Spain">Espagne</option>
+                                <option value="Brazil">Brésil</option>
+                                <option value="India">Inde</option>
+                            </select>
                         </div>
-                        <div class="card-body">
-                            <div class="filter-section mb-3">
-                                <div class="row">
-                                    <div class="col-md-12 mb-2">
-                                        <label for="geo-pred-virus-select" class="form-label">Virus</label>
-                                        <select id="geo-pred-virus-select" class="form-select" aria-label="Sélectionner un virus pour la prédiction de propagation">
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="geo-prediction-list" class="list-group mb-3">
-                                <p id="no-geo-prediction-data">Aucune prédiction de propagation disponible pour la sélection actuelle.</p>
-                            </div>
-                            <div class="chart-container">
-                                <canvas id="geo-prediction-chart"></canvas>
-                            </div>
+                        <div class="col-md-6 mb-2">
+                            <label for="transmission-validation-period-select" class="form-label">Période</label>
+                            <select id="transmission-validation-period-select" class="form-select" aria-label="Sélectionner une période">
+                                <option value="2020-03-01,2020-12-31">2020 (Mars - Décembre)</option>
+                                <option value="2021-01-01,2021-12-31">2021 (Année complète)</option>
+                                <option value="2022-01-01,2022-04-30">2022 (Janvier - Avril)</option>
+                                <option value="2020-03-01,2022-04-30" selected>Période complète (2020-2022)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button id="validate-transmission-model-btn" class="btn btn-primary">
+                                <i class="bi bi-activity"></i> Valider le Modèle Rt
+                            </button>
+                            <span id="transmission-validation-status" class="ms-2 text-muted"></span>
                         </div>
                     </div>
                 </div>
+
+                <div class="validation-results mb-3" id="transmission-validation-results" style="display: none;">
+                    <h5>Résultats de Validation Transmission (Rt)</h5>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="card border-info">
+                                <div class="card-body text-center">
+                                    <h6 class="card-title">Précision Rt Futur</h6>
+                                    <div class="display-6" id="transmission-validation-accuracy">-</div>
+                                    <small class="text-muted">Erreur médiane (%)</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card border-success">
+                                <div class="card-body text-center">
+                                    <h6 class="card-title">Prédictions Rt</h6>
+                                    <div class="display-6" id="transmission-validation-count">-</div>
+                                    <small class="text-muted">Points temporels</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="validation-quality mb-3">
+                        <h6>Qualité des Prédictions Rt</h6>
+                        <div class="row">
+                            <div class="col-3 text-center">
+                                <div class="text-success fw-bold" id="transmission-excellent-count">-</div>
+                                <small>Excellentes (&lt;15%)</small>
+                            </div>
+                            <div class="col-3 text-center">
+                                <div class="text-info fw-bold" id="transmission-good-count">-</div>
+                                <small>Bonnes (15-30%)</small>
+                            </div>
+                            <div class="col-3 text-center">
+                                <div class="text-warning fw-bold" id="transmission-fair-count">-</div>
+                                <small>Correctes (30-50%)</small>
+                            </div>
+                            <div class="col-3 text-center">
+                                <div class="text-danger fw-bold" id="transmission-poor-count">-</div>
+                                <small>Mauvaises (&gt;50%)</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="transmission-validation-list" class="list-group mb-3" style="max-height: 300px; overflow-y: auto;">
+                        <!-- Les résultats de validation transmission seront affichés ici -->
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="transmission-validation-chart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
             </div>
         </section>
 
@@ -229,36 +341,7 @@
             </div>
         </section>
 
-        <section id="data-explorer" class="mb-5">
-            <h2 class="mb-4">Explorateur de données brutes (WorldMeter)</h2>
-            <div class="card">
-                <div class="card-header">
-                    Données WorldMeter
-                </div>
-                <div class="card-body">
-                    <p class="text-muted">Utilisez les filtres en haut de la page (Tableau de bord) pour affiner les données affichées ici.</p>
-                    <div class="table-responsive">
-                        <table class="table table-sm table-bordered table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Localisation</th>
-                                    <th>Virus</th>
-                                    <th>Total Cas</th>
-                                    <th>Total Décès</th>
-                                    <th>Nvx Cas</th>
-                                    <th>Nvx Décès</th>
-                                </tr>
-                            </thead>
-                            <tbody id="worldmeter-table-body">
-                                <!-- Data will be populated by API based on dashboard filters -->
-                                <tr><td colspan="7">Sélectionnez des filtres pour afficher les données.</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </section>
+
 
         <section id="about" class="mb-5">
             <h2 class="mb-4">À propos</h2>
