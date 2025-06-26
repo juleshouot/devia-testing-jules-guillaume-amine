@@ -82,7 +82,7 @@ pandemics_project/
 
 2. Lancez l'application avec Docker Compose :
    ```bash
-   docker-compose up -d
+   docker-compose build && docker-compose up -d
    ```
 
    Cette commande va :
@@ -98,8 +98,8 @@ pandemics_project/
 
 Une fois les conteneurs démarrés, vous pouvez accéder à :
 
-- **Interface utilisateur** : http://localhost:8080
-- **API REST** : http://localhost:8000/api/
+- **Interface utilisateur** : http://localhost:8081
+- **API REST** : http://localhost:8001/api/
 - **Interface Airflow** : http://localhost:8081 (utilisateur : airflow, mot de passe : airflow)
 
 ### Entraînement des modèles
@@ -138,7 +138,7 @@ L'API REST offre plusieurs endpoints pour interagir avec le système :
 #### Exemple de requête pour la prédiction du taux de transmission
 
 ```bash
-curl -X POST http://localhost:8000/api/predict/transmission/ \
+curl -X POST http://localhost:8001/api/predict/transmission/ \
   -H "Content-Type: application/json" \
   -d '{
     "location_id": 1,
@@ -176,7 +176,7 @@ L'interface utilisateur offre plusieurs fonctionnalités :
 Pour une documentation plus détaillée, consultez les ressources suivantes :
 
 - [Documentation technique](documentation_technique.md) : Détails sur les algorithmes d'IA, les métriques de performance, et les principes d'accessibilité
-- [API Documentation](http://localhost:8000/api/docs/) : Documentation interactive de l'API (disponible lorsque le serveur est en cours d'exécution)
+- [API Documentation](http://localhost:8001/api/docs/) : Documentation interactive de l'API (disponible lorsque le serveur est en cours d'exécution)
 
 ## Licence
 
