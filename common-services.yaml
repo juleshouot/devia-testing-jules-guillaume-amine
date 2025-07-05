@@ -1,0 +1,232 @@
+
+
+x-common-healthcheck: &common-healthcheck
+  interval: 30s
+  timeout: 10s
+  retries: 3
+  start_period: 60s
+
+x-common-logging: &common-logging
+  driver: "json-file"
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+x-common-restart: &common-restart
+  restart_policy:
+    condition: any
+    delay: 5s
+    max_attempts: 3
+
+services:
+  # ========================================
+  # TEMPLATES DE SERVICES COMMUNS
+  # ========================================
+
+  # Template base pour Django
+  django-base:
+    image: python:3.10-slim
+    networks:
+      - airflow-net-v2
+    environment: &django-env
+      - PYTHONUNBUFFERED=1
+      - PYTHONDONTWRITEBYTECODE=1
+      - PIP_NO_CACHE_DIR=1
+      - PIP_DISABLE_PIP_VERSION_CHECK=1
+    volumes: &django-volumes
+      - ./backend:/django_api
+      - ml_models_v2:/django_api/pandemics_app/ml/models
+      - ./logs/django:/var/log/django
+    logging: *common-logging
+    deploy: *common-restart
+
+  # Template pour bases de données
+  postgres-base:
+    image: postgres:13
+    networks:
+      - airflow-net-v2
+    environment: &postgres-env
+      - POSTGRES_SHARED_BUFFERS=256MB
+      - POSTGRES_EFFECTIVE_CACHE_SIZE=1GB
+      - POSTGRES_WORK_MEM=16MB
+      - POSTGRES_MAINTENANCE_WORK_MEM=256MB
+      - POSTGRES_MAX_CONNECTIONS=100
+    volumes: &postgres-volumes
+      - postgres_data_v2:/var/lib/postgresql/data
+      - ./backups:/opt/backups
+    logging: *common-logging
+    healthcheck:
+      <<: *common-healthcheck
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-user} -d $${POSTGRES_DB:-pandemies}"]
+
+  # Template pour Airflow
+  airflow-base:
+    image: apache/airflow:2.7.2
+    networks:
+      - airflow-net-v2
+    environment: &airflow-env
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__WEBSERVER__WORKER_REFRESH_BATCH_SIZE=10
+      - AIRFLOW__CORE__LOAD_EXAMPLES=false
+      - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=true
+      - AIRFLOW__SCHEDULER__DAG_DIR_LIST_INTERVAL=60
+    volumes: &airflow-volumes
+      - ./dags:/opt/airflow/dags
+      - ./data:/opt/airflow/data
+      - ./logs:/opt/airflow/logs
+      - ./scripts:/opt/scripts
+    logging: *common-logging
+
+  # ========================================
+  # SERVICES DE MONITORING COMMUNS
+  # ========================================
+
+  # Health check service
+  health-checker:
+    image: alpine:latest
+    container_name: health_checker
+    networks:
+      - airflow-net-v2
+    profiles:
+      - monitoring
+      - us
+      - fr
+      - ch
+    environment:
+      - CHECK_INTERVAL=60
+      - SERVICES_TO_CHECK=django:8000,frontend:8003,airflow-webserver:8080
+      - DEPLOY_COUNTRY=${DEPLOY_COUNTRY:-US}
+    volumes:
+      - ./scripts:/opt/scripts
+      - ./logs/health:/var/log/health
+    command: >
+      sh -c "apk add --no-cache curl jq &&
+             echo 'Health checker démarré pour ${DEPLOY_COUNTRY:-US}' &&
+             while true; do
+               echo '[$(date)] Vérification santé des services...'
+               
+               # Check Django
+               if curl -f -s http://django:8000/api/health-check/ > /dev/null; then
+                 echo '✅ Django API: OK'
+               else
+                 echo '❌ Django API: KO'
+               fi
+               
+               # Check Frontend
+               if curl -f -s http://frontend:8003/ > /dev/null; then
+                 echo '✅ Frontend: OK'
+               else
+                 echo '❌ Frontend: KO'
+               fi
+               
+               # Check Airflow
+               if curl -f -s http://airflow-webserver:8080/health > /dev/null; then
+                 echo '✅ Airflow: OK'
+               else
+                 echo '❌ Airflow: KO'
+               fi
+               
+               sleep ${CHECK_INTERVAL:-60}
+             done"
+    healthcheck:
+      test: ["CMD", "sh", "-c", "ps | grep -v grep | grep -q curl"]
+      interval: 60s
+      timeout: 10s
+      retries: 2
+
+  # Log aggregator
+  log-aggregator:
+    image: alpine:latest
+    container_name: log_aggregator
+    networks:
+      - airflow-net-v2
+    profiles:
+      - monitoring
+      - us
+    environment:
+      - DEPLOY_COUNTRY=${DEPLOY_COUNTRY:-US}
+      - LOG_RETENTION_DAYS=30
+    volumes:
+      - ./logs:/var/log/app
+      - ./scripts:/opt/scripts
+    command: >
+      sh -c "echo 'Agrégateur de logs démarré pour ${DEPLOY_COUNTRY:-US}' &&
+             while true; do
+               echo '[$(date)] Rotation et nettoyage des logs...'
+               
+               # Nettoyage des logs anciens
+               find /var/log/app -name '*.log' -mtime +${LOG_RETENTION_DAYS:-30} -delete
+               
+               # Compression des logs de la semaine dernière
+               find /var/log/app -name '*.log' -mtime +7 -exec gzip {} \;
+               
+               # Statistiques
+               echo 'Statistiques des logs:'
+               du -sh /var/log/app/*
+               
+               sleep 86400  # Une fois par jour
+             done"
+
+  # Metrics collector (pour monitoring)
+  metrics-collector:
+    image: alpine:latest
+    container_name: metrics_collector
+    networks:
+      - airflow-net-v2
+    profiles:
+      - monitoring
+      - us
+    environment:
+      - DEPLOY_COUNTRY=${DEPLOY_COUNTRY:-US}
+      - METRICS_INTERVAL=300  # 5 minutes
+    volumes:
+      - ./metrics:/var/metrics
+      - ./scripts:/opt/scripts
+    command: >
+      sh -c "apk add --no-cache curl jq procps &&
+             echo 'Collecteur de métriques démarré pour ${DEPLOY_COUNTRY:-US}' &&
+             mkdir -p /var/metrics &&
+             while true; do
+               timestamp=$(date +%s)
+               echo '[$(date)] Collecte des métriques...'
+               
+               # Métriques système
+               {
+                 echo \"timestamp: $timestamp\"
+                 echo \"memory_usage: $(free | grep Mem | awk '{print ($3/$2) * 100.0}')\"
+                 echo \"disk_usage: $(df / | tail -1 | awk '{print $5}' | sed 's/%//')\"
+                 echo \"load_average: $(uptime | awk -F'load average:' '{print $2}' | awk '{print $1}' | sed 's/,//')\"
+               } >> /var/metrics/system_metrics.log
+               
+               # Métriques applicatives
+               if curl -f -s http://django:8000/api/health-check/ | jq -r .status > /dev/null 2>&1; then
+                 echo \"django_health: 1\" >> /var/metrics/app_metrics.log
+               else
+                 echo \"django_health: 0\" >> /var/metrics/app_metrics.log
+               fi
+               
+               sleep ${METRICS_INTERVAL:-300}
+             done"
+
+# ========================================
+# RÉSEAUX COMMUNS
+# ========================================
+networks:
+  airflow-net-v2:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.0/16
+          gateway: 172.20.0.1
+
+# ========================================
+# VOLUMES COMMUNS
+# ========================================
+volumes:
+  postgres_data_v2:
+    driver: local
+  metabase_data_v2:
+    driver: local
+  ml_models_v2:
+    driver: local

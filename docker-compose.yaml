@@ -1,0 +1,290 @@
+services:
+  # ========================================
+  # POSTGRES - Configuration simple qui marche (MSPR2)
+  # ========================================
+  postgres:
+    image: postgres:13
+    container_name: postgres_db_v2
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-guigui}
+      POSTGRES_DB: ${POSTGRES_DB:-pandemies}
+      # Optimisations MSPR 2 CONSERVÉES
+      POSTGRES_SHARED_BUFFERS: 256MB
+      POSTGRES_EFFECTIVE_CACHE_SIZE: 1GB
+      POSTGRES_WORK_MEM: 16MB
+      POSTGRES_MAINTENANCE_WORK_MEM: 256MB
+    networks:
+      - airflow-net-v2
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data_v2:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./backups:/opt/backups
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1.0'
+        reservations:
+          memory: 512M
+          cpus: '0.5'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-user} -d ${POSTGRES_DB:-pandemies}"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  # ========================================
+  # DJANGO - Configuration MSPR2 + pays MSPR3
+  # ========================================
+  django:
+    build: ./backend
+    container_name: django_app_v2
+    networks:
+      - airflow-net-v2
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8001:8000"
+    profiles:
+      - base
+      - us
+      - fr
+      - ch
+    environment:
+      - DJANGO_SETTINGS_MODULE=pandemics_project.settings
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY:-your-secret-key}
+      - DJANGO_DEBUG=${DJANGO_DEBUG:-True}
+      - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS:-127.0.0.1,localhost}
+      - POSTGRES_DB=${POSTGRES_DB:-pandemies}
+      - POSTGRES_USER=${POSTGRES_USER:-user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-guigui}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      # AJOUTS MSPR 3 - Configuration multi-pays (SIMPLE)
+      - DEPLOY_COUNTRY=${DEPLOY_COUNTRY:-US}
+      - ENVIRONMENT=${ENVIRONMENT:-development}
+    volumes:
+      - ./backend:/django_api
+      - ml_models_v2:/django_api/pandemics_app/ml/models
+      - ./logs/django:/var/log/django
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+          cpus: '2.0'
+        reservations:
+          memory: 2G
+          cpus: '1.0'
+    stop_grace_period: 30s
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health-check/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    command: >
+      sh -c "sleep 10 &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+
+  # ========================================
+  # FRONTEND - Configuration simple
+  # ========================================
+  frontend:
+    build: ./frontend
+    container_name: frontend_app_v2
+    networks:
+      - airflow-net-v2
+    ports:
+      - "8003:8003"
+    volumes:
+      - ./frontend:/app
+    profiles:
+      - base
+      - us
+      - fr
+      - ch
+    environment:
+      - DEPLOY_COUNTRY=${DEPLOY_COUNTRY:-US}
+      - FRONTEND_LANGUAGE=${FRONTEND_LANGUAGE:-en}
+      - REACT_APP_API_URL=http://localhost:8001
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8003/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ========================================
+  # AIRFLOW - Configuration SIMPLE comme MSPR2 (PAS DE TIMEZONE COMPLEXE)
+  # ========================================
+  airflow-webserver:
+    image: apache/airflow:2.7.2
+    container_name: airflow_webserver_v2
+    environment:
+      # CONFIGURATION SIMPLE COMME MSPR2 (qui marche)
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER:-user}:${POSTGRES_PASSWORD:-guigui}@postgres/${POSTGRES_DB:-pandemies}
+      AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW_FERNET_KEY:-tym5nXoBS3cJ9UAerkjX6Ffebr5AqU3YjQWf31JGKfA=}
+      AIRFLOW__WEBSERVER__WORKER_REFRESH_BATCH_SIZE: 10
+      AIRFLOW__WEBSERVER__SECRET_KEY: ${AIRFLOW_WEBSERVER_SECRET_KEY:-113QWMWwTtueNy-ca6BUFeOF5mRTBoQ6Rb7elifprXY}
+      # PAS DE VARIABLES TIMEZONE COMPLEXES !
+    networks:
+      - airflow-net-v2
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8081:8080"
+    profiles:
+      - base
+      - us
+      - fr
+      - ch
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./data:/opt/airflow/data
+      - ./logs:/opt/airflow/logs
+    # PAS DE HEALTHCHECK COMPLEXE
+    command: >
+      bash -c "airflow db upgrade &&
+               airflow users create --username admin --firstname Admin --lastname User --role Admin --email admin@example.com --password admin || true &&
+               airflow webserver"
+
+  airflow-scheduler:
+    image: apache/airflow:2.7.2
+    container_name: airflow_scheduler_v2
+    depends_on:
+      postgres:
+        condition: service_healthy
+      airflow-webserver:
+        condition: service_started  # PAS service_healthy !
+    environment:
+      # CONFIGURATION SIMPLE COMME MSPR2
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER:-user}:${POSTGRES_PASSWORD:-guigui}@postgres/${POSTGRES_DB:-pandemies}
+      AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW_FERNET_KEY:-tym5nXoBS3cJ9UAerkjX6Ffebr5AqU3YjQWf31JGKfA=}
+      AIRFLOW__WEBSERVER__SECRET_KEY: ${AIRFLOW_WEBSERVER_SECRET_KEY:-113QWMWwTtueNy-ca6BUFeOF5mRTBoQ6Rb7elifprXY}
+    networks:
+      - airflow-net-v2
+    profiles:
+      - base
+      - us
+      - fr
+      - ch
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./data:/opt/airflow/data
+      - ./logs:/opt/airflow/logs
+    command: "airflow scheduler"
+
+  # ========================================
+  # METABASE - Configuration conditionnelle simple
+  # ========================================
+  metabase:
+    image: metabase/metabase:latest
+    container_name: metabase_v2
+    environment:
+      - MB_DB_FILE=/metabase-data/metabase.db
+      - DEPLOY_COUNTRY=${DEPLOY_COUNTRY:-US}
+    networks:
+      - airflow-net-v2
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "3001:3000"
+    volumes:
+      - metabase_data_v2:/metabase-data
+    profiles:
+      - us  # Seulement pour les US
+
+  # ========================================
+  # TECHNICAL API - Uniquement pour US (simple)
+  # ========================================
+  technical-api:
+    build: ./backend
+    container_name: technical_api_us
+    networks:
+      - airflow-net-v2
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8002:8000"
+    profiles:
+      - us  # Uniquement pour les États-Unis
+    environment:
+      - DJANGO_SETTINGS_MODULE=pandemics_project.settings
+      - DEPLOY_COUNTRY=US
+      - API_MODE=TECHNICAL
+      - DJANGO_DEBUG=${DJANGO_DEBUG:-False}
+      - POSTGRES_DB=${POSTGRES_DB:-pandemies}
+      - POSTGRES_USER=${POSTGRES_USER:-user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-guigui}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+    volumes:
+      - ./backend:/django_api
+      - ml_models_v2:/django_api/pandemics_app/ml/models
+    command: >
+      sh -c "sleep 15 &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+
+  # ========================================
+  # BACKUP SERVICE - Simple
+  # ========================================
+  backup-service:
+    image: postgres:13
+    container_name: backup_service_v2
+    networks:
+      - airflow-net-v2
+    depends_on:
+      postgres:
+        condition: service_healthy
+    profiles:
+      - base
+      - us
+      - fr
+      - ch
+    volumes:
+      - ./backups:/opt/backups
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-pandemies}
+      - POSTGRES_USER=${POSTGRES_USER:-user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-guigui}
+      - POSTGRES_HOST=postgres
+      - BACKUP_SCHEDULE=${BACKUP_SCHEDULE:-0 2 * * *}
+    command: >
+      sh -c "echo 'Backup service ready. Schedule: ${BACKUP_SCHEDULE}' && 
+             while true; do
+               echo 'Backup service running...'
+               sleep 3600
+             done"
+
+# ========================================
+# RÉSEAUX - Simple comme MSPR2
+# ========================================
+networks:
+  airflow-net-v2:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+# ========================================
+# VOLUMES - Simple comme MSPR2
+# ========================================
+volumes:
+  postgres_data_v2:
+    driver: local
+  metabase_data_v2:
+    driver: local
+  ml_models_v2:
+    driver: local

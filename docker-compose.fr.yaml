@@ -1,0 +1,108 @@
+
+services:
+  django:
+    environment:
+      # Configuration France spécifique
+      - DEPLOY_COUNTRY=FR
+      - FRONTEND_LANGUAGE=fr
+      - DJANGO_LANGUAGE_CODE=fr-fr
+      - DJANGO_ALLOWED_HOSTS=fr.pandemic-predictions.org,localhost,127.0.0.1
+      # Conformité RGPD
+      - FR_GDPR_ENABLED=true
+      - FR_DATA_RETENTION_DAYS=365
+      - FR_DISABLE_TECHNICAL_API=true
+      - FR_COOKIE_CONSENT_REQUIRED=true
+      - FR_DATA_PROTECTION_OFFICER_EMAIL=dpo@pandemic-predictions.org
+      # Désactivation de certaines fonctionnalités pour la conformité
+      - DISABLE_ANALYTICS=true
+      - DISABLE_THIRD_PARTY_TRACKING=true
+      # Logs en français
+      - DJANGO_LANGUAGE_CODE=fr
+      - DJANGO_TIME_ZONE=Europe/Paris
+    labels:
+      - "country=FR"
+      - "gdpr=enabled"
+      - "technical-api=disabled"
+
+  frontend:
+    environment:
+      # Interface française
+      - DEPLOY_COUNTRY=FR
+      - FRONTEND_LANGUAGE=fr
+      - REACT_APP_LANGUAGE=fr
+      - REACT_APP_GDPR_ENABLED=true
+      - REACT_APP_COOKIE_BANNER=true
+      - REACT_APP_API_URL=http://localhost:8001
+      # Désactivation du tracking
+      - REACT_APP_ANALYTICS_ENABLED=false
+      - REACT_APP_TECHNICAL_API_ENABLED=false
+    labels:
+      - "country=FR"
+      - "language=fr"
+
+  airflow-webserver:
+    environment:
+      # Configuration Airflow pour la France
+      - DEPLOY_COUNTRY=FR
+      - AIRFLOW__WEBSERVER__DEFAULT_UI_TIMEZONE=Europe/Paris
+      - AIRFLOW__CORE__DEFAULT_TIMEZONE=Europe/Paris
+    labels:
+      - "country=FR"
+
+  airflow-scheduler:
+    environment:
+      - DEPLOY_COUNTRY=FR
+      - AIRFLOW__CORE__DEFAULT_TIMEZONE=Europe/Paris
+    labels:
+      - "country=FR"
+
+  postgres:
+    environment:
+      # Configuration base de données France
+      - TZ=Europe/Paris
+      - POSTGRES_INITDB_ARGS=--locale=fr_FR.UTF-8
+    labels:
+      - "country=FR"
+      - "gdpr=compliant"
+
+  # Service GDPR de monitoring (spécifique France)
+  gdpr-compliance:
+    image: alpine:latest
+    container_name: gdpr_compliance_fr
+    networks:
+      - airflow-net-v2
+    profiles:
+      - fr
+    environment:
+      - DEPLOY_COUNTRY=FR
+      - GDPR_CHECK_INTERVAL=86400  # 24h
+      - DATA_RETENTION_DAYS=365
+      - COMPLIANCE_OFFICER_EMAIL=dpo@pandemic-predictions.org
+    volumes:
+      - ./logs:/var/log/compliance
+      - ./scripts:/opt/scripts
+    command: >
+      sh -c "echo 'Service de conformité RGPD démarré pour la France' &&
+             echo 'Rétention des données: 365 jours' &&
+             echo 'DPO Contact: dpo@pandemic-predictions.org' &&
+             while true; do
+               echo '[$(date)] Vérification conformité RGPD...'
+               # Ici, vous pourriez ajouter des scripts de vérification RGPD
+               sleep 86400  # Vérification quotidienne
+             done"
+    labels:
+      - "service=gdpr-compliance"
+      - "country=FR"
+
+# Note: Pas de service Metabase ni technical-api pour la France
+# conformément aux spécifications MSPR 3
+
+networks:
+  airflow-net-v2:
+    external: true
+
+volumes:
+  postgres_data_v2:
+    external: true
+  ml_models_v2:
+    external: true

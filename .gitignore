@@ -1,0 +1,32 @@
+# Fichiers de configuration et d'environnement
+.env
+.idea/  # Dossier d'IDE (IntelliJ/PyCharm)
+__pycache__/ # Caches Python
+*.pyc
+*.sqlite3 # Base de données SQLite de Django (si tu en as une locale)
+
+# Logs
+logs/
+*.log
+
+# Dépendances et environnements virtuels
+venv/
+node_modules/ # Si tu as du JS/frontend
+
+# Fichiers de build ou de distribution
+dist/
+build/
+
+# Fichiers de système d'exploitation
+.DS_Store # macOS
+Thumbs.db # Windows
+desktop.ini # Windows
+
+# Autres fichiers temporaires ou générés
+~* # Fichiers temporaires comme "~BROMIUM/" que tu as listé
+*.tmp
+*.swp
+
+# Fichiers de Docker générés
+*.base.yaml # Si ce sont des templates non a versionner
+docker-compose.prod.yaml # Si le prod est genere ou contient des secrets locaux

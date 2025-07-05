@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prédictions de Pandémies - OMS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Aller au contenu principal</a>
+
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-virus"></i> Prédictions de Pandémies - OMS
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#dashboard">Tableau de bord</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#predictions">Prédictions</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">À propos</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main id="main-content" class="container py-4">
+        <section id="dashboard" class="mb-5">
+            <h1 class="mb-4">Tableau de bord des pandémies</h1>
+
+            <div class="filter-section">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="virus-select" class="form-label">Virus</label>
+                        <select id="virus-select" class="form-select" aria-label="Sélectionner un virus">
+                            <option value="all" selected>Tous les virus</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="location-select" class="form-label">Localisation</label>
+                        <select id="location-select" class="form-select" aria-label="Sélectionner une localisation">
+                            <option value="all" selected>Toutes les localisations</option>
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3 mb-4">
+                    <div class="card stat-card">
+                        <div class="card-body">
+                            <div class="label">Population du pays</div>
+                            <div class="value" id="total-deaths">-</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="card stat-card">
+                        <div class="card-body">
+                            <div class="label">Nouveaux cas (période)</div>
+                            <div class="value" id="new-cases">-</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="card stat-card">
+                        <div class="card-body">
+                            <div class="label">Nouveaux décès (période)</div>
+                            <div class="value" id="new-deaths">-</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="card stat-card">
+                        <div class="card-body">
+                            <div class="label">Taux de mortalité global</div>
+                            <div class="value" id="total-cases">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12 mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            Évolution des cas
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="cases-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="predictions" class="mb-5">
+            <h2 class="mb-4">Prédictions IA</h2>
+
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            Validation du Modèle de Mortalité IA
+                        </div>
+                        <div class="card-body">
+                            <div class="filter-section mb-3">
+                                <div class="row">
+                                    <div class="col-md-6 mb-2">
+                                        <label for="validation-location-select" class="form-label">Pays</label>
+                                        <select id="validation-location-select" class="form-select" aria-label="Sélectionner un pays pour la validation">
+                                            <option value="">Sélectionner un pays...</option>
+                                            <option value="France">France</option>
+                                            <option value="USA">États-Unis</option>
+                                            <option value="UK">Royaume-Uni</option>
+                                            <option value="Germany">Allemagne</option>
+                                            <option value="Italy">Italie</option>
+                                            <option value="Spain">Espagne</option>
+                                            <option value="Brazil">Brésil</option>
+                                            <option value="India">Inde</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <label for="validation-period-select" class="form-label">Période</label>
+                                        <select id="validation-period-select" class="form-select" aria-label="Sélectionner une période">
+                                            <option value="2020-03-01,2020-12-31">2020 (Mars - Décembre)</option>
+                                            <option value="2021-01-01,2021-12-31">2021 (Année complète)</option>
+                                            <option value="2022-01-01,2022-04-30">2022 (Janvier - Avril)</option>
+                                            <option value="2020-03-01,2022-04-30" selected>Période complète (2020-2022)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <button id="validate-model-btn" class="btn btn-primary">
+                                            <i class="bi bi-cpu"></i> Valider le Modèle
+                                        </button>
+                                        <span id="validation-status" class="ms-2 text-muted"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="validation-results mb-3" id="validation-results" style="display: none;">
+                                <h5>Résultats de Validation</h5>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <div class="card border-info">
+                                            <div class="card-body text-center">
+                                                <h6 class="card-title">Précision Globale</h6>
+                                                <div class="display-6" id="validation-accuracy">-</div>
+                                                <small class="text-muted">Erreur médiane</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card border-success">
+                                            <div class="card-body text-center">
+                                                <h6 class="card-title">Prédictions</h6>
+                                                <div class="display-6" id="validation-count">-</div>
+                                                <small class="text-muted">Points de données</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="validation-quality mb-3">
+                                    <h6>Qualité des Prédictions</h6>
+                                    <div class="row">
+                                        <div class="col-3 text-center">
+                                            <div class="text-success fw-bold" id="excellent-count">-</div>
+                                            <small>Excellentes</small>
+                                        </div>
+                                        <div class="col-3 text-center">
+                                            <div class="text-info fw-bold" id="good-count">-</div>
+                                            <small>Bonnes</small>
+                                        </div>
+                                        <div class="col-3 text-center">
+                                            <div class="text-warning fw-bold" id="fair-count">-</div>
+                                            <small>Correctes</small>
+                                        </div>
+                                        <div class="col-3 text-center">
+                                            <div class="text-danger fw-bold" id="poor-count">-</div>
+                                            <small>Mauvaises</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="validation-list" class="list-group mb-3" style="max-height: 300px; overflow-y: auto;">
+                                    <!-- Les résultats de validation seront affichés ici -->
+                                </div>
+                            </div>
+
+                            <div class="chart-container">
+                                <canvas id="validation-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                Validation du Modèle de Transmission IA (Rt)
+            </div>
+            <div class="card-body">
+                <div class="filter-section mb-3">
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <label for="transmission-validation-location-select" class="form-label">Pays</label>
+                            <select id="transmission-validation-location-select" class="form-select" aria-label="Sélectionner un pays pour la validation transmission">
+                                <option value="">Sélectionner un pays...</option>
+                                <option value="France">France</option>
+                                <option value="USA">États-Unis</option>
+                                <option value="UK">Royaume-Uni</option>
+                                <option value="Germany">Allemagne</option>
+                                <option value="Italy">Italie</option>
+                                <option value="Spain">Espagne</option>
+                                <option value="Brazil">Brésil</option>
+                                <option value="India">Inde</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label for="transmission-validation-period-select" class="form-label">Période</label>
+                            <select id="transmission-validation-period-select" class="form-select" aria-label="Sélectionner une période">
+                                <option value="2020-03-01,2020-12-31">2020 (Mars - Décembre)</option>
+                                <option value="2021-01-01,2021-12-31">2021 (Année complète)</option>
+                                <option value="2022-01-01,2022-04-30">2022 (Janvier - Avril)</option>
+                                <option value="2020-03-01,2022-04-30" selected>Période complète (2020-2022)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button id="validate-transmission-model-btn" class="btn btn-primary">
+                                <i class="bi bi-activity"></i> Valider le Modèle Rt
+                            </button>
+                            <span id="transmission-validation-status" class="ms-2 text-muted"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="validation-results mb-3" id="transmission-validation-results" style="display: none;">
+                    <h5>Résultats de Validation Transmission (Rt)</h5>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="card border-info">
+                                <div class="card-body text-center">
+                                    <h6 class="card-title">Précision Rt Futur</h6>
+                                    <div class="display-6" id="transmission-validation-accuracy">-</div>
+                                    <small class="text-muted">Erreur médiane (%)</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card border-success">
+                                <div class="card-body text-center">
+                                    <h6 class="card-title">Prédictions Rt</h6>
+                                    <div class="display-6" id="transmission-validation-count">-</div>
+                                    <small class="text-muted">Points temporels</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="validation-quality mb-3">
+                        <h6>Qualité des Prédictions Rt</h6>
+                        <div class="row">
+                            <div class="col-3 text-center">
+                                <div class="text-success fw-bold" id="transmission-excellent-count">-</div>
+                                <small>Excellentes (&lt;15%)</small>
+                            </div>
+                            <div class="col-3 text-center">
+                                <div class="text-info fw-bold" id="transmission-good-count">-</div>
+                                <small>Bonnes (15-30%)</small>
+                            </div>
+                            <div class="col-3 text-center">
+                                <div class="text-warning fw-bold" id="transmission-fair-count">-</div>
+                                <small>Correctes (30-50%)</small>
+                            </div>
+                            <div class="col-3 text-center">
+                                <div class="text-danger fw-bold" id="transmission-poor-count">-</div>
+                                <small>Mauvaises (&gt;50%)</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="transmission-validation-list" class="list-group mb-3" style="max-height: 300px; overflow-y: auto;">
+                        <!-- Les résultats de validation transmission seront affichés ici -->
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="transmission-validation-chart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+            </div>
+        </section>
+
+        <section id="model-metrics-section" class="mb-5">
+            <h2 class="mb-4">Métriques des Modèles IA</h2>
+            <div class="card">
+                <div class="card-header">
+                    Performance des modèles de prédiction
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Nom du Modèle</th>
+                                    <th>Type</th>
+                                    <th>Virus</th>
+                                    <th>Localisation</th>
+                                    <th>MSE</th>
+                                    <th>RMSE</th>
+                                    <th>R² Score</th>
+                                </tr>
+                            </thead>
+                            <tbody id="model-metrics-table-body">
+                                <!-- Metrics will be populated by API -->
+                                <tr><td colspan="7">Chargement des métriques...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+        <section id="about" class="mb-5">
+            <h2 class="mb-4">À propos</h2>
+            <div class="card">
+                <div class="card-body">
+                    <p>Cette application a été développée pour visualiser les données de pandémies et fournir des prédictions basées sur des modèles d'intelligence artificielle. Elle utilise les données de WorldMeter et d'autres sources pour alimenter les visualisations et les modèles.</p>
+                    <p>Les prédictions fournies sont à titre indicatif et ne doivent pas être utilisées pour prendre des décisions médicales ou de santé publique sans consultation d'experts.</p>
+                    <p><strong>Technologies utilisées :</strong> Django, Django REST framework, Python, Pandas, Scikit-learn, Chart.js, Bootstrap.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="text-center">
+        <div class="container">
+            <p>&copy; 2024 Projet de Prédictions de Pandémies. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <div class="accessibility-controls">
+        <button id="increase-font" aria-label="Augmenter la taille de la police"><i class="bi bi-zoom-in"></i></button>
+        <button id="decrease-font" aria-label="Diminuer la taille de la police"><i class="bi bi-zoom-out"></i></button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
