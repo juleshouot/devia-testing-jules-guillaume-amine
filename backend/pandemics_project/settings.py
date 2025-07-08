@@ -154,6 +154,24 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # ========================================
 # AJOUT MSPR 3 - Variables simples pour l'application
 # ========================================
+# Configuration Assistant Vocal Simple
+VOICE_ASSISTANT_SIMPLE = {
+    'ENABLED': True,
+    'SUPPORTED_LANGUAGES': ['fr', 'en', 'de', 'it'],
+    'DEFAULT_LANGUAGE': 'fr',
+    'RATE_LIMIT_COMMANDS_PER_MINUTE': 30,
+    'LOG_COMMANDS': False,  # True seulement pour debug
+}
+
+# Configuration par pays
+if DEPLOY_COUNTRY == 'FR':
+    VOICE_ASSISTANT_SIMPLE['LOG_COMMANDS'] = False  # RGPD
+    VOICE_ASSISTANT_SIMPLE['SUPPORTED_LANGUAGES'] = ['fr']
+elif DEPLOY_COUNTRY == 'CH':
+    VOICE_ASSISTANT_SIMPLE['SUPPORTED_LANGUAGES'] = ['fr', 'de', 'it']
+elif DEPLOY_COUNTRY == 'US':
+    VOICE_ASSISTANT_SIMPLE['LOG_COMMANDS'] = True
+"""
 
 # Variable pays pour les templates (simple)
 COUNTRY_CONFIG = {
@@ -171,7 +189,7 @@ API_MODE = os.getenv('API_MODE', 'STANDARD')
 # Information de version
 APP_VERSION = '2.0.0'
 ENVIRONMENT = os.getenv('ENVIRONMENT', 'development')
-
+    
 # Log simple de démarrage
 print(f"🚀 Django démarré - Pays: {DEPLOY_COUNTRY} | Environnement: {ENVIRONMENT}")
 
@@ -180,3 +198,4 @@ print(f"🚀 Django démarré - Pays: {DEPLOY_COUNTRY} | Environnement: {ENVIRON
 # ========================================
 # On utilise la configuration de logging par défaut de Django
 # Pas de configuration JSON qui cause des problèmes
+"""

@@ -1,8 +1,41 @@
-// Script complet pour le tableau de bord des pandémies avec données agrégées
+
+// Script complet pour le tableau de bord des pandémies avec adaptation par pays
+// Variables globales pour la configuration par pays
+
+let CURRENT_COUNTRY = 'US';
+let CURRENT_LANGUAGE = 'en';
+let COUNTRY_CONFIG = {};
+
 // Variable globale pour tracker si les données sont chargées
 let dataLoaded = {
     viruses: false,
     locations: false
+};
+window.changeLanguage = function(lang) {
+    console.log(`🌐 changeLanguage appelée avec: ${lang}`);
+
+    if (CURRENT_COUNTRY !== 'CH') return;
+
+    CURRENT_LANGUAGE = lang;
+
+    // Appliquer les traductions DIRECTEMENT (sans applyTranslations)
+    if (typeof TRANSLATIONS !== 'undefined' && TRANSLATIONS[lang]) {
+        document.querySelectorAll('[data-translate]').forEach(element => {
+            const key = element.getAttribute('data-translate');
+            const translation = TRANSLATIONS[lang][key] || TRANSLATIONS.en[key] || key;
+            element.textContent = translation;
+        });
+        document.title = TRANSLATIONS[lang]['title'] || 'Pandemic Predictions';
+    }
+
+    // Mettre à jour l'affichage de la langue courante
+    const currentLangDisplay = document.getElementById('current-language');
+    if (currentLangDisplay) {
+        const langMap = { 'fr': 'FR', 'de': 'DE', 'it': 'IT' };
+        currentLangDisplay.textContent = langMap[lang] || 'FR';
+    }
+
+    console.log(`✅ Langue changée vers: ${lang}`);
 };
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -2441,11 +2474,11 @@ function initializeTransmissionValidation() {
     // Charger les pays disponibles (réutiliser la fonction existante)
     loadAvailableCountries();
 }
+// CORRIGER la fonction detectAndDisplayCountry existante
 function detectAndDisplayCountry() {
-    // Utilise votre système de log existant
-    log('INFO', 'Détection du pays de déploiement...');
+    console.log('🔍 Détection du pays de déploiement...');
 
-    fetch('/api/health-check/')
+    fetch('http://localhost:8001/api/health-check/')
         .then(response => {
             if (!response.ok) {
                 throw new Error(`Erreur HTTP: ${response.status}`);
@@ -2453,22 +2486,42 @@ function detectAndDisplayCountry() {
             return response.json();
         })
         .then(data => {
-            const country = data.deploy_country || 'US';
-            updateCountryDisplay(country);
-            log('SUCCESS', `Déployé en: ${country}`);
+            console.log('📡 Réponse API health-check:', data);
 
-            // Utilise votre système showStatus existant
+            const country = data.deploy_country || 'US';
+            const config = data.country_config || {};
+
+            console.log(`🎯 Pays détecté: ${country}`);
+
+            // NOUVEAU: Configurer l'interface selon le pays
+            configureCountryInterface(country, config);
+
             const countryNames = {
                 'US': '🇺🇸 États-Unis (Configuration complète)',
                 'FR': '🇫🇷 France (Conformité RGPD)',
                 'CH': '🇨🇭 Suisse (Multi-langue)'
             };
+
             showStatus(`Région active: ${countryNames[country]}`, 'success');
+            updateCountryDisplay(country);
+
+            // FORCER l'application des traductions après détection
+            if (country === 'CH' || country === 'FR') {
+                setTimeout(() => {
+                    console.log(`🔄 Application forcée traductions après détection: ${country}`);
+                    applyTranslations('fr');
+                }, 1000);
+            }
         })
         .catch(error => {
-            // Utilise votre système de log existant
-            log('ERROR', 'Erreur détection pays:', error);
+            console.error('❌ Erreur détection pays:', error);
             showStatus('Impossible de détecter la région de déploiement', 'warning');
+
+            // Configuration par défaut (US)
+            configureCountryInterface('US', {
+                features: ['technical_api', 'metabase', 'analytics', 'full_dashboard'],
+                language: 'en'
+            });
         });
 }
 
@@ -2575,12 +2628,235 @@ function updateSystemHealthIndicator(status) {
     indicator.title = `Système: ${status}`;
 }
 
+// Fonction pour changer la langue (Suisse uniquement)
+function changeLanguage(lang) {
+    if (CURRENT_COUNTRY !== 'CH') return;
+
+    CURRENT_LANGUAGE = lang;
+    applyTranslations(lang);
+
+    // Mettre à jour l'affichage de la langue courante
+    const currentLangDisplay = document.getElementById('current-language');
+    if (currentLangDisplay) {
+        const langMap = { 'fr': 'FR', 'de': 'DE', 'it': 'IT' };
+        currentLangDisplay.textContent = langMap[lang] || 'FR';
+    }
+
+    log('INFO', `Langue changée vers: ${lang}`);
+}
+
+// Fonction pour configurer l'interface selon le pays
+function configureCountryInterface(country, config) {
+    CURRENT_COUNTRY = country;
+    COUNTRY_CONFIG = config;
+
+    console.log(`🏗️ Configuration interface pour: ${country}`);
+
+    // 1. Configuration des langues
+    if (country === 'CH') {
+        // Suisse: Afficher le sélecteur de langue
+        const languageSelector = document.getElementById('language-selector');
+        if (languageSelector) {
+            languageSelector.style.display = 'block';
+        }
+        CURRENT_LANGUAGE = 'fr'; // Défaut français pour la Suisse
+
+        // FORCER l'application des traductions pour la Suisse
+        setTimeout(() => {
+            console.log('🇨🇭 Application forcée des traductions FR pour la Suisse');
+            applyTranslations('fr');
+        }, 500);
+
+    } else if (country === 'FR') {
+        CURRENT_LANGUAGE = 'fr';
+        // FORCER l'application des traductions pour la France
+        setTimeout(() => {
+            console.log('🇫🇷 Application forcée des traductions FR pour la France');
+            applyTranslations('fr');
+        }, 500);
+    } else {
+        CURRENT_LANGUAGE = 'en'; // US par défaut
+    }
+
+    // 2. Masquer/Afficher les fonctionnalités selon le pays
+    configureFeaturesByCountry(country, config.features || []);
+
+    // 3. Adapter les couleurs/style selon le pays
+    adaptCountryStyle(country);
+
+    log('INFO', `Interface configurée pour: ${country}`, config);
+}
+
+// Fonction pour masquer/afficher les fonctionnalités
+function configureFeaturesByCountry(country, features) {
+    // Éléments à gérer selon le pays
+    const featureElements = {
+        'technical_api': [
+            '#technical-api-section',
+            '[data-feature="technical-api"]'
+        ],
+        'metabase': [
+            '#metabase-section',
+            '[data-feature="metabase"]',
+            '#model-metrics-section' // Les métriques sont souvent liées à Metabase
+        ],
+        'analytics': [
+            '[data-feature="analytics"]'
+        ],
+        'gdpr_compliance': [
+            '#gdpr-banner'
+        ],
+        'multi_language': [
+            '#language-selector'
+        ]
+    };
+
+    // Masquer tous les éléments par défaut
+    Object.values(featureElements).flat().forEach(selector => {
+        const elements = document.querySelectorAll(selector);
+        elements.forEach(el => {
+            if (el) el.style.display = 'none';
+        });
+    });
+
+    // Afficher seulement les fonctionnalités autorisées
+    features.forEach(feature => {
+        if (featureElements[feature]) {
+            featureElements[feature].forEach(selector => {
+                const elements = document.querySelectorAll(selector);
+                elements.forEach(el => {
+                    if (el) el.style.display = 'block';
+                });
+            });
+        }
+    });
+
+    // Gestion spéciale selon le pays
+    switch(country) {
+        case 'FR':
+            // France: Ajouter banner RGPD si nécessaire
+            addGDPRBanner();
+            break;
+
+        case 'CH':
+            // Suisse: Afficher sélecteur de langue
+            const langSelector = document.getElementById('language-selector');
+            if (langSelector) langSelector.style.display = 'block';
+            break;
+
+        case 'US':
+            // US: Toutes les fonctionnalités disponibles
+            break;
+    }
+}
+
+// Fonction pour adapter le style selon le pays
+function adaptCountryStyle(country) {
+    const body = document.body;
+
+    // Retirer les classes de pays existantes
+    body.classList.remove('country-us', 'country-fr', 'country-ch');
+
+    // Ajouter la classe du pays actuel
+    body.classList.add(`country-${country.toLowerCase()}`);
+
+    // Couleurs spécifiques par pays
+    const countryColors = {
+        'US': '#1f77b4', // Bleu US
+        'FR': '#ff7f0e', // Orange France
+        'CH': '#2ca02c'  // Vert Suisse
+    };
+
+    if (countryColors[country]) {
+        document.documentElement.style.setProperty('--primary-color', countryColors[country]);
+    }
+}
+
+// Fonction pour ajouter le banner RGPD (France)
+function addGDPRBanner() {
+    if (document.getElementById('gdpr-banner')) return; // Déjà présent
+
+    const banner = document.createElement('div');
+    banner.id = 'gdpr-banner';
+    banner.className = 'alert alert-info fixed-top';
+    banner.style.cssText = 'z-index: 9999; margin-top: 70px;';
+    banner.innerHTML = `
+        <div class="container">
+            <span data-translate="gdpr_notice">🇫🇷 Conformément au RGPD, cette application respecte la protection de vos données personnelles.</span>
+            <button type="button" class="btn-close float-end" onclick="this.parentElement.parentElement.style.display='none'"></button>
+        </div>
+    `;
+
+    document.body.appendChild(banner);
+}
+function applyTranslations(lang) {
+    console.log(`🌐 Application des traductions: ${lang}`);
+
+    // Vérifier que les traductions sont disponibles
+    if (typeof TRANSLATIONS === 'undefined') {
+        console.warn('⚠️ TRANSLATIONS non disponible, chargement...');
+        // Essayer de charger le script de traductions
+        loadTranslationsScript().then(() => {
+            applyTranslationsInternal(lang);
+        });
+        return;
+    }
+
+    applyTranslationsInternal(lang);
+}
+function applyTranslationsInternal(lang) {
+    console.log(`🔄 Application interne des traductions: ${lang}`);
+
+    if (!TRANSLATIONS || !TRANSLATIONS[lang]) {
+        console.error(`❌ Traductions non disponibles pour: ${lang}`);
+        return;
+    }
+
+    document.querySelectorAll('[data-translate]').forEach(element => {
+        const key = element.getAttribute('data-translate');
+        const translation = TRANSLATIONS[lang][key] || TRANSLATIONS.en[key] || key;
+
+        console.log(`🔤 Traduction: ${key} = ${translation}`);
+        element.textContent = translation;
+    });
+
+    // Mettre à jour le title de la page
+    document.title = TRANSLATIONS[lang]['title'] || 'Pandemic Predictions';
+
+    console.log(`✅ Traductions appliquées pour: ${lang}`);
+}
+// 3. FONCTION POUR CHARGER DYNAMIQUEMENT LE SCRIPT DE TRADUCTIONS
+function loadTranslationsScript() {
+    return new Promise((resolve, reject) => {
+        if (typeof TRANSLATIONS !== 'undefined') {
+            resolve();
+            return;
+        }
+
+        const script = document.createElement('script');
+        script.src = 'translations.js';
+        script.onload = () => {
+            console.log('✅ Script translations.js chargé');
+            resolve();
+        };
+        script.onerror = () => {
+            console.error('❌ Erreur chargement translations.js');
+            reject();
+        };
+        document.head.appendChild(script);
+    });
+}
+
 
 
 
 
 function initialize() {
     console.log("Tentative d'appel à loadModelMetrics()...");
+
+    // 1. PREMIER: Détecter et configurer le pays
+    detectAndDisplayCountry();
+
     try {
         loadModelMetrics();
     } catch (error) {
@@ -2611,10 +2887,8 @@ function initialize() {
         geoPredVirusSelect.addEventListener('change', loadGeoPredictions);
     }
 
-
     initializeValidation();
     initializeTransmissionValidation();
-    detectAndDisplayCountry();
     extendedSystemMonitoring();
 
     log('INFO', 'Initialisation terminée');

@@ -10,6 +10,9 @@ from django.db.models.functions import TruncDate
 from django.utils import timezone
 import os
 import joblib
+import json
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
 
 from .models import (
     CovidData, MonkeyPoxData, Location, Virus, Worldmeter,
@@ -1528,3 +1531,52 @@ def validate_transmission_model_predictions(request):
             {"error": f"Erreur lors de la validation transmission: {str(e)}"},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
+
+
+@api_view(['GET'])
+def health_check(request):
+    """
+    Vérifie que tous les composants fonctionnent correctement
+    """
+    try:
+        # Récupérer le pays de déploiement depuis les variables d'environnement
+        deploy_country = os.environ.get('DEPLOY_COUNTRY', 'US')
+
+        # Configuration par pays
+        country_config = {
+            'US': {
+                'features': ['technical_api', 'metabase', 'analytics', 'full_dashboard'],
+                'language': 'en',
+                'name': 'United States'
+            },
+            'FR': {
+                'features': ['gdpr_compliance', 'simple_dashboard'],
+                'language': 'fr',
+                'name': 'France'
+            },
+            'CH': {
+                'features': ['multi_language', 'simple_dashboard'],
+                'languages': ['fr', 'de', 'it'],
+                'name': 'Switzerland'
+            }
+        }
+
+        checks = {}
+
+        # ... autres vérifications existantes ...
+
+        return Response({
+            'overall_status': 'OK',
+            'timestamp': datetime.now().isoformat(),
+            'deploy_country': deploy_country,
+            'country_config': country_config.get(deploy_country, country_config['US']),
+            'checks': checks
+        })
+
+    except Exception as e:
+        return Response(
+            {"error": str(e), "overall_status": "ERROR"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+

@@ -1,4 +1,4 @@
-version: '3.8'
+
 
 # Configuration spécifique pour la Suisse
 # Support multi-langue (FR/DE/IT) - Pas de DataViz
@@ -142,12 +142,3 @@ services:
 # Note: Pas de service Metabase pour la Suisse
 # conformément aux spécifications MSPR 3 (DataViz désactivé)
 
-networks:
-  airflow-net-v2:
-    external: true
-
-volumes:
-  postgres_data_v2:
-    external: true
-  ml_models_v2:
-    external: true

@@ -25,7 +25,7 @@ services:
 
   # Template base pour Django
   django-base:
-    image: python:3.10-slim
+    image: python:3.9-slim
     networks:
       - airflow-net-v2
     environment: &django-env

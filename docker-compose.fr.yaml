@@ -1,4 +1,3 @@
-
 services:
   django:
     environment:
@@ -96,13 +95,3 @@ services:
 
 # Note: Pas de service Metabase ni technical-api pour la France
 # conformément aux spécifications MSPR 3
-
-networks:
-  airflow-net-v2:
-    external: true
-
-volumes:
-  postgres_data_v2:
-    external: true
-  ml_models_v2:
-    external: true
