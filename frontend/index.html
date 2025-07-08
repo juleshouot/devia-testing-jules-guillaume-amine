@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-translate="title">Prédictions de Pandémies - OMS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- CHARGEMENT DES TRADUCTIONS EN PREMIER -->
+    <script src="translations.js"></script>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Aller au contenu principal</a>
+
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-virus"></i> <span data-translate="title">Prédictions de Pandémies - OMS</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#dashboard" data-translate="dashboard">Tableau de bord</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#predictions" data-translate="predictions">Prédictions</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about" data-translate="about">À propos</a>
+                    </li>
+                    <!-- Sélecteur de langue pour la Suisse - CORRECTION DES APPELS -->
+                    <li class="nav-item dropdown" id="language-selector" style="display: none;">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            🌐 <span id="current-language">FR</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#" onclick="window.changeLanguage && window.changeLanguage('fr')">🇫🇷 Français</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="window.changeLanguage && window.changeLanguage('de')">🇩🇪 Deutsch</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="window.changeLanguage && window.changeLanguage('it')">🇮🇹 Italiano</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Le reste du contenu reste identique... -->
+    <main id="main-content" class="container py-4">
+        <section id="dashboard" class="mb-5">
+            <h1 class="mb-4" data-translate="dashboard_title">Tableau de bord des pandémies</h1>
+
+            <div class="filter-section">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="virus-select" class="form-label" data-translate="virus">Virus</label>
+                        <select id="virus-select" class="form-select" aria-label="Sélectionner un virus">
+                            <option value="all" selected data-translate="all_viruses">Tous les virus</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="location-select" class="form-label" data-translate="location">Localisation</label>
+                        <select id="location-select" class="form-select" aria-label="Sélectionner une localisation">
+                            <option value="all" selected data-translate="all_locations">Toutes les localisations</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3 mb-4">
+                    <div class="card stat-card">
+                        <div class="card-body">
+                            <div class="label" data-translate="country_population">Population du pays</div>
+                            <div class="value" id="total-deaths">-</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="card stat-card">
+                        <div class="card-body">
+                            <div class="label" data-translate="new_cases_period">Nouveaux cas (période)</div>
+                            <div class="value" id="new-cases">-</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="card stat-card">
+                        <div class="card-body">
+                            <div class="label" data-translate="new_deaths_period">Nouveaux décès (période)</div>
+                            <div class="value" id="new-deaths">-</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="card stat-card">
+                        <div class="card-body">
+                            <div class="label" data-translate="global_mortality_rate">Taux de mortalité global</div>
+                            <div class="value" id="total-cases">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12 mb-4">
+                    <div class="card">
+                        <div class="card-header" data-translate="cases_evolution">
+                            Évolution des cas
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="cases-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="predictions" class="mb-5">
+            <h2 class="mb-4" data-translate="ai_predictions">Prédictions IA</h2>
+
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header" data-translate="model_validation">
+                            Validation du Modèle de Mortalité IA
+                        </div>
+                        <div class="card-body">
+                            <div class="filter-section mb-3">
+                                <div class="row">
+                                    <div class="col-md-6 mb-2">
+                                        <label for="validation-location-select" class="form-label" data-translate="country">Pays</label>
+                                        <select id="validation-location-select" class="form-select" aria-label="Sélectionner un pays pour la validation">
+                                            <option value="" data-translate="select_country">Sélectionner un pays...</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <label for="validation-period-select" class="form-label" data-translate="period">Période</label>
+                                        <select id="validation-period-select" class="form-select" aria-label="Sélectionner une période">
+                                            <option value="2020-03-01,2020-12-31">2020 (Mars - Décembre)</option>
+                                            <option value="2021-01-01,2021-12-31">2021 (Année complète)</option>
+                                            <option value="2022-01-01,2022-04-30">2022 (Janvier - Avril)</option>
+                                            <option value="2020-03-01,2022-04-30" selected>Période complète (2020-2022)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <button id="validate-model-btn" class="btn btn-primary" data-translate="validate_model">
+                                            <i class="bi bi-cpu"></i> Valider le Modèle
+                                        </button>
+                                        <span id="validation-status" class="ms-2 text-muted"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="validation-results mb-3" id="validation-results" style="display: none;">
+                                <h5 data-translate="validation_results">Résultats de Validation</h5>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <div class="card border-info">
+                                            <div class="card-body text-center">
+                                                <h6 class="card-title" data-translate="global_accuracy">Précision Globale</h6>
+                                                <div class="display-6" id="validation-accuracy">-</div>
+                                                <small class="text-muted" data-translate="median_error">Erreur médiane</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card border-success">
+                                            <div class="card-body text-center">
+                                                <h6 class="card-title" data-translate="predictions">Prédictions</h6>
+                                                <div class="display-6" id="validation-count">-</div>
+                                                <small class="text-muted" data-translate="data_points">Points de données</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="validation-quality mb-3">
+                                    <h6 data-translate="prediction_quality">Qualité des Prédictions</h6>
+                                    <div class="row">
+                                        <div class="col-3 text-center">
+                                            <div class="text-success fw-bold" id="excellent-count">-</div>
+                                            <small data-translate="excellent">Excellentes</small>
+                                        </div>
+                                        <div class="col-3 text-center">
+                                            <div class="text-info fw-bold" id="good-count">-</div>
+                                            <small data-translate="good">Bonnes</small>
+                                        </div>
+                                        <div class="col-3 text-center">
+                                            <div class="text-warning fw-bold" id="fair-count">-</div>
+                                            <small data-translate="fair">Correctes</small>
+                                        </div>
+                                        <div class="col-3 text-center">
+                                            <div class="text-danger fw-bold" id="poor-count">-</div>
+                                            <small data-translate="poor">Mauvaises</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="validation-list" class="list-group mb-3" style="max-height: 300px; overflow-y: auto;">
+                                    <!-- Les résultats de validation seront affichés ici -->
+                                </div>
+                            </div>
+
+                            <div class="chart-container">
+                                <canvas id="validation-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header" data-translate="transmission_model_validation">
+                            Validation du Modèle de Transmission IA (Rt)
+                        </div>
+                        <div class="card-body">
+                            <div class="filter-section mb-3">
+                                <div class="row">
+                                    <div class="col-md-6 mb-2">
+                                        <label for="transmission-validation-location-select" class="form-label" data-translate="country">Pays</label>
+                                        <select id="transmission-validation-location-select" class="form-select" aria-label="Sélectionner un pays pour la validation transmission">
+                                            <option value="" data-translate="select_country">Sélectionner un pays...</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <label for="transmission-validation-period-select" class="form-label" data-translate="period">Période</label>
+                                        <select id="transmission-validation-period-select" class="form-select" aria-label="Sélectionner une période">
+                                            <option value="2020-03-01,2020-12-31">2020 (Mars - Décembre)</option>
+                                            <option value="2021-01-01,2021-12-31">2021 (Année complète)</option>
+                                            <option value="2022-01-01,2022-04-30">2022 (Janvier - Avril)</option>
+                                            <option value="2020-03-01,2022-04-30" selected>Période complète (2020-2022)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <button id="validate-transmission-model-btn" class="btn btn-primary" data-translate="validate_rt_model">
+                                            <i class="bi bi-activity"></i> Valider le Modèle Rt
+                                        </button>
+                                        <span id="transmission-validation-status" class="ms-2 text-muted"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="validation-results mb-3" id="transmission-validation-results" style="display: none;">
+                                <h5 data-translate="transmission_validation_results">Résultats de Validation Transmission (Rt)</h5>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <div class="card border-info">
+                                            <div class="card-body text-center">
+                                                <h6 class="card-title" data-translate="rt_future_accuracy">Précision Rt Futur</h6>
+                                                <div class="display-6" id="transmission-validation-accuracy">-</div>
+                                                <small class="text-muted" data-translate="median_error_percent">Erreur médiane (%)</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card border-success">
+                                            <div class="card-body text-center">
+                                                <h6 class="card-title" data-translate="rt_predictions">Prédictions Rt</h6>
+                                                <div class="display-6" id="transmission-validation-count">-</div>
+                                                <small class="text-muted" data-translate="temporal_points">Points temporels</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="validation-quality mb-3">
+                                    <h6 data-translate="rt_prediction_quality">Qualité des Prédictions Rt</h6>
+                                    <div class="row">
+                                        <div class="col-3 text-center">
+                                            <div class="text-success fw-bold" id="transmission-excellent-count">-</div>
+                                            <small data-translate="excellent_rt">Excellentes (&lt;15%)</small>
+                                        </div>
+                                        <div class="col-3 text-center">
+                                            <div class="text-info fw-bold" id="transmission-good-count">-</div>
+                                            <small data-translate="good_rt">Bonnes (15-30%)</small>
+                                        </div>
+                                        <div class="col-3 text-center">
+                                            <div class="text-warning fw-bold" id="transmission-fair-count">-</div>
+                                            <small data-translate="fair_rt">Correctes (30-50%)</small>
+                                        </div>
+                                        <div class="col-3 text-center">
+                                            <div class="text-danger fw-bold" id="transmission-poor-count">-</div>
+                                            <small data-translate="poor_rt">Mauvaises (&gt;50%)</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="transmission-validation-list" class="list-group mb-3" style="max-height: 300px; overflow-y: auto;">
+                                    <!-- Les résultats de validation transmission seront affichés ici -->
+                                </div>
+                            </div>
+
+                            <div class="chart-container">
+                                <canvas id="transmission-validation-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="model-metrics-section" class="mb-5" data-feature="metabase">
+            <h2 class="mb-4" data-translate="model_metrics">Métriques des Modèles IA</h2>
+            <div class="card">
+                <div class="card-header" data-translate="model_performance">
+                    Performance des modèles de prédiction
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th data-translate="model_name">Nom du Modèle</th>
+                                    <th data-translate="type">Type</th>
+                                    <th data-translate="virus">Virus</th>
+                                    <th data-translate="location">Localisation</th>
+                                    <th>MSE</th>
+                                    <th>RMSE</th>
+                                    <th data-translate="r2_score">R² Score</th>
+                                </tr>
+                            </thead>
+                            <tbody id="model-metrics-table-body">
+                                <!-- Metrics will be populated by API -->
+                                <tr><td colspan="7" data-translate="loading_metrics">Chargement des métriques...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="mb-5">
+            <h2 class="mb-4" data-translate="about">À propos</h2>
+            <div class="card">
+                <div class="card-body">
+                    <p data-translate="about_description">Cette application a été développée pour visualiser les données de pandémies et fournir des prédictions basées sur des modèles d'intelligence artificielle. Elle utilise les données de WorldMeter et d'autres sources pour alimenter les visualisations et les modèles.</p>
+                    <p data-translate="disclaimer">Les prédictions fournies sont à titre indicatif et ne doivent pas être utilisées pour prendre des décisions médicales ou de santé publique sans consultation d'experts.</p>
+                    <p><strong data-translate="technologies_used">Technologies utilisées :</strong> <span data-translate="tech_list">Django, Django REST framework, Python, Pandas, Scikit-learn, Chart.js, Bootstrap.</span></p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="text-center">
+        <div class="container">
+            <p data-translate="copyright">&copy; 2024 Projet de Prédictions de Pandémies. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <div class="accessibility-controls">
+        <button id="increase-font" aria-label="Augmenter la taille de la police"><i class="bi bi-zoom-in"></i></button>
+        <button id="decrease-font" aria-label="Diminuer la taille de la police"><i class="bi bi-zoom-out"></i></button>
+    </div>
+
+    <!-- SCRIPTS - ORDRE IMPORTANT -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- translations.js déjà chargé dans le head -->
+    <script src="script.js"></script>
+
+    <!-- SCRIPT DE DEBUG POUR VÉRIFIER LES TRADUCTIONS -->
+    <script>
+        // Vérifier que les traductions sont bien chargées
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔍 Debug traductions:');
+            console.log('- TRANSLATIONS disponible:', typeof TRANSLATIONS !== 'undefined');
+            console.log('- changeLanguage disponible:', typeof window.changeLanguage !== 'undefined');
+            console.log('- applyTranslations disponible:', typeof window.applyTranslations !== 'undefined');
+
+            if (typeof TRANSLATIONS !== 'undefined') {
+                console.log('- Langues disponibles:', Object.keys(TRANSLATIONS));
+            }
+
+            // Forcer l'application des traductions après 2 secondes pour debug
+            setTimeout(() => {
+                console.log('🔄 Application forcée des traductions FR (debug)');
+                if (typeof window.applyTranslations === 'function') {
+                    window.applyTranslations('fr');
+                }
+            }, 2000);
+        });
+    </script>
+<script>
+window.changeLanguage = function(lang) {
+    console.log(`🌐 changeLanguage appelée avec: ${lang}`);
+
+    if (typeof TRANSLATIONS !== 'undefined' && TRANSLATIONS[lang]) {
+        document.querySelectorAll('[data-translate]').forEach(element => {
+            const key = element.getAttribute('data-translate');
+            const translation = TRANSLATIONS[lang][key] || TRANSLATIONS.en[key] || key;
+            element.textContent = translation;
+        });
+        document.title = TRANSLATIONS[lang]['title'] || 'Pandemic Predictions';
+        console.log(`✅ Langue changée vers: ${lang}`);
+    } else {
+        console.error('❌ TRANSLATIONS non disponible pour:', lang);
+    }
+
+    const currentLangDisplay = document.getElementById('current-language');
+    if (currentLangDisplay) {
+        const langMap = { 'fr': 'FR', 'de': 'DE', 'it': 'IT' };
+        currentLangDisplay.textContent = langMap[lang] || 'FR';
+    }
+};
+console.log('✅ changeLanguage définie dans HTML !');
+</script>
+</body>
+</html>
