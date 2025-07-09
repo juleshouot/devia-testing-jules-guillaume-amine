@@ -101,7 +101,7 @@ jobs:
         pytest --cov=. --cov-report=xml --cov-report=html --junitxml=test-results.xml
 
     - name: 📊 Upload des résultats de tests
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: test-results-${{ matrix.python-version }}-${{ matrix.country }}
