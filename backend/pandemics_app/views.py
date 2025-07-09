@@ -449,7 +449,7 @@ class CombinedPredictionView(APIView):
                             "geographical_spread"
                         ],
                     )
-                    geo_  # prediction.save()  # DÉSACTIVÉ TEMPORAIREMENT
+                # geo_  # prediction.save()  # DÉSACTIVÉ TEMPORAIREMENT
 
                 # Retourner les prédictions
                 return Response(combined)
