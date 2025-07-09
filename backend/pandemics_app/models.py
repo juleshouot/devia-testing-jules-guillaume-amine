@@ -12,7 +12,7 @@ class CovidData(models.Model):
     daily_deaths = models.IntegerField()
 
     class Meta:
-        db_table = 'worldometer_coronavirus_daily_data'
+        db_table = "worldometer_coronavirus_daily_data"
 
     def __str__(self):
         return f"{self.location} - {self.date}"
@@ -28,7 +28,7 @@ class MonkeyPoxData(models.Model):
     daily_deaths = models.IntegerField()
 
     class Meta:
-        db_table = 'owid_monkeypox_data'
+        db_table = "owid_monkeypox_data"
 
     def __str__(self):
         return f"{self.location} - {self.date}"
@@ -41,18 +41,19 @@ class Location(models.Model):
     population = models.BigIntegerField(null=True, blank=True)
 
     class Meta:
-        db_table = 'location'
+        db_table = "location"
         managed = False
 
     def __str__(self):
         return self.name
+
 
 class Virus(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=45)
 
     class Meta:
-        db_table = 'virus'  # ⚠️ CORRIGÉ: juste 'virus' sans préfixe
+        db_table = "virus"  # ⚠️ CORRIGÉ: juste 'virus' sans préfixe
         managed = False
 
     def __str__(self):
@@ -66,19 +67,37 @@ class Worldmeter(models.Model):
     total_deaths = models.BigIntegerField(null=True, blank=True)
     new_cases = models.BigIntegerField(null=True, blank=True)
     new_deaths = models.BigIntegerField(null=True, blank=True)
-    new_cases_smoothed = models.DecimalField(max_digits=15, decimal_places=3, null=True, blank=True)
-    new_deaths_smoothed = models.DecimalField(max_digits=15, decimal_places=3, null=True, blank=True)
-    new_cases_per_million = models.DecimalField(max_digits=15, decimal_places=3, null=True, blank=True)
-    total_cases_per_million = models.DecimalField(max_digits=15, decimal_places=3, null=True, blank=True)
-    new_cases_smoothed_per_million = models.DecimalField(max_digits=15, decimal_places=3, null=True, blank=True)
-    new_deaths_per_million = models.DecimalField(max_digits=15, decimal_places=3, null=True, blank=True)
-    total_deaths_per_million = models.DecimalField(max_digits=15, decimal_places=3, null=True, blank=True)
-    new_deaths_smoothed_per_million = models.DecimalField(max_digits=15, decimal_places=3, null=True, blank=True)
-    location = models.ForeignKey(Location, on_delete=models.CASCADE, db_column='location_id')
-    virus = models.ForeignKey(Virus, on_delete=models.CASCADE, db_column='virus_id')
+    new_cases_smoothed = models.DecimalField(
+        max_digits=15, decimal_places=3, null=True, blank=True
+    )
+    new_deaths_smoothed = models.DecimalField(
+        max_digits=15, decimal_places=3, null=True, blank=True
+    )
+    new_cases_per_million = models.DecimalField(
+        max_digits=15, decimal_places=3, null=True, blank=True
+    )
+    total_cases_per_million = models.DecimalField(
+        max_digits=15, decimal_places=3, null=True, blank=True
+    )
+    new_cases_smoothed_per_million = models.DecimalField(
+        max_digits=15, decimal_places=3, null=True, blank=True
+    )
+    new_deaths_per_million = models.DecimalField(
+        max_digits=15, decimal_places=3, null=True, blank=True
+    )
+    total_deaths_per_million = models.DecimalField(
+        max_digits=15, decimal_places=3, null=True, blank=True
+    )
+    new_deaths_smoothed_per_million = models.DecimalField(
+        max_digits=15, decimal_places=3, null=True, blank=True
+    )
+    location = models.ForeignKey(
+        Location, on_delete=models.CASCADE, db_column="location_id"
+    )
+    virus = models.ForeignKey(Virus, on_delete=models.CASCADE, db_column="virus_id")
 
     class Meta:
-        db_table = 'worldmeter'  # ⚠️ CORRIGÉ: juste 'worldmeter' sans préfixe
+        db_table = "worldmeter"  # ⚠️ CORRIGÉ: juste 'worldmeter' sans préfixe
         managed = False
 
     def __str__(self):
@@ -98,7 +117,7 @@ class Prediction(models.Model):
     predicted_deaths = models.IntegerField(null=True, blank=True)
 
     class Meta:
-        ordering = ['-prediction_date']
+        ordering = ["-prediction_date"]
 
     def __str__(self):
         return f"{self.location.name} - {self.virus.name} - {self.prediction_date}"
@@ -112,7 +131,7 @@ class GeographicalSpreadPrediction(models.Model):
     predicted_new_locations = models.IntegerField()
 
     class Meta:
-        ordering = ['-prediction_date']
+        ordering = ["-prediction_date"]
 
     def __str__(self):
         return f"{self.virus.name} - {self.prediction_date} - {self.predicted_new_locations} nouvelles localisations"
@@ -120,8 +139,12 @@ class GeographicalSpreadPrediction(models.Model):
 
 class ModelMetrics(models.Model):
     id = models.AutoField(primary_key=True)
-    model_type = models.CharField(max_length=50)  # 'transmission', 'mortality', 'geographical_spread'
-    model_name = models.CharField(max_length=100)  # 'Random Forest', 'Gradient Boosting', etc.
+    model_type = models.CharField(
+        max_length=50
+    )  # 'transmission', 'mortality', 'geographical_spread'
+    model_name = models.CharField(
+        max_length=100
+    )  # 'Random Forest', 'Gradient Boosting', etc.
     timestamp = models.DateTimeField(auto_now_add=True)
     mse = models.FloatField()
     rmse = models.FloatField()
@@ -130,7 +153,7 @@ class ModelMetrics(models.Model):
     cv_rmse = models.FloatField(null=True, blank=True)
 
     class Meta:
-        ordering = ['-timestamp']
+        ordering = ["-timestamp"]
 
     def __str__(self):
         return f"{self.model_type} - {self.model_name} - {self.timestamp.strftime('%Y-%m-%d')}"

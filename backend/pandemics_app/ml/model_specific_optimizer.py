@@ -3,8 +3,17 @@ import pandas as pd
 import numpy as np
 import joblib
 from sqlalchemy import create_engine, text
-from sklearn.model_selection import train_test_split, GridSearchCV, cross_val_score, TimeSeriesSplit
-from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor, VotingRegressor
+from sklearn.model_selection import (
+    train_test_split,
+    GridSearchCV,
+    cross_val_score,
+    TimeSeriesSplit,
+)
+from sklearn.ensemble import (
+    RandomForestRegressor,
+    GradientBoostingRegressor,
+    VotingRegressor,
+)
 from sklearn.linear_model import LinearRegression, Ridge, ElasticNet
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from sklearn.preprocessing import StandardScaler
@@ -13,11 +22,11 @@ from xgboost import XGBRegressor
 from sklearn.neural_network import MLPRegressor
 import warnings
 
-warnings.filterwarnings('ignore')
+warnings.filterwarnings("ignore")
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../"))
-MODEL_DIR = os.path.join(os.path.dirname(__file__), 'models')
-DATA_DIR = os.path.join(BASE_DIR, 'data', 'processed')
+MODEL_DIR = os.path.join(os.path.dirname(__file__), "models")
+DATA_DIR = os.path.join(BASE_DIR, "data", "processed")
 
 
 def get_engine():
@@ -29,26 +38,28 @@ def get_engine():
     POSTGRES_DB = os.getenv("POSTGRES_DB", "pandemies")
     return create_engine(
         f"postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}",
-        connect_args={"options": "-c search_path=pandemics"}
+        connect_args={"options": "-c search_path=pandemics"},
     )
 
 
 def load_prepared_data():
     """Charge les données de base"""
     engine = get_engine()
-    query = text("""
+    query = text(
+        """
                  SELECT w.*, l.name AS location, v.name AS virus
                  FROM worldmeter w
                           JOIN location l ON w.location_id = l.id
                           JOIN virus v ON w.virus_id = v.id
                  ORDER BY w.date ASC
-                 """)
+                 """
+    )
     df = pd.read_sql(query, engine)
 
-    if not pd.api.types.is_datetime64_dtype(df['date']):
-        df['date'] = pd.to_datetime(df['date'])
+    if not pd.api.types.is_datetime64_dtype(df["date"]):
+        df["date"] = pd.to_datetime(df["date"])
 
-    return df[df['virus'] == 'COVID'], df[df['virus'] == 'Monkeypox']
+    return df[df["virus"] == "COVID"], df[df["virus"] == "Monkeypox"]
 
 
 def create_transmission_features(df):
@@ -56,8 +67,8 @@ def create_transmission_features(df):
     print("🔧 Création features de transmission avancées...")
 
     enhanced_dfs = []
-    for location, group_df in df.groupby('location'):
-        temp_df = group_df.copy().sort_values('date')
+    for location, group_df in df.groupby("location"):
+        temp_df = group_df.copy().sort_values("date")
 
         print(f"   Processing {location}...")
 
@@ -65,65 +76,89 @@ def create_transmission_features(df):
 
         # Moyennes mobiles multiples pour Rt
         for window in [3, 7, 14, 21]:
-            temp_df[f'cases_ma{window}'] = temp_df['new_cases'].rolling(window, min_periods=1).mean()
-            temp_df[f'deaths_ma{window}'] = temp_df['new_deaths'].rolling(window, min_periods=1).mean()
+            temp_df[f"cases_ma{window}"] = (
+                temp_df["new_cases"].rolling(window, min_periods=1).mean()
+            )
+            temp_df[f"deaths_ma{window}"] = (
+                temp_df["new_deaths"].rolling(window, min_periods=1).mean()
+            )
 
         # Calcul Rt avec différents lags (clé pour transmission)
         for lag in [5, 7, 10, 14]:
-            temp_df[f'rt_lag{lag}'] = temp_df['cases_ma7'] / temp_df['cases_ma7'].shift(lag).replace(0, np.nan)
-            temp_df[f'rt_lag{lag}'] = temp_df[f'rt_lag{lag}'].clip(0, 10)
+            temp_df[f"rt_lag{lag}"] = temp_df["cases_ma7"] / temp_df["cases_ma7"].shift(
+                lag
+            ).replace(0, np.nan)
+            temp_df[f"rt_lag{lag}"] = temp_df[f"rt_lag{lag}"].clip(0, 10)
 
         # Volatilité de transmission
-        temp_df['transmission_volatility_7d'] = temp_df['new_cases'].rolling(7, min_periods=1).std()
-        temp_df['transmission_volatility_14d'] = temp_df['new_cases'].rolling(14, min_periods=1).std()
+        temp_df["transmission_volatility_7d"] = (
+            temp_df["new_cases"].rolling(7, min_periods=1).std()
+        )
+        temp_df["transmission_volatility_14d"] = (
+            temp_df["new_cases"].rolling(14, min_periods=1).std()
+        )
 
         # Accélération de transmission
-        temp_df['transmission_acceleration'] = temp_df['cases_ma7'].diff().diff()
+        temp_df["transmission_acceleration"] = temp_df["cases_ma7"].diff().diff()
 
         # Tendances multiples
         for period in [3, 7, 14]:
-            temp_df[f'transmission_trend_{period}d'] = temp_df['cases_ma7'].pct_change(period)
-            temp_df[f'death_trend_{period}d'] = temp_df['deaths_ma7'].pct_change(period)
+            temp_df[f"transmission_trend_{period}d"] = temp_df["cases_ma7"].pct_change(
+                period
+            )
+            temp_df[f"death_trend_{period}d"] = temp_df["deaths_ma7"].pct_change(period)
 
         # Ratios épidémiologiques
-        temp_df['ratio_ma7_ma14'] = temp_df['cases_ma7'] / temp_df['cases_ma14'].replace(0, np.nan)
-        temp_df['ratio_ma7_ma21'] = temp_df['cases_ma7'] / temp_df['cases_ma21'].replace(0, np.nan)
-        temp_df['ratio_deaths_cases'] = temp_df['deaths_ma7'] / temp_df['cases_ma7'].replace(0, np.nan)
+        temp_df["ratio_ma7_ma14"] = temp_df["cases_ma7"] / temp_df[
+            "cases_ma14"
+        ].replace(0, np.nan)
+        temp_df["ratio_ma7_ma21"] = temp_df["cases_ma7"] / temp_df[
+            "cases_ma21"
+        ].replace(0, np.nan)
+        temp_df["ratio_deaths_cases"] = temp_df["deaths_ma7"] / temp_df[
+            "cases_ma7"
+        ].replace(0, np.nan)
 
         # Croissance comparée
-        temp_df['cases_growth_7d'] = temp_df['cases_ma7'].pct_change(7)
-        temp_df['cases_growth_14d'] = temp_df['cases_ma14'].pct_change(14)
-        temp_df['growth_acceleration'] = temp_df['cases_growth_7d'].diff()
+        temp_df["cases_growth_7d"] = temp_df["cases_ma7"].pct_change(7)
+        temp_df["cases_growth_14d"] = temp_df["cases_ma14"].pct_change(14)
+        temp_df["growth_acceleration"] = temp_df["cases_growth_7d"].diff()
 
         # Features saisonnières améliorées
-        temp_df['day_of_week'] = temp_df['date'].dt.dayofweek
-        temp_df['day_sin'] = np.sin(2 * np.pi * temp_df['day_of_week'] / 7)
-        temp_df['day_cos'] = np.cos(2 * np.pi * temp_df['day_of_week'] / 7)
-        temp_df['month'] = temp_df['date'].dt.month
-        temp_df['month_sin'] = np.sin(2 * np.pi * temp_df['month'] / 12)
-        temp_df['month_cos'] = np.cos(2 * np.pi * temp_df['month'] / 12)
-        temp_df['quarter_sin'] = np.sin(2 * np.pi * temp_df['date'].dt.quarter / 4)
-        temp_df['quarter_cos'] = np.cos(2 * np.pi * temp_df['date'].dt.quarter / 4)
+        temp_df["day_of_week"] = temp_df["date"].dt.dayofweek
+        temp_df["day_sin"] = np.sin(2 * np.pi * temp_df["day_of_week"] / 7)
+        temp_df["day_cos"] = np.cos(2 * np.pi * temp_df["day_of_week"] / 7)
+        temp_df["month"] = temp_df["date"].dt.month
+        temp_df["month_sin"] = np.sin(2 * np.pi * temp_df["month"] / 12)
+        temp_df["month_cos"] = np.cos(2 * np.pi * temp_df["month"] / 12)
+        temp_df["quarter_sin"] = np.sin(2 * np.pi * temp_df["date"].dt.quarter / 4)
+        temp_df["quarter_cos"] = np.cos(2 * np.pi * temp_df["date"].dt.quarter / 4)
 
         # Temps depuis début
-        temp_df['days_since_start'] = (temp_df['date'] - temp_df['date'].min()).dt.days
-        temp_df['weeks_since_start'] = temp_df['days_since_start'] / 7
+        temp_df["days_since_start"] = (temp_df["date"] - temp_df["date"].min()).dt.days
+        temp_df["weeks_since_start"] = temp_df["days_since_start"] / 7
 
         # Détection de phases épidémiques
-        temp_df['rt_ma7'] = temp_df['rt_lag7'].rolling(7, min_periods=1).mean()
-        temp_df['epidemic_phase'] = pd.cut(temp_df['rt_ma7'],
-                                           bins=[0, 0.8, 1.2, 2.0, float('inf')],
-                                           labels=[0, 1, 2, 3])
-        temp_df['epidemic_phase'] = temp_df['epidemic_phase'].astype(float)
+        temp_df["rt_ma7"] = temp_df["rt_lag7"].rolling(7, min_periods=1).mean()
+        temp_df["epidemic_phase"] = pd.cut(
+            temp_df["rt_ma7"],
+            bins=[0, 0.8, 1.2, 2.0, float("inf")],
+            labels=[0, 1, 2, 3],
+        )
+        temp_df["epidemic_phase"] = temp_df["epidemic_phase"].astype(float)
 
         # Indicateurs de contexte
-        temp_df['peak_indicator'] = (
-                    temp_df['cases_ma7'] == temp_df['cases_ma7'].rolling(21, min_periods=1).max()).astype(int)
-        temp_df['trough_indicator'] = (
-                    temp_df['cases_ma7'] == temp_df['cases_ma7'].rolling(21, min_periods=1).min()).astype(int)
+        temp_df["peak_indicator"] = (
+            temp_df["cases_ma7"]
+            == temp_df["cases_ma7"].rolling(21, min_periods=1).max()
+        ).astype(int)
+        temp_df["trough_indicator"] = (
+            temp_df["cases_ma7"]
+            == temp_df["cases_ma7"].rolling(21, min_periods=1).min()
+        ).astype(int)
 
         # Stabilité/instabilité
-        temp_df['stability_index'] = 1 / (1 + temp_df['transmission_volatility_7d'])
+        temp_df["stability_index"] = 1 / (1 + temp_df["transmission_volatility_7d"])
 
         enhanced_dfs.append(temp_df)
 
@@ -132,7 +167,9 @@ def create_transmission_features(df):
 
     # Forward fill puis backward fill pour les NaN
     for col in enhanced_df.select_dtypes(include=[np.number]).columns:
-        enhanced_df[col] = enhanced_df[col].fillna(method='ffill').fillna(method='bfill').fillna(0)
+        enhanced_df[col] = (
+            enhanced_df[col].fillna(method="ffill").fillna(method="bfill").fillna(0)
+        )
 
     print(f"✅ Features transmission créées: {enhanced_df.shape[1]} colonnes")
     return enhanced_df
@@ -154,7 +191,9 @@ def select_best_features(X, y, max_features=25):
     # Méthode 2: Random Forest Feature Importance
     rf = RandomForestRegressor(n_estimators=50, random_state=42, n_jobs=-1)
     rf.fit(X_filtered, y)
-    feature_importance = pd.Series(rf.feature_importances_, index=X_filtered.columns).sort_values(ascending=False)
+    feature_importance = pd.Series(
+        rf.feature_importances_, index=X_filtered.columns
+    ).sort_values(ascending=False)
     top_rf_features = feature_importance.head(max_features // 2).index.tolist()
 
     # Combiner les deux méthodes
@@ -182,8 +221,8 @@ def optimize_transmission_model():
     print("🎯 Préparation des données pour prédiction future...")
     training_data = []
 
-    for location, group_df in enhanced_df.groupby('location'):
-        group_df = group_df.sort_values('date')
+    for location, group_df in enhanced_df.groupby("location"):
+        group_df = group_df.sort_values("date")
 
         for i in range(30, len(group_df) - 14):
             current_features = group_df.iloc[i]
@@ -191,25 +230,28 @@ def optimize_transmission_model():
             # Target futur (Rt dans 7-14 jours)
             future_start = i + 7
             future_end = min(i + 14, len(group_df))
-            future_cases = group_df.iloc[future_start:future_end]['new_cases'].mean()
-            current_cases = group_df.iloc[max(0, i - 6):i + 1]['new_cases'].mean()
+            future_cases = group_df.iloc[future_start:future_end]["new_cases"].mean()
+            current_cases = group_df.iloc[max(0, i - 6) : i + 1]["new_cases"].mean()
 
             if current_cases > 0.1:
                 future_rt = min(max(future_cases / current_cases, 0), 10)
                 training_row = current_features.to_dict()
-                training_row['target_rt'] = future_rt
+                training_row["target_rt"] = future_rt
                 training_data.append(training_row)
 
     training_df = pd.DataFrame(training_data)
     print(f"✅ {len(training_df)} échantillons d'entraînement créés")
 
     # Sélection des features
-    feature_columns = [col for col in training_df.columns
-                       if col not in ['target_rt', 'date', 'location', 'virus']
-                       and pd.api.types.is_numeric_dtype(training_df[col])]
+    feature_columns = [
+        col
+        for col in training_df.columns
+        if col not in ["target_rt", "date", "location", "virus"]
+        and pd.api.types.is_numeric_dtype(training_df[col])
+    ]
 
     X = training_df[feature_columns].fillna(0)
-    y = training_df['target_rt']
+    y = training_df["target_rt"]
 
     # Sélection des meilleures features
     selected_features = select_best_features(X, y, max_features=25)
@@ -220,38 +262,40 @@ def optimize_transmission_model():
     X_train, X_test = X_selected.iloc[:split_idx], X_selected.iloc[split_idx:]
     y_train, y_test = y.iloc[:split_idx], y.iloc[split_idx:]
 
-    print(f"📊 Split final: {len(X_train)} train, {len(X_test)} test, {len(selected_features)} features")
+    print(
+        f"📊 Split final: {len(X_train)} train, {len(X_test)} test, {len(selected_features)} features"
+    )
 
     # Définir les modèles et paramètres à tester
     models_params = {
-        'RandomForest': {
-            'model': RandomForestRegressor(random_state=42, n_jobs=-1),
-            'params': {
-                'n_estimators': [50, 100, 200],
-                'max_depth': [10, 15, 20, None],
-                'min_samples_split': [2, 5, 10],
-                'min_samples_leaf': [1, 2, 4]
-            }
+        "RandomForest": {
+            "model": RandomForestRegressor(random_state=42, n_jobs=-1),
+            "params": {
+                "n_estimators": [50, 100, 200],
+                "max_depth": [10, 15, 20, None],
+                "min_samples_split": [2, 5, 10],
+                "min_samples_leaf": [1, 2, 4],
+            },
         },
-        'GradientBoosting': {
-            'model': GradientBoostingRegressor(random_state=42),
-            'params': {
-                'n_estimators': [50, 100, 150],
-                'learning_rate': [0.05, 0.1, 0.15],
-                'max_depth': [3, 5, 7],
-                'subsample': [0.8, 0.9, 1.0]
-            }
+        "GradientBoosting": {
+            "model": GradientBoostingRegressor(random_state=42),
+            "params": {
+                "n_estimators": [50, 100, 150],
+                "learning_rate": [0.05, 0.1, 0.15],
+                "max_depth": [3, 5, 7],
+                "subsample": [0.8, 0.9, 1.0],
+            },
         },
-        'XGBoost': {
-            'model': XGBRegressor(random_state=42, eval_metric='rmse'),
-            'params': {
-                'n_estimators': [50, 100, 150],
-                'learning_rate': [0.05, 0.1, 0.15],
-                'max_depth': [3, 5, 7],
-                'subsample': [0.8, 0.9],
-                'colsample_bytree': [0.8, 0.9]
-            }
-        }
+        "XGBoost": {
+            "model": XGBRegressor(random_state=42, eval_metric="rmse"),
+            "params": {
+                "n_estimators": [50, 100, 150],
+                "learning_rate": [0.05, 0.1, 0.15],
+                "max_depth": [3, 5, 7],
+                "subsample": [0.8, 0.9],
+                "colsample_bytree": [0.8, 0.9],
+            },
+        },
     }
 
     best_models = {}
@@ -265,12 +309,12 @@ def optimize_transmission_model():
         print(f"\n   Optimisation {name}...")
 
         grid_search = GridSearchCV(
-            config['model'],
-            config['params'],
+            config["model"],
+            config["params"],
             cv=tscv,
-            scoring='neg_mean_squared_error',
+            scoring="neg_mean_squared_error",
             n_jobs=-1,
-            verbose=1
+            verbose=1,
         )
 
         grid_search.fit(X_train, y_train)
@@ -303,26 +347,38 @@ def optimize_transmission_model():
     baseline_r2 = 0.1359
 
     mae_improvement = ((baseline_mae - mae) / baseline_mae) * 100
-    r2_improvement = ((r2 - baseline_r2) / baseline_r2) * 100 if baseline_r2 > 0 else float('inf')
+    r2_improvement = (
+        ((r2 - baseline_r2) / baseline_r2) * 100 if baseline_r2 > 0 else float("inf")
+    )
 
     print(f"\n🎯 AMÉLIORATIONS vs BASELINE:")
     print(f"   MAE: {mae_improvement:+.1f}% {'✅' if mae_improvement > 0 else '❌'}")
     print(f"   R²: {r2_improvement:+.1f}% {'✅' if r2_improvement > 0 else '❌'}")
 
     # Feature importance
-    if hasattr(best_model, 'feature_importances_'):
-        importance_df = pd.DataFrame({
-            'feature': selected_features,
-            'importance': best_model.feature_importances_
-        }).sort_values('importance', ascending=False)
+    if hasattr(best_model, "feature_importances_"):
+        importance_df = pd.DataFrame(
+            {
+                "feature": selected_features,
+                "importance": best_model.feature_importances_,
+            }
+        ).sort_values("importance", ascending=False)
 
         print(f"\n🎯 TOP 10 FEATURES LES PLUS IMPORTANTES:")
-        print(importance_df.head(10).to_string(index=False, float_format='%.4f'))
+        print(importance_df.head(10).to_string(index=False, float_format="%.4f"))
 
     # Sauvegarder le modèle optimisé
-    save_optimized_model(best_model, selected_features, best_model_name, 'transmission_optimized', mae, rmse, r2)
+    save_optimized_model(
+        best_model,
+        selected_features,
+        best_model_name,
+        "transmission_optimized",
+        mae,
+        rmse,
+        r2,
+    )
 
-    return best_model, selected_features, {'mae': mae, 'rmse': rmse, 'r2': r2}
+    return best_model, selected_features, {"mae": mae, "rmse": rmse, "r2": r2}
 
 
 def save_optimized_model(model, features, model_name, model_type, mae, rmse, r2):
@@ -340,15 +396,17 @@ def save_optimized_model(model, features, model_name, model_type, mae, rmse, r2)
 
     # Sauvegarder les métadonnées
     metadata = {
-        'model_name': model_name,
-        'model_type': model_type,
-        'feature_cols': features,
-        'metrics': {'mae': mae, 'rmse': rmse, 'r2': r2},
-        'version': 'optimized_v1',
-        'optimization_method': 'GridSearchCV'
+        "model_name": model_name,
+        "model_type": model_type,
+        "feature_cols": features,
+        "metrics": {"mae": mae, "rmse": rmse, "r2": r2},
+        "version": "optimized_v1",
+        "optimization_method": "GridSearchCV",
     }
 
-    metadata_path = os.path.join(MODEL_DIR, f"{model_type}_{model_name}_metadata.joblib")
+    metadata_path = os.path.join(
+        MODEL_DIR, f"{model_type}_{model_name}_metadata.joblib"
+    )
     joblib.dump(metadata, metadata_path)
 
     print(f"\n💾 MODÈLE SAUVEGARDÉ:")
@@ -362,20 +420,20 @@ def diagnose_current_models():
     print("\n🔍 DIAGNOSTIC DES MODÈLES ACTUELS")
     print("=" * 50)
 
-    model_files = [f for f in os.listdir(MODEL_DIR) if f.endswith('_model.joblib')]
+    model_files = [f for f in os.listdir(MODEL_DIR) if f.endswith("_model.joblib")]
 
     if not model_files:
         print("❌ Aucun modèle trouvé")
         return
 
     for model_file in model_files:
-        model_type = model_file.replace('_model.joblib', '')
-        metadata_file = model_file.replace('_model.joblib', '_metadata.joblib')
+        model_type = model_file.replace("_model.joblib", "")
+        metadata_file = model_file.replace("_model.joblib", "_metadata.joblib")
         metadata_path = os.path.join(MODEL_DIR, metadata_file)
 
         if os.path.exists(metadata_path):
             metadata = joblib.load(metadata_path)
-            metrics = metadata.get('metrics', {})
+            metrics = metadata.get("metrics", {})
 
             print(f"\n📊 {model_type}:")
             print(f"   MAE: {metrics.get('mae', 'N/A')}")
@@ -425,6 +483,7 @@ def main():
     except Exception as e:
         print(f"❌ Erreur: {e}")
         import traceback
+
         traceback.print_exc()
 
     print("\n✅ Optimisation terminée!")

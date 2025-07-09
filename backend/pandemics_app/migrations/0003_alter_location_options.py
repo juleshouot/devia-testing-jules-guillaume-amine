@@ -6,12 +6,12 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('pandemics_app', '0002_alter_location_table'),
+        ("pandemics_app", "0002_alter_location_table"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='location',
-            options={'managed': False},
+            name="location",
+            options={"managed": False},
         ),
     ]

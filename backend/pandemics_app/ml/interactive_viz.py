@@ -1,4 +1,3 @@
-
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
@@ -15,39 +14,46 @@ def generate_interactive_visualizations():
     def get_engine():
         return create_engine(
             "postgresql+psycopg2://user:guigui@postgres:5432/pandemies",
-            connect_args={"options": "-c search_path=pandemics"}
+            connect_args={"options": "-c search_path=pandemics"},
         )
 
     engine = get_engine()
 
     # Répertoire de sortie
-    output_dir = os.path.join('/django_api', 'static', 'visualizations')
+    output_dir = os.path.join("/django_api", "static", "visualizations")
     os.makedirs(output_dir, exist_ok=True)
 
     # Données pour les visualisations
     # 1. Évolution des cas
-    query = text("""
+    query = text(
+        """
                  SELECT v.name as virus, w.date, SUM(w.new_cases) as new_cases
                  FROM worldmeter w
                           JOIN virus v ON w.virus_id = v.id
                  GROUP BY v.name, w.date
                  ORDER BY w.date
-                 """)
+                 """
+    )
 
     cases_df = pd.read_sql(query, engine)
-    cases_df['date'] = pd.to_datetime(cases_df['date'])
+    cases_df["date"] = pd.to_datetime(cases_df["date"])
 
     # Créer le graphique interactif
-    fig = px.line(cases_df, x='date', y='new_cases', color='virus',
-                  title='Évolution des cas par virus')
+    fig = px.line(
+        cases_df,
+        x="date",
+        y="new_cases",
+        color="virus",
+        title="Évolution des cas par virus",
+    )
 
     # Sauvegarder comme HTML pour intégration directe
-    html_path = os.path.join(output_dir, 'cases_trend.html')
-    fig.write_html(html_path, include_plotlyjs='cdn')
+    html_path = os.path.join(output_dir, "cases_trend.html")
+    fig.write_html(html_path, include_plotlyjs="cdn")
 
     # Sauvegarder comme JSON pour reconstruction côté client
-    json_path = os.path.join(output_dir, 'cases_trend.json')
-    with open(json_path, 'w') as f:
+    json_path = os.path.join(output_dir, "cases_trend.json")
+    with open(json_path, "w") as f:
         # Fonction pour convertir des tableaux NumPy en listes
         def convert_numpy_to_list(obj):
             if isinstance(obj, np.ndarray):
@@ -65,7 +71,4 @@ def generate_interactive_visualizations():
 
     # 2. Autres visualisations...
 
-    return {
-        'html_files': [html_path],
-        'json_files': [json_path]
-    }
+    return {"html_files": [html_path], "json_files": [json_path]}

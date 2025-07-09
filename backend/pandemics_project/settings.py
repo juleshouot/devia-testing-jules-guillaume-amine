@@ -18,17 +18,17 @@ ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split("
 # ========================================
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'rest_framework',
-    'django_filters',
-    'pandemics_app',
-    'drf_yasg',
-    'corsheaders',  # MSPR 2
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "rest_framework",
+    "django_filters",
+    "pandemics_app",
+    "drf_yasg",
+    "corsheaders",  # MSPR 2
 ]
 
 # ========================================
@@ -36,14 +36,14 @@ INSTALLED_APPS = [
 # ========================================
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',  # MSPR 2
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",  # MSPR 2
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
 # ========================================
@@ -56,41 +56,39 @@ CORS_ALLOW_ALL_ORIGINS = True  # Pour le développement
 # ROOT URL ET TEMPLATES - MSPR 2
 # ========================================
 
-ROOT_URLCONF = 'pandemics_project.urls'
+ROOT_URLCONF = "pandemics_project.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'pandemics_project.wsgi.application'
+WSGI_APPLICATION = "pandemics_project.wsgi.application"
 
 # ========================================
 # BASE DE DONNÉES - MSPR 2 conservé
 # ========================================
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv("POSTGRES_DB", "pandemies"),
-        'USER': os.getenv("POSTGRES_USER", "user"),
-        'PASSWORD': os.getenv("POSTGRES_PASSWORD", "guigui"),
-        'HOST': os.getenv("POSTGRES_HOST", "postgres"),
-        'PORT': os.getenv("POSTGRES_PORT", "5432"),
-        'OPTIONS': {
-            'options': '-c search_path=pandemics,public'
-        }
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("POSTGRES_DB", "pandemies"),
+        "USER": os.getenv("POSTGRES_USER", "user"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD", "guigui"),
+        "HOST": os.getenv("POSTGRES_HOST", "postgres"),
+        "PORT": os.getenv("POSTGRES_PORT", "5432"),
+        "OPTIONS": {"options": "-c search_path=pandemics,public"},
     }
 }
 
@@ -99,8 +97,8 @@ DATABASES = {
 # ========================================
 
 REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
 }
 
 # ========================================
@@ -108,10 +106,12 @@ REST_FRAMEWORK = {
 # ========================================
 
 AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
+    },
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
 # ========================================
@@ -119,8 +119,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # ========================================
 
 # Configuration par défaut
-LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+LANGUAGE_CODE = "en-us"
+TIME_ZONE = "UTC"
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
@@ -130,47 +130,47 @@ DEPLOY_COUNTRY = os.getenv("DEPLOY_COUNTRY", "US")
 
 # Configuration simple par pays (sans logique complexe)
 if DEPLOY_COUNTRY == "FR":
-    LANGUAGE_CODE = 'fr-fr'
-    TIME_ZONE = 'Europe/Paris'
+    LANGUAGE_CODE = "fr-fr"
+    TIME_ZONE = "Europe/Paris"
 elif DEPLOY_COUNTRY == "CH":
-    LANGUAGE_CODE = 'fr-ch'
-    TIME_ZONE = 'Europe/Zurich'
+    LANGUAGE_CODE = "fr-ch"
+    TIME_ZONE = "Europe/Zurich"
 elif DEPLOY_COUNTRY == "US":
-    LANGUAGE_CODE = 'en-us'
-    TIME_ZONE = 'America/New_York'
+    LANGUAGE_CODE = "en-us"
+    TIME_ZONE = "America/New_York"
 
 # ========================================
 # FICHIERS STATIQUES - MSPR 2
 # ========================================
 
-STATIC_URL = '/static/'
+STATIC_URL = "/static/"
 
 # ========================================
 # CONFIGURATION PAR DÉFAUT
 # ========================================
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # ========================================
 # AJOUT MSPR 3 - Variables simples pour l'application
 # ========================================
 # Configuration Assistant Vocal Simple
 VOICE_ASSISTANT_SIMPLE = {
-    'ENABLED': True,
-    'SUPPORTED_LANGUAGES': ['fr', 'en', 'de', 'it'],
-    'DEFAULT_LANGUAGE': 'fr',
-    'RATE_LIMIT_COMMANDS_PER_MINUTE': 30,
-    'LOG_COMMANDS': False,  # True seulement pour debug
+    "ENABLED": True,
+    "SUPPORTED_LANGUAGES": ["fr", "en", "de", "it"],
+    "DEFAULT_LANGUAGE": "fr",
+    "RATE_LIMIT_COMMANDS_PER_MINUTE": 30,
+    "LOG_COMMANDS": False,  # True seulement pour debug
 }
 
 # Configuration par pays
-if DEPLOY_COUNTRY == 'FR':
-    VOICE_ASSISTANT_SIMPLE['LOG_COMMANDS'] = False  # RGPD
-    VOICE_ASSISTANT_SIMPLE['SUPPORTED_LANGUAGES'] = ['fr']
-elif DEPLOY_COUNTRY == 'CH':
-    VOICE_ASSISTANT_SIMPLE['SUPPORTED_LANGUAGES'] = ['fr', 'de', 'it']
-elif DEPLOY_COUNTRY == 'US':
-    VOICE_ASSISTANT_SIMPLE['LOG_COMMANDS'] = True
+if DEPLOY_COUNTRY == "FR":
+    VOICE_ASSISTANT_SIMPLE["LOG_COMMANDS"] = False  # RGPD
+    VOICE_ASSISTANT_SIMPLE["SUPPORTED_LANGUAGES"] = ["fr"]
+elif DEPLOY_COUNTRY == "CH":
+    VOICE_ASSISTANT_SIMPLE["SUPPORTED_LANGUAGES"] = ["fr", "de", "it"]
+elif DEPLOY_COUNTRY == "US":
+    VOICE_ASSISTANT_SIMPLE["LOG_COMMANDS"] = True
 """
 
 # Variable pays pour les templates (simple)
