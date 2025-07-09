@@ -3,14 +3,14 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
-from .models import (
+from pandemics_app.models import (  # <- import absolu sans point
     Location,
     Virus,
     Prediction,
     GeographicalSpreadPrediction,
     ModelMetrics,
 )
-from .ml.predictor import PandemicPredictor
+from pandemics_app.ml.predictor import PandemicPredictor  # <- import absolu 
 import json
 import os
 import numpy as np
