@@ -353,6 +353,7 @@ class SettingsTests(TestCase):
         # C'est une astuce de test, ne pas faire ça en production
         import importlib
         import pandemics_project.settings as settings_module
+
         importlib.reload(settings_module)
         from pandemics_project import settings
 
@@ -360,14 +361,14 @@ class SettingsTests(TestCase):
         del os.environ["DEPLOY_COUNTRY"]
 
         os.environ["DEPLOY_COUNTRY"] = "CH"
-        importlib.reload(settings_module) # Recharger à nouveau
+        importlib.reload(settings_module)  # Recharger à nouveau
         from pandemics_project import settings
 
         self.assertEqual(settings.DEPLOY_COUNTRY, "CH")
         del os.environ["DEPLOY_COUNTRY"]
 
         # Teste la valeur par défaut (quand DEPLOY_COUNTRY n'est pas défini)
-        importlib.reload(settings_module) # Recharger à nouveau
+        importlib.reload(settings_module)  # Recharger à nouveau
         from pandemics_project import settings
 
         self.assertEqual(settings.DEPLOY_COUNTRY, "US")
