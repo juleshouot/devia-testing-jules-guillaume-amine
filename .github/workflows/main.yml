@@ -47,7 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.9, '3.10']
+        python-version: ['3.10', '3.11']
         country: [US, FR, CH]
 
     steps:
@@ -100,7 +100,7 @@ jobs:
         pytest --cov=. --cov-report=xml --cov-report=html --junitxml=test-results.xml
 
     - name: 📊 Upload des résultats de tests
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: test-results-${{ matrix.python-version }}-${{ matrix.country }}
