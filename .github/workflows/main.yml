@@ -94,7 +94,7 @@ jobs:
     - name: 🧪 Tests unitaires
       env:
         DEPLOY_COUNTRY: ${{ matrix.country }}
-        DJANGO_SETTINGS_MODULE: pandemics_project.test_settings
+        DJANGO_SETTINGS_MODULE: pandemics_project.settings
       run: |
         cd backend
         pytest --cov=. --cov-report=xml --cov-report=html --junitxml=test-results.xml
