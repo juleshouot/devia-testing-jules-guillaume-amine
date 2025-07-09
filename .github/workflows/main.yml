@@ -3,9 +3,7 @@ name: 🚀 MSPR 3 - Multi-Country CI/CD Pipeline
 on:
   push:
     branches:
-      - master      # Changé de master à main
-      - develop
-      - 'feature/*'
+      - '*'
   pull_request:
     branches:
       - main
