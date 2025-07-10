@@ -1,71 +1,38 @@
-# Fichiers et dossiers spécifiques au système d'exploitation
-.DS_Store             # macOS
-Thumbs.db             # Windows
-desktop.ini           # Windows
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+.pytest_cache/
 
-# Fichiers d'IDE (Environnement de Développement Intégré)
-.idea/                # Dossier généré par IntelliJ/PyCharm
-.vscode/              # Dossier généré par VS Code (si utilisé)
-*.iml                 # Fichiers de modules IntelliJ
-*.ipr                 # Fichiers de projet IntelliJ
-*.iws                 # Fichiers de workspace IntelliJ
+# Django
+*.sqlite3
+db.sqlite3
+*.log
 
-# Fichiers Python et Django
-__pycache__/          # Dossiers de cache Python
-*.pyc                 # Fichiers Python compilés
-.pytest_cache/        # Cache de pytest
-venv/                 # Environnement virtuel Python (très important !)
-.env                  # Fichier d'environnement local (contient souvent des secrets)
-*.sqlite3             # Base de données SQLite locale de Django (si utilisée)
-db.sqlite3            # Nom par défaut de la DB Django
+# Environment
+.env
+venv/
+env/
 
-# Fichiers de logs
-logs/                 # Dossier de logs (inclut les logs d'Airflow et autres)
-*.log                 # Tous les fichiers .log
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
 
-# Fichiers temporaires ou de sauvegarde d'éditeurs
-*~                    # Fichiers de sauvegarde d'éditeurs (ex: VIM)
-*.swp                 # Fichiers de swap VIM
-*.tmp                 # Fichiers temporaires
-# Ces fichiers ~BROMIUM/ sont très probablement des fichiers temporaires spécifiques:
-# Il est crucial de les ignorer s'ils apparaissent dans ton projet
-~BROMIUM/
-backend/pandemics_app/management/commands/~BROMIUM/
-backend/pandemics_app/migrations/~BROMIUM/
-backend/pandemics_app/ml/~BROMIUM/
-backend/pandemics_app/~BROMIUM/
-backend/pandemics_project/~BROMIUM/
-backend/~BROMIUM/
-dags/~BROMIUM/
-data/~BROMIUM/
-frontend/~BROMIUM/
-# Ajoute toutes les variantes de ~BROMIUM/ que tu peux voir.
-# La ligne générique `*~` ci-dessus devrait déjà en couvrir beaucoup.
+# OS
+.DS_Store
+Thumbs.db
 
-# Fichiers Docker
-# docker-compose.prod.yaml  # Si ce fichier contient des secrets spécifiques à ta prod locale, ignore-le.
-# docker-compose.local.yaml # Si tu en as un pour tes configurations locales.
-# Pour les images Docker générées:
+# Docker
 *.tar
-*.gz
+logs/
 
-# Fichiers de build frontend (si tu utilises un framework JS comme React, Vue, Angular)
-node_modules/         # Dépendances Node.js
-dist/                 # Dossier de distribution (build)
-build/                # Autre dossier de build
-
-# Données générées/traitées (si tu ne veux pas les versionner)
-# Ces fichiers CSV semblent être des résultats de traitement, à toi de voir si tu veux les inclure ou non
-# Si tu les retires de Git, tu devras t'assurer que ton pipeline peut les régénérer si besoin.
-# backend/data/processed/geographical_spread_analysis.csv
-# backend/data/processed/model_metrics.csv
-# backend/data/processed/mortality_analysis.csv
-# backend/data/processed/rt_analysis.csv
-# backend/static/visualizations/cases_trend.json # Si généré dynamiquement
-
-# Fichiers de cache d'Airflow (si tu as des caches dans dags)
-.airflowignore        # Fichier d'Airflow pour ignorer des DAGs, mais pas Git
-
-# Pour d'autres fichiers de cache
-.cache/
-.coverage
+# Temporary files
+*~
+*.tmp
+~BROMIUM/
+EOF
