@@ -57,7 +57,9 @@ class PredictorTests(unittest.TestCase):
         if not self.models_exist:
             self.skipTest("Les modèles n'existent pas encore")
 
-        mortality_rate = self.predictor.predict_mortality_ratio("Test Location", "Test Virus")
+        mortality_rate = self.predictor.predict_mortality_ratio(
+            "Test Location", "Test Virus"
+        )
 
         # Vérifier que la prédiction est un nombre ou None
         if mortality_rate is not None:
@@ -173,31 +175,41 @@ class APITests(TestCase):
             self.skipTest("Le prédicteur n'est pas disponible")
 
         # Le endpoint peut retourner une erreur si pas de données, c'est normal
-        self.assertIn(response.status_code, [status.HTTP_200_OK, status.HTTP_400_BAD_REQUEST])
+        self.assertIn(
+            response.status_code, [status.HTTP_200_OK, status.HTTP_400_BAD_REQUEST]
+        )
 
         # Test de l'endpoint de prédiction du taux de mortalité
         url = reverse("predict-mortality")
         response = self.client.post(url, self.mortality_data, format="json")
 
-        self.assertIn(response.status_code, [status.HTTP_200_OK, status.HTTP_400_BAD_REQUEST])
+        self.assertIn(
+            response.status_code, [status.HTTP_200_OK, status.HTTP_400_BAD_REQUEST]
+        )
 
         # Test de l'endpoint de prédiction de la propagation géographique
         url = reverse("predict-geographical-spread")
         response = self.client.post(url, self.geographical_data, format="json")
 
-        self.assertIn(response.status_code, [status.HTTP_200_OK, status.HTTP_400_BAD_REQUEST])
+        self.assertIn(
+            response.status_code, [status.HTTP_200_OK, status.HTTP_400_BAD_REQUEST]
+        )
 
         # Test de l'endpoint de prédiction combinée
         url = reverse("predict-combined")
         response = self.client.post(url, self.combined_data, format="json")
 
-        self.assertIn(response.status_code, [status.HTTP_200_OK, status.HTTP_400_BAD_REQUEST])
+        self.assertIn(
+            response.status_code, [status.HTTP_200_OK, status.HTTP_400_BAD_REQUEST]
+        )
 
         # Test de l'endpoint de prévision
         url = reverse("predict-forecast")
         response = self.client.post(url, self.forecast_data, format="json")
 
-        self.assertIn(response.status_code, [status.HTTP_200_OK, status.HTTP_400_BAD_REQUEST])
+        self.assertIn(
+            response.status_code, [status.HTTP_200_OK, status.HTTP_400_BAD_REQUEST]
+        )
 
     def test_latest_data(self):
         """
